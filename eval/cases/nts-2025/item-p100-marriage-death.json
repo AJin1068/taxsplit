@@ -1,0 +1,34 @@
+{
+  "id": "nts2025-p100-marriage-death",
+  "status": "draft",
+  "review": {"reviewer": null, "date": null},
+  "tax_year": 2025,
+  "source": {
+    "book": "2025년 원천징수의무자를 위한 연말정산 신고안내 (국세청, 2025.12, 정오표 2026.02.03)",
+    "printed_pages": [100],
+    "title": "인적공제 판정시기(소법 §53) 사례 문1·문2"
+  },
+  "kind": "item",
+  "groups": ["dependents"],
+  "question": "【문1】 근로자가 2025.12.27. 결혼한 경우 배우자공제 가능 여부? 【문2】 근로자가 기본공제대상자인 장인(81세), 장모(76세)를 부양하고 있으며 2025.10.30. 장인이 사망한 경우 장인에 대한 기본공제와 추가공제금액은?",
+  "inputs": {
+    "q1": {"marriage_date": "2025-12-27", "marriage_type": "법률혼 (사실혼 제외)"},
+    "q2": {
+      "family": [
+        {"relation": "spouse_lineal_ascendant", "label": "장인", "age": 81, "death_date": "2025-10-30", "basic_deduction_eligible": true},
+        {"relation": "spouse_lineal_ascendant", "label": "장모", "age": 76, "basic_deduction_eligible": true}
+      ],
+      "asked_about": "장인"
+    }
+  },
+  "expected": [
+    {"stage": "spouse_basic_deduction_eligible", "sub_question": "q1", "value": true, "page": 100, "booklet_text": "배우자에 대한 기본공제를 할 수 있음 (2025.12.31. 현재 상황 기준, 사실혼 제외)"},
+    {"stage": "basic_deduction_person", "sub_question": "q2", "value": 1500000, "page": 100, "booklet_text": "기본공제 150만원"},
+    {"stage": "additional_deduction_elderly", "sub_question": "q2", "value": 1000000, "page": 100, "booklet_text": "경로우대자 추가공제 100만원"},
+    {"stage": "personal_deduction_person_total", "sub_question": "q2", "value": 2500000, "page": 100, "booklet_text": "250만원 공제(기본공제 150만원, 경로우대자 추가공제 100만원)"}
+  ],
+  "notes": [
+    "한 사례 안에 질문 2개(문1·문2)가 있어 파일 하나에 sub_question으로 나눠 담았다.",
+    "책자 이유: 연도 중 사망한 경우 사망일 전일 상황에 의해 공제대상 여부를 판단."
+  ]
+}

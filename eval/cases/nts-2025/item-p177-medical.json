@@ -1,0 +1,39 @@
+{
+  "id": "nts2025-p177-medical",
+  "status": "draft",
+  "review": {"reviewer": null, "date": null},
+  "tax_year": 2025,
+  "source": {
+    "book": "2025년 원천징수의무자를 위한 연말정산 신고안내 (국세청, 2025.12, 정오표 2026.02.03)",
+    "printed_pages": [177],
+    "title": "의료비 세액공제 사례"
+  },
+  "kind": "item",
+  "groups": ["medical"],
+  "question": "총급여액이 3,000만원인 근로자가 기본공제대상자인 부양가족을 위하여 의료비 550만원(65세 이상 아버지 300만원, 장애인 어머니 100만원, 배우자 150만원(난임시술비 100만원 포함)), 의약품구입비 80만원(배우자), 장애인보장구(의족)구입비 50만원(어머니), 배우자 산후조리원비용 250만원을 지급한 경우 의료비 세액공제액은?",
+  "inputs": {
+    "gross_salary": 30000000,
+    "expenses": [
+      {"for": "father", "age_note": "65세 이상", "item": "의료비", "amount": 3000000},
+      {"for": "mother", "disabled": true, "item": "의료비", "amount": 1000000},
+      {"for": "spouse", "item": "의료비 (난임시술비 제외분)", "amount": 500000},
+      {"for": "spouse", "item": "난임시술비", "amount": 1000000},
+      {"for": "spouse", "item": "의약품구입비", "amount": 800000},
+      {"for": "mother", "disabled": true, "item": "장애인보장구(의족)구입비", "amount": 500000},
+      {"for": "spouse", "item": "산후조리원비용", "amount": 2500000}
+    ],
+    "all_are_basic_deduction_dependents": true
+  },
+  "expected": [
+    {"stage": "medical_threshold", "value": 900000, "page": 177, "booklet_text": "총급여액의 3% 상당액 = 3,000만원 × 3% = 90만원"},
+    {"stage": "medical_base_general", "value": 2400000, "page": 177, "booklet_text": "가. 그 외 기본공제대상자 = {(550만원 - 300만원 - 100만원 - 100만원) + 80만원+200만원} - 90만원 = 240만원"},
+    {"stage": "medical_base_special", "value": 4500000, "page": 177, "booklet_text": "나. 본인･65세 이상자･장애인 = 300만원 + 100만원 + 50만원 = 450만원"},
+    {"stage": "medical_base_infertility", "value": 1000000, "page": 177, "booklet_text": "다. 난임시술비 = 100만원"},
+    {"stage": "medical_credit_base", "value": 7900000, "page": 177, "booklet_text": "의료비 세액공제 대상금액 = 240만원 + 450만원 + 100만원 = 790만원"},
+    {"stage": "medical_credit", "value": 1335000, "page": 177, "booklet_text": "1,335천원 [ =(가+나) × 15% + 다 × 30% ]"}
+  ],
+  "notes": [
+    "책자 풀이에서 산후조리원비용 250만원은 200만원으로 들어가 있다(한도가 풀이에 명시되지는 않음).",
+    "의료비 550만원 중 배우자 몫 150만원을 '난임 100만원 + 그 외 50만원'으로 나눈 것은 책자 문장(150만원(난임시술비 100만원 포함))을 그대로 나눈 것이다."
+  ]
+}

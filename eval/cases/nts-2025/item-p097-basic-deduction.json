@@ -1,0 +1,33 @@
+{
+  "id": "nts2025-p097-basic-deduction",
+  "status": "draft",
+  "review": {"reviewer": null, "date": null},
+  "tax_year": 2025,
+  "source": {
+    "book": "2025년 원천징수의무자를 위한 연말정산 신고안내 (국세청, 2025.12, 정오표 2026.02.03)",
+    "printed_pages": [97],
+    "title": "기본공제(소법 §50) 사례"
+  },
+  "kind": "item",
+  "groups": ["dependents"],
+  "question": "근로자의 부양가족으로 배우자, 자녀 3명(20세 자녀 1명과 20세 미만 자녀 2명), 60세 이상 직계존속 2명이 있으며, 근로자 본인 외에는 소득이 없는 경우 기본공제 금액은?",
+  "inputs": {
+    "self": {"has_income": true},
+    "family": [
+      {"relation": "spouse", "income": 0},
+      {"relation": "child", "age": 20, "income": 0},
+      {"relation": "child", "age_note": "20세 미만", "income": 0},
+      {"relation": "child", "age_note": "20세 미만", "income": 0},
+      {"relation": "lineal_ascendant", "age_note": "60세 이상", "income": 0},
+      {"relation": "lineal_ascendant", "age_note": "60세 이상", "income": 0}
+    ]
+  },
+  "expected": [
+    {"stage": "basic_deduction_count", "value": 7, "page": 97, "booklet_text": "공제대상가족수：본인, 배우자, 자녀 3명, 직계존속 2명"},
+    {"stage": "basic_deduction_total", "value": 10500000, "page": 97, "booklet_text": "1,050만원 [본인 포함 공제대상가족(7명)×150만원]"}
+  ],
+  "notes": [
+    "책자: 해당 과세기간 중에 20세에 도달하더라도 기본공제 가능.",
+    "직계존속의 정확한 나이는 책자에 없다(60세 이상으로만 적힘)."
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "nts2025-p099-disabled-child",
+  "status": "draft",
+  "review": {"reviewer": null, "date": null},
+  "tax_year": 2025,
+  "source": {
+    "book": "2025년 원천징수의무자를 위한 연말정산 신고안내 (국세청, 2025.12, 정오표 2026.02.03)",
+    "printed_pages": [99],
+    "title": "추가공제(소법 §51) 사례 — 장애인 자녀"
+  },
+  "kind": "item",
+  "groups": ["dependents"],
+  "question": "근로자의 자녀(23세)가 소득세법에서 인정되는 장애인으로 소득이 없는 경우 해당 자녀에 대한 기본공제 및 추가공제금액은?",
+  "inputs": {
+    "family": [
+      {"relation": "child", "age": 23, "disabled": true, "income": 0}
+    ]
+  },
+  "expected": [
+    {"stage": "basic_deduction_person", "value": 1500000, "page": 99, "booklet_text": "기본공제 150만원"},
+    {"stage": "additional_deduction_disabled", "value": 2000000, "page": 99, "booklet_text": "추가공제 200만원"}
+  ],
+  "notes": [
+    "책자 이유: 소득금액 합계 100만원(근로소득만 있으면 총급여 500만원) 이하이고 장애인이면 나이에 관계없이 기본공제 150만원과 추가공제 200만원."
+  ]
+}
