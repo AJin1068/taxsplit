@@ -52,13 +52,13 @@
   "question": "책자 질문 문장",
   "inputs": { ... },                  // 책자에 나온 입력값. 금액은 원 단위 정수
   "expected": [
-    {"stage": "medical_credit", "value": 1335000, "page": 177, "booklet_text": "책자 식 그대로"}
+    {"stage": "medical_credit", "value": 1335000, "page": 177, "booklet_text": "책자 식 (줄이거나 합친 곳 있음)"}
   ],
   "notes": ["책자 이유 설명, 불일치, 애매한 곳"]
 }
 ```
 
-- `expected`는 책자 풀이에 나온 순서대로 적은 단계값 목록입니다. 각 칸은 **어느 단계의 값인지(`stage`)**, 값(`value`, 원 단위 정수 또는 true/false), 그 값이 인쇄된 쪽(`page`), 책자 식 원문(`booklet_text`)입니다. 한 사례에 질문이 둘이면 `sub_question`으로 나눕니다(p100).
+- `expected`는 책자 풀이에 나온 순서대로 적은 단계값 목록입니다. 각 칸은 **어느 단계의 값인지(`stage`)**, 값(`value`, 원 단위 정수 또는 true/false), 그 값이 인쇄된 쪽(`page`), 책자 식(`booklet_text`)입니다. `booklet_text`는 대조를 돕는 메모라서 글자 그대로가 아닌 곳이 있습니다(여러 줄을 한 줄로 합치거나, 괄호로 설명을 덧붙인 곳). 정답은 `value`입니다. 한 사례에 질문이 둘이면 `sub_question`으로 나눕니다(p100).
 - 음수는 환급입니다(`refund_or_payment` −759,768 = 책자 "△ 759,768원").
 - `inputs`의 칸 이름은 이 폴더 안에서만 쓰는 이름입니다. 계산 엔진은 이 파일을 직접 읽지 않고, PR 4·5 테스트가 엔진 입력으로 옮겨 씁니다.
 
