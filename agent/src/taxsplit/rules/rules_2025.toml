@@ -1,0 +1,388 @@
+# 2025년 귀속 규칙표. 계산 엔진(PR 4·5)은 세법 숫자를 코드에 쓰지 않고 이 표에서 읽는다(NFR-05).
+#
+# 책자: 국세청 「2025년 귀속 원천징수의무자를 위한 연말정산 신고안내」(2025.12 발간, 정오표 2026.02.03)
+# 쪽수: 인쇄 쪽 "p94". 쪽 번호가 없는 앞쪽 요약은 "PDF 6쪽". (PDF 쪽 = 인쇄 쪽 + 18)
+#
+# 칸:
+#   id       2025.<그룹>.<이름>. 한 번 정하면 바꾸지 않는다(PR 4~6 결과, PR 13 근거 검색이 이 ID를 쓴다)
+#   group    base(계산 기본 흐름), dependent, child, medical, education, card
+#   statute  근거 조문(책자 각 절 제목에 적힌 것). 예규는 예규 번호
+#   status   sourced = 쪽수와 조문이 모두 있음 / todo = 확인할 것이 남음(todo 칸에 이유)
+#   value    금액은 원 단위 정수, 비율은 "0.15"처럼 문자열(로더가 Decimal로 바꾼다)
+#   구간표   over = 이 금액을 "넘는" 구간, base + (금액 - over) × rate
+
+# ── 계산 기본 흐름 ─────────────────────────────────────────────
+
+[[rule]]
+id = "2025.base.earned_income_deduction"
+year = 2025
+group = "base"
+summary = "근로소득공제 5구간(70%/40%/15%/5%/2%), 한도 2,000만원"
+statute = "소법 §47"
+pages = ["p94", "p214"]
+status = "sourced"
+[rule.value]
+limit = 20_000_000
+brackets = [
+  { over = 0, base = 0, rate = "0.70" },
+  { over = 5_000_000, base = 3_500_000, rate = "0.40" },
+  { over = 15_000_000, base = 7_500_000, rate = "0.15" },
+  { over = 45_000_000, base = 12_000_000, rate = "0.05" },
+  { over = 100_000_000, base = 14_750_000, rate = "0.02" },
+]
+
+[[rule]]
+id = "2025.base.tax_rate"
+year = 2025
+group = "base"
+summary = "기본세율 8구간(6%~45%)"
+statute = ""
+pages = ["PDF 6쪽"]
+status = "todo"
+todo = "TODO(확인 필요): 책자에 조문 표기가 없음(소법 §55로 보이나 원문 대조 전)"
+[rule.value]
+brackets = [
+  { over = 0, base = 0, rate = "0.06" },
+  { over = 14_000_000, base = 840_000, rate = "0.15" },
+  { over = 50_000_000, base = 6_240_000, rate = "0.24" },
+  { over = 88_000_000, base = 15_360_000, rate = "0.35" },
+  { over = 150_000_000, base = 37_060_000, rate = "0.38" },
+  { over = 300_000_000, base = 94_060_000, rate = "0.40" },
+  { over = 500_000_000, base = 174_060_000, rate = "0.42" },
+  { over = 1_000_000_000, base = 384_060_000, rate = "0.45" },
+]
+
+[[rule]]
+id = "2025.base.earned_income_tax_credit"
+year = 2025
+group = "base"
+summary = "근로소득세액공제: 산출세액 130만원 이하 55%, 초과분 30%"
+statute = "소법 §59"
+pages = ["p162"]
+status = "sourced"
+[rule.value]
+# 기준 금액은 산출세액
+brackets = [
+  { over = 0, base = 0, rate = "0.55" },
+  { over = 1_300_000, base = 715_000, rate = "0.30" },
+]
+
+[[rule]]
+id = "2025.base.earned_income_tax_credit.limit"
+year = 2025
+group = "base"
+summary = "근로소득세액공제 한도: 총급여 구간별 74만/66만/50만/20만원"
+statute = "소법 §59"
+pages = ["p162"]
+status = "sourced"
+[rule.value]
+# 기준 금액은 총급여. 한도 = max(floor, base - (총급여 - over) × slope)
+segments = [
+  { over = 0, base = 740_000, slope = "0.0", floor = 740_000 },
+  { over = 33_000_000, base = 740_000, slope = "0.008", floor = 660_000 },
+  { over = 70_000_000, base = 660_000, slope = "0.5", floor = 500_000 },
+  { over = 120_000_000, base = 500_000, slope = "0.5", floor = 200_000 },
+]
+
+[[rule]]
+id = "2025.base.combined_deduction_limit"
+year = 2025
+group = "base"
+summary = "소득공제 종합한도 2,500만원(5그룹 중 카드 소득공제가 대상)"
+statute = "조특법 §132의2"
+pages = ["p147"]
+status = "sourced"
+[rule.value]
+limit = 25_000_000
+
+# ── 부양가족(인적공제) ─────────────────────────────────────────
+
+[[rule]]
+id = "2025.dependent.basic"
+year = 2025
+group = "dependent"
+summary = "기본공제 1명당 150만원, 소득요건 연 100만원(근로소득만 있으면 총급여 500만원) 이하"
+statute = "소법 §50"
+pages = ["p95", "p96", "p102"]
+status = "sourced"
+[rule.value]
+amount = 1_500_000
+income_limit = 1_000_000
+wage_only_gross_limit = 5_000_000
+
+[[rule]]
+id = "2025.dependent.additional.elderly"
+year = 2025
+group = "dependent"
+summary = "경로우대 추가공제: 70세 이상 1명당 100만원"
+statute = "소법 §51"
+pages = ["p95", "p97"]
+status = "sourced"
+[rule.value]
+amount = 1_000_000
+min_age = 70
+
+[[rule]]
+id = "2025.dependent.additional.disabled"
+year = 2025
+group = "dependent"
+summary = "장애인 추가공제: 1명당 200만원"
+statute = "소법 §51"
+pages = ["p95", "p97"]
+status = "sourced"
+[rule.value]
+amount = 2_000_000
+
+[[rule]]
+id = "2025.dependent.additional.woman"
+year = 2025
+group = "dependent"
+summary = "부녀자 추가공제: 종합소득금액 3천만원 이하 여성 50만원"
+statute = "소법 §51"
+pages = ["p95", "p97", "p99"]
+status = "sourced"
+[rule.value]
+amount = 500_000
+income_limit = 30_000_000
+
+[[rule]]
+id = "2025.dependent.additional.single_parent"
+year = 2025
+group = "dependent"
+summary = "한부모 추가공제 100만원, 부녀자공제와 중복이면 한부모 우선"
+statute = "소법 §51"
+pages = ["p95", "p97", "p99"]
+status = "sourced"
+[rule.value]
+amount = 1_000_000
+excludes = "2025.dependent.additional.woman"
+
+[[rule]]
+id = "2025.dependent.judgment_date"
+year = 2025
+group = "dependent"
+summary = "공제대상 판정은 12/31 현재, 사망·치유자는 그 전날. 나이는 연중 하루라도 해당하면 인정"
+statute = "소법 §53"
+pages = ["p99", "p100"]
+status = "sourced"
+[rule.value]
+month_day = "12-31"
+deceased_or_cured = "day_before"
+age = "any_day_in_year"
+
+[[rule]]
+id = "2025.dependent.double_claim"
+year = 2025
+group = "dependent"
+summary = "둘 이상 거주자의 공제대상 가족이면 그중 1명에게만"
+statute = "소령 §106"
+pages = ["p100"]
+status = "sourced"
+[rule.value]
+max_claimants = 1
+
+# ── 자녀세액공제 ───────────────────────────────────────────────
+
+[[rule]]
+id = "2025.child.credit.base"
+year = 2025
+group = "child"
+summary = "8세 이상 자녀 1명 25만, 2명 55만, 3명 이상 55만원 + 2명 초과 1명당 40만원"
+statute = "소법 §59의2"
+pages = ["p164", "PDF 6쪽"]
+status = "todo"
+todo = "TODO(확인 필요): p217 괄호는 1명당 30만원으로 적혀 있음. 소법 §59의2 원문 대조 전까지 p164 값"
+[rule.value]
+min_age = 8
+one = 250_000
+two = 550_000
+extra_per_child_over_two = 400_000
+
+[[rule]]
+id = "2025.child.credit.birth"
+year = 2025
+group = "child"
+summary = "출산·입양 첫째 30만, 둘째 50만, 셋째 이상 70만원"
+statute = "소법 §59의2"
+pages = ["p164"]
+status = "sourced"
+[rule.value]
+first = 300_000
+second = 500_000
+third_or_more = 700_000
+
+# ── 의료비 ─────────────────────────────────────────────────────
+
+[[rule]]
+id = "2025.medical.threshold"
+year = 2025
+group = "medical"
+summary = "의료비는 총급여 3% 초과분부터"
+statute = "소법 §59의4 ②"
+pages = ["p173"]
+status = "sourced"
+[rule.value]
+gross_rate = "0.03"
+
+[[rule]]
+id = "2025.medical.rate"
+year = 2025
+group = "medical"
+summary = "의료비 공제율 15%, 미숙아·선천성이상아 20%, 난임시술비 30%"
+statute = "소법 §59의4 ②"
+pages = ["p173"]
+status = "sourced"
+[rule.value]
+general = "0.15"
+premature_congenital = "0.20"
+infertility = "0.30"
+
+[[rule]]
+id = "2025.medical.limit.others"
+year = 2025
+group = "medical"
+summary = "그 외 부양가족 연 700만원 한도, 본인·65세 이상·6세 이하·장애인 등은 한도 없음"
+statute = "소법 §59의4 ②"
+pages = ["p169", "p173"]
+status = "sourced"
+[rule.value]
+limit = 7_000_000
+unlimited = [
+  "self",
+  "age_65_plus",
+  "age_6_or_under",
+  "disabled",
+  "premature_congenital",
+  "health_insurance_special_case",
+  "infertility",
+]
+
+[[rule]]
+id = "2025.medical.sublimit"
+year = 2025
+group = "medical"
+summary = "안경 1인당 50만원, 산후조리원 출산 1회당 200만원"
+statute = "소법 §59의4 ②"
+pages = ["p169", "PDF 6쪽"]
+status = "todo"
+todo = "TODO(확인 필요): 세부 한도의 시행령 조문 확인 전"
+[rule.value]
+glasses_per_person = 500_000
+postnatal_care_per_birth = 2_000_000
+
+[[rule]]
+id = "2025.medical.couple_rule"
+year = 2025
+group = "medical"
+summary = "맞벌이 부부: 부양가족 의료비는 그 가족을 기본공제 받은 쪽이 지출한 것만 공제"
+statute = "재소득-649 (2006.10.24.)"
+pages = ["p177"]
+status = "sourced"
+[rule.value]
+eligible_payer = "basic_deduction_claimant"
+
+# ── 교육비 ─────────────────────────────────────────────────────
+
+[[rule]]
+id = "2025.education.rate"
+year = 2025
+group = "education"
+summary = "교육비 공제율 15%"
+statute = "소법 §59의4 ③"
+pages = ["p169", "p178"]
+status = "sourced"
+[rule.value]
+rate = "0.15"
+
+[[rule]]
+id = "2025.education.limit"
+year = 2025
+group = "education"
+summary = "취학 전·초중고 1명당 300만, 대학생 900만원, 본인·장애인 한도 없음"
+statute = "소법 §59의4 ③"
+pages = ["p169", "p178"]
+status = "sourced"
+[rule.value]
+preschool = 3_000_000
+school = 3_000_000
+university = 9_000_000
+unlimited = ["self", "disabled_rehab"]
+
+[[rule]]
+id = "2025.education.sublimit"
+year = 2025
+group = "education"
+summary = "체험학습비 연 30만원, 교복 중고생 연 50만원"
+statute = "소법 §59의4 ③"
+pages = ["p169", "p178"]
+status = "sourced"
+[rule.value]
+field_trip_per_year = 300_000
+uniform_middle_high_per_year = 500_000
+
+# ── 신용카드 등 ────────────────────────────────────────────────
+
+[[rule]]
+id = "2025.card.threshold"
+year = 2025
+group = "card"
+summary = "카드 등 사용금액이 총급여 25%를 넘는 부분부터"
+statute = "조특법 §126의2"
+pages = ["p132"]
+status = "sourced"
+[rule.value]
+gross_rate = "0.25"
+
+[[rule]]
+id = "2025.card.rate"
+year = 2025
+group = "card"
+summary = "신용 15%, 현금영수증·체크 30%, 문화체육(총급여 7천만원 이하) 30%, 전통시장 40%, 대중교통 40%"
+statute = "조특법 §126의2"
+pages = ["p132"]
+status = "sourced"
+[rule.value]
+credit = "0.15"
+cash_debit = "0.30"
+culture = "0.30"
+culture_gross_limit = 70_000_000
+market = "0.40"
+transit = "0.40"
+
+[[rule]]
+id = "2025.card.min_usage_order"
+year = 2025
+group = "card"
+summary = "최저사용금액은 신용카드분 → 현금·체크·문화체육 → 전통시장·대중교통 순서로 채운다(⑥ 계산식)"
+statute = "조특법 §126의2"
+pages = ["p133"]
+status = "sourced"
+[rule.value]
+order = ["credit", "cash_debit_culture", "market_transit"]
+
+[[rule]]
+id = "2025.card.limit"
+year = 2025
+group = "card"
+summary = "기본 한도: 총급여 7천만원 이하 300만원, 초과 250만원"
+statute = "조특법 §126의2"
+pages = ["p132"]
+status = "sourced"
+[rule.value]
+gross_split = 70_000_000
+at_or_below = 3_000_000
+above = 2_500_000
+
+[[rule]]
+id = "2025.card.additional_limit"
+year = 2025
+group = "card"
+summary = "추가 한도 300만원(총급여 7천만원 초과 200만원, 문화체육 제외)"
+statute = "조특법 §126의2"
+pages = ["p133"]
+status = "sourced"
+[rule.value]
+gross_split = 70_000_000
+at_or_below = 3_000_000
+above = 2_000_000
+culture_excluded_above = true
