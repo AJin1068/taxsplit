@@ -5,22 +5,23 @@
 - 값은 책자에 인쇄된 숫자를 그대로 옮겼습니다. 책자에 없는 값은 계산해서 채우지 않았습니다. 만원 단위 표기(예: 1,032만원)만 원 단위 정수(10320000)로 바꿨습니다.
 - 쪽수는 **인쇄 쪽**입니다. PDF 쪽 = 인쇄 쪽 + 18 (예: 인쇄 95쪽 = PDF 113쪽).
 - 책자 PDF는 레포에 넣지 않습니다(재배포 가능 여부 확인 필요). 원본은 프로젝트 파일 `taxsplit-docs/sources/`에 있습니다.
-- 전부 `status: draft`입니다. 사람이 책자와 대조한 뒤 `status: confirmed`로 바꾸고 `review.reviewer`, `review.date`를 채웁니다. PR 4·5 테스트는 `confirmed`만 씁니다.
+- 2026-11-16 AJin1068이 10건 모두 **마지막 답만** 책자와 대조해 `confirmed`로 바꿨습니다(`review.scope`). 중간값·입력은 사람이 대조하지 않았으므로, PR 4·5 테스트에서 중간값만 어긋나면 이 파일부터 의심합니다.
+- 처음 만들 때는 `status: draft`로 두고, 사람이 책자와 대조한 뒤 `status: confirmed`로 바꾸고 `review.reviewer`, `review.date`를 채웁니다. PR 4·5 테스트는 `confirmed`만 씁니다.
 
 ## 사례 목록
 
 | 파일 | 인쇄 쪽 | 종류 | 그룹 | 마지막 기대값 단계 | 책자 답 | status |
 | --- | --- | --- | --- | --- | --- | --- |
-| `household-p212-comprehensive.json` | 212~219 | 가구 | 기본 흐름·부양가족·자녀·의료비·교육비·카드 (+5그룹 밖) | `determined_tax` 240,232원 / `refund_or_payment` △759,768원 | 결정세액 240,232원 | draft |
-| `item-p095-earned-income.json` | 95 | 항목 | 기본 흐름 | `earned_income_deduction`, `earned_income_amount` | 1,032만원 / 2,348만원 | draft |
-| `item-p162-earned-income-credit-1.json` | 162 | 항목 | 기본 흐름 | `earned_income_credit` | 49만 5천원 | draft |
-| `item-p162-earned-income-credit-2.json` | 162 | 항목 | 기본 흐름 | `earned_income_credit` | 66만원 | draft |
-| `item-p097-basic-deduction.json` | 97 | 항목 | 부양가족 | `basic_deduction_total` | 1,050만원 | draft |
-| `item-p099-disabled-child.json` | 99 | 항목 | 부양가족 | `basic_deduction_person`, `additional_deduction_disabled` | 150만원 / 200만원 | draft |
-| `item-p100-marriage-death.json` | 100 | 항목 | 부양가족 | 문1 `spouse_basic_deduction_eligible`, 문2 `personal_deduction_person_total` | 가능 / 250만원 | draft |
-| `item-p177-medical.json` | 177 | 항목 | 의료비 | `medical_credit` | 1,335천원 | draft |
-| `item-p185-education.json` | 185 | 항목 | 교육비 | `education_credit` | 4,305,000원 | draft |
-| `item-p137-card.json` | 137~138 | 항목 | 카드 | `card_deduction` | 530만원 | draft |
+| `household-p212-comprehensive.json` | 212~219 | 가구 | 기본 흐름·부양가족·자녀·의료비·교육비·카드 (+5그룹 밖) | `determined_tax` 240,232원 / `refund_or_payment` △759,768원 | 결정세액 240,232원 | confirmed |
+| `item-p095-earned-income.json` | 95 | 항목 | 기본 흐름 | `earned_income_deduction`, `earned_income_amount` | 1,032만원 / 2,348만원 | confirmed |
+| `item-p162-earned-income-credit-1.json` | 162 | 항목 | 기본 흐름 | `earned_income_credit` | 49만 5천원 | confirmed |
+| `item-p162-earned-income-credit-2.json` | 162 | 항목 | 기본 흐름 | `earned_income_credit` | 66만원 | confirmed |
+| `item-p097-basic-deduction.json` | 97 | 항목 | 부양가족 | `basic_deduction_total` | 1,050만원 | confirmed |
+| `item-p099-disabled-child.json` | 99 | 항목 | 부양가족 | `basic_deduction_person`, `additional_deduction_disabled` | 150만원 / 200만원 | confirmed |
+| `item-p100-marriage-death.json` | 100 | 항목 | 부양가족 | 문1 `spouse_basic_deduction_eligible`, 문2 `personal_deduction_person_total` | 가능 / 250만원 | confirmed |
+| `item-p177-medical.json` | 177 | 항목 | 의료비 | `medical_credit` | 1,335천원 | confirmed |
+| `item-p185-education.json` | 185 | 항목 | 교육비 | `education_credit` | 4,305,000원 | confirmed |
+| `item-p137-card.json` | 137~138 | 항목 | 카드 | `card_deduction` | 530만원 | confirmed |
 
 합계 10건 (가구 1 + 항목 9).
 
@@ -43,7 +44,7 @@
 {
   "id": "nts2025-p177-medical",       // 고유 id
   "status": "draft",                  // draft | confirmed
-  "review": {"reviewer": null, "date": null},  // confirmed로 바꿀 때 채움
+  "review": {"reviewer": null, "date": null},  // confirmed로 바꿀 때 채움 (scope: 무엇을 대조했나, 선택)
   "tax_year": 2025,
   "source": {"book": "...", "printed_pages": [177], "title": "책자의 사례 제목"},
   "kind": "item",                     // household(가구 전체) | item(항목)

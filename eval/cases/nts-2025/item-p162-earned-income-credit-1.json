@@ -1,7 +1,7 @@
 {
   "id": "nts2025-p162-earned-income-credit-1",
-  "status": "draft",
-  "review": {"reviewer": null, "date": null},
+  "status": "confirmed",
+  "review": {"reviewer": "AJin1068", "date": "2026-11-16", "scope": "마지막 답만 책자와 대조 (중간값·입력은 대조 안 함)"},
   "tax_year": 2025,
   "source": {
     "book": "2025년 원천징수의무자를 위한 연말정산 신고안내 (국세청, 2025.12, 정오표 2026.02.03)",
