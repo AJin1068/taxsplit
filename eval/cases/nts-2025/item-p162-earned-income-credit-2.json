@@ -1,0 +1,21 @@
+{
+  "id": "nts2025-p162-earned-income-credit-2",
+  "status": "confirmed",
+  "review": {"reviewer": "AJin1068", "date": "2026-11-16", "scope": "마지막 답만 책자와 대조 (중간값·입력은 대조 안 함)"},
+  "tax_year": 2025,
+  "source": {
+    "book": "2025년 원천징수의무자를 위한 연말정산 신고안내 (국세청, 2025.12, 정오표 2026.02.03)",
+    "printed_pages": [162],
+    "title": "근로소득세액공제(소법 §59) 사례 ②"
+  },
+  "kind": "item",
+  "groups": ["basic_flow"],
+  "question": "근로소득 산출세액 200만원, 총급여액 6천만원인 경우 근로소득 세액공제 금액은?",
+  "inputs": {"computed_tax": 2000000, "gross_salary": 60000000},
+  "expected": [
+    {"stage": "earned_income_credit_before_limit", "value": 925000, "page": 162, "booklet_text": "(130만원 × 55%) + {(200만원 - 130만원) × 30%} = 92만 5천원"},
+    {"stage": "earned_income_credit_limit", "value": 660000, "page": 162, "booklet_text": "공제한도가 66만원, Max[66만원, 74만원 - (총급여액 - 3,300만원) × 0.008]"},
+    {"stage": "earned_income_credit", "value": 660000, "page": 162, "booklet_text": "66만원이 세액공제금액임"}
+  ],
+  "notes": []
+}
