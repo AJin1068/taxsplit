@@ -15,9 +15,18 @@
 
 ## 개발 흐름
 
-기획 → 개발 → 검증 → merge 순서로 PR 하나가 지나갑니다. 기획은 Claude 앱, 개발은 IDE(Claude Code `/next-issue`), merge는 사람만 합니다. 검증 스레드는 정답 만들기(`eval/`)와 점수가 나오는 PR에만 붙습니다. 역할 규칙은 [CLAUDE.md](CLAUDE.md) "역할"이 기준입니다.
+기획 → 개발 → 검증 → merge 순서로 PR 하나가 지나갑니다. 기획은 Claude 앱, 개발은 IDE(Claude Code `/next-issue`), 검증은 GitHub Action, merge는 사람이 합니다. 세션 사이에 내용을 옮기지 않고, 맥락은 Issue·PR 코멘트·문서에 둡니다. 역할 규칙은 [CLAUDE.md](CLAUDE.md) "역할"과 [ADR-0008](docs/adr/0008-verify-by-action.md)이 기준입니다.
 
-![개발 흐름](docs/dev-flow.png)
+```mermaid
+flowchart LR
+  P["기획 (Claude 앱)<br/>Issue 쓰기, ready·needs-verify 라벨"] --> D["개발 (IDE /next-issue)<br/>계획 → 사람 승인 → 구현 → PR"]
+  D --> V["검증 Action<br/>새 문맥으로 [검증] 코멘트 하나<br/>needs-verify면 점수 재측정"]
+  V -->|다음 PR에서 할 일| I["해당 PR N Issue에 코멘트"]
+  I --> P
+  V --> H{"사람<br/>코멘트 보고 merge"}
+  D -. "새 커밋마다 다시 검증" .-> V
+  E["정답 만들기 (Claude 앱)<br/>eval/ 브랜치 PR"] --> V
+```
 
 ## 목표
 
@@ -36,6 +45,7 @@
 | [0005](docs/adr/0005-guardrails-by-machine.md) | 벽은 기계로 지킨다 | 채점 코드·정답은 CI가 보호 |
 | [0006](docs/adr/0006-model-roles.md) | Claude 기본, GPT는 채점만 | 답을 만드는 쪽은 Claude, 채점하는 쪽만 다른 회사 |
 | [0007](docs/adr/0007-frontend-react.md) | 화면은 React | v1 화면 기능 4개로 제한 |
+| [0008](docs/adr/0008-verify-by-action.md) | 검증은 GitHub Action | 모든 PR에 [검증] 코멘트 하나, 맥락은 레포에 |
 
 전체 목록과 작성 규칙: [docs/adr/README.md](docs/adr/README.md)
 
