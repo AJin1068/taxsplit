@@ -32,6 +32,8 @@ expect() {
 # case_branch <이름>: base(main)에서 새 브랜치를 만든다
 case_branch() { git checkout -q main && git checkout -q -B "$1"; }
 commit() { git add -A && git commit -q -m "$1"; }
+# sed -i는 맥(BSD)과 리눅스(GNU)의 문법이 달라, 임시 파일로 바꿔 끼운다.
+sed_i() { sed "$1" "$2" >"$2.tmp" && mv "$2.tmp" "$2"; }
 
 # 1. 테스트·ruff
 case_branch c1
@@ -61,9 +63,9 @@ case_branch c3d; printf '\n\n@pytest.mark.skipif(True, reason="x")\ndef test_y()
 expect "3 skip·삭제" "새 skipif 추가" block check_skips main
 case_branch c3e; printf '\n\ndef test_z():\n    pytest.skip("나중에")\n' >>agent/tests/test_a.py; commit skipcall
 expect "3 skip·삭제" "새 pytest.skip( 호출" block check_skips main
-case_branch c3f; sed -i '' '/def test_keep/,$d' agent/tests/test_a.py; commit delete
+case_branch c3f; sed_i '/def test_keep/,$d' agent/tests/test_a.py; commit delete
 expect "3 skip·삭제" "정상 테스트 함수 삭제" block check_skips main
-case_branch c3g; sed -i '' 's/assert 1/assert 1 == 1/' agent/tests/test_a.py; commit edit
+case_branch c3g; sed_i 's/assert 1/assert 1 == 1/' agent/tests/test_a.py; commit edit
 expect "3 skip·삭제" "테스트 본문만 고침" pass check_skips main
 case_branch c3h; echo "xfail로 바꾸지 않는다" >>docs/a.md; commit doc
 expect "3 skip·삭제" "문서에 xfail 낱말" pass check_skips main

@@ -85,6 +85,8 @@ while read -r lane lane_prs; do
   echo "[$(date +%H:%M:%S)] $lane 시작: $lane_prs (기록: $RUN_DIR/$lane.log)"
 done <<<"$LANES"
 for p in $pids; do wait "$p"; done
+# 줄 스크립트가 오류로 죽어 결과 파일이 없는 Issue에 이유를 남긴다 (lib-lane.sh).
+fill_crashed_lanes "$RUN_DIR"
 
 write_summary "$RUN_DIR" "${PRS[@]}"
 echo "요약: $RUN_DIR/summary.md"

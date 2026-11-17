@@ -119,6 +119,19 @@ GOAL_TIMEOUT_SEC=1 bash "$RUNNER" 18 >/dev/null 2>&1
 check "시간 상한" "두 번 다 끊기면 failed, 이유에 시간 상한" \
   bash -c "[[ \$(jq -r .status '$GOAL_RUNS_DIR/pr18.result.json') == failed ]] && jq -r .reason '$GOAL_RUNS_DIR/pr18.result.json' | grep -q '시간 상한'"
 
+# 8) 줄 스크립트가 중간에 죽음: 결과 파일과 상태판에 오류가 남고, 다른 줄은 계속
+scenario h
+add_issue 119 19 없음 agent/h/; add_issue 120 20 19 agent/h/; add_issue 121 21 없음 docs/h/
+mode 19 crash; mode 20 pass; mode 21 slow
+bash "$RUNNER" 19 20 21 >/dev/null 2>&1
+check "줄 오류" "죽은 줄의 PR 19는 failed, 이유에 '줄 스크립트 오류'" \
+  bash -c "[[ \$(jq -r .status '$GOAL_RUNS_DIR/pr19.result.json') == failed ]] && jq -r .reason '$GOAL_RUNS_DIR/pr19.result.json' | grep -q '줄 스크립트 오류'"
+check "줄 오류" "같은 줄 뒤 PR 20은 '같은 줄 앞 Issue가 failed'로 시작 안 함 (호출 0번)" \
+  eq "$(res 20 .status) $(calls 20)" "blocked 0"
+check "줄 오류" "다른 줄의 PR 21은 끝까지 돌아 passed" eq "$(res 21 .status)" passed
+check "줄 오류" "summary.md에 PR 19가 failed로 나옴" grep -q "| 19 | #119 | failed" "$GOAL_RUNS_DIR/summary.md"
+check "줄 오류" "status.md에 '끝(오류)'가 보임" grep -q "PR 19 · 끝(오류)" "$GOAL_RUNS_DIR/status.md"
+
 echo
 echo "맞음 $ok / 틀림 $bad"
 (( bad == 0 ))
