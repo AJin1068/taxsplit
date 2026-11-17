@@ -57,7 +57,7 @@ run_issue() {
       R_REASON="조건문이 4,000자를 넘음 (${chars}자)"; break
     fi
     log="$RUN_DIR/pr$pr.jsonl"; (( attempt == 2 )) && log="$RUN_DIR/pr$pr.retry.jsonl"
-    echo "[$(date +%H:%M:%S)] PR $pr (#$R_ISSUE) goal $attempt회차, base ${R_BASE#origin/}"
+    echo "[$(date +%H:%M:%S)] PR $pr (#$R_ISSUE) goal ${attempt}회차, base ${R_BASE#origin/}"
     if (( attempt == 1 )); then status_set "$pr" "goal 실행 중"
     else status_set "$pr" "재시도 (goal 2회차 실행 중)"; fi
     run_goal "$cond" "$log" "$LIMIT_SEC"
@@ -106,4 +106,39 @@ run_lane() {
     prev_branch=$R_BRANCH; prev_pr=$PR_NUMBER
   done
   echo "[$(date +%H:%M:%S)] $lane 끝"
+}
+
+# 줄 스크립트가 중간에 죽으면(예: 맥북 bash 3.2 문법 오류) 그 줄의 Issue에 결과 파일이 안 남는다.
+# 모든 줄이 끝난 뒤 불러, 결과가 없는 Issue에 이유를 남긴다. 앞 Issue가 정상으로 멈춘 경우
+# (failed·blocked 결과 파일이 있음)는 그대로 둔다. 요약의 "앞 Issue에서 멈춤"이 맞기 때문이다.
+# $1: 실행 폴더 (lanes.tsv: 줄 이름, 작업 폴더, PR 번호들)
+fill_crashed_lanes() {
+  local dir=$1 lane wt prs pr f prev err
+  [[ -f $dir/lanes.tsv ]] || return 0
+  while IFS=$'\t' read -r lane wt prs; do
+    [[ -n $lane ]] || continue
+    prev=passed; err=""
+    for pr in $prs; do
+      f="$dir/pr$pr.result.json"
+      if [[ -f $f ]]; then prev=$(jq -r .status "$f"); continue; fi
+      [[ $prev == passed || $prev == crashed ]] || break
+      R_PR=$pr; R_CHECKS=""; R_MINUTES=0; R_TURNS=0; R_RETRIED=false
+      R_URL=""; R_BRANCH=""; R_BASE=""; R_VERDICT=""
+      R_ISSUE=$(jq -r --arg pr "$pr" '.[] | select(.pr == $pr) | .issue' "$dir/issues.json" 2>/dev/null)
+      [[ $R_ISSUE =~ ^[0-9]+$ ]] || R_ISSUE=0
+      if [[ $prev == passed ]]; then
+        # bash 오류 줄("…: line 60: …")을 먼저 찾고, 없으면 기록의 마지막 줄
+        err=$(grep -E ': line [0-9]+: ' "$dir/$lane.log" 2>/dev/null | tail -1)
+        [[ -n $err ]] || err=$(grep -v '^[[:space:]]*$' "$dir/$lane.log" 2>/dev/null | tail -1)
+        R_STATUS=failed
+        R_REASON="줄 스크립트 오류로 끝남 ($lane.log): ${err:-기록 없음}"
+        STATUS_LANE=$lane; PR_URL=""; STATUS_CHECKS=""
+        status_set "$pr" "끝(오류): 줄 스크립트 오류"
+        prev=crashed
+      else
+        R_STATUS=blocked; R_REASON="시작 안 함: 같은 줄 앞 Issue가 failed (줄 스크립트 오류)"
+      fi
+      write_result "$f"
+    done
+  done <"$dir/lanes.tsv"
 }

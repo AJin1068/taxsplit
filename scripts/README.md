@@ -56,7 +56,8 @@ scripts/goal-run.sh --minutes 90 --max-lanes 3 4 5 6 7
 ```bash
 bash scripts/goal/test-checks.sh   # 검문 6항목, 통과·걸림 경우별
 bash scripts/goal/test-lanes.sh    # 줄 나누기
-bash scripts/goal/test-chain.sh    # 처음부터 끝까지 (재시도, 멈춤, 동시 실행, status.md)
+bash scripts/goal/test-chain.sh    # 처음부터 끝까지 (재시도, 멈춤, 동시 실행, status.md, 줄 오류)
+bash scripts/goal/test-scripts.sh  # 셸 함정: 변수 바로 뒤 한글 (맥북 bash 3.2에서 죽음)
 ```
 
 출처: Remote Control https://code.claude.com/docs/en/remote-control , 모바일 https://code.claude.com/docs/en/mobile , `/goal` https://code.claude.com/docs/en/goal , 비대화 실행 https://code.claude.com/docs/en/headless
