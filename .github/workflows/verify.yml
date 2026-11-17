@@ -1,0 +1,88 @@
+name: verify
+
+# 모든 PR을 새 문맥의 Claude가 검증하고 [검증] 코멘트 하나를 남긴다 (ADR-0008).
+# 할 일과 형식은 .claude/commands/verify-pr.md 한 곳에 있다.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+
+# 최소 권한: 코드 push·merge·승인은 할 수 없다.
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+# 같은 PR에 커밋이 연달아 오면 앞의 검증은 취소하고 마지막 것만 남긴다.
+concurrency:
+  group: verify-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: verify ([검증] 코멘트)
+    # 라벨 이벤트는 needs-verify가 붙었을 때만 다시 돈다.
+    if: github.event.action != 'labeled' || github.event.label.name == 'needs-verify'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      NEEDS_VERIFY: ${{ contains(github.event.pull_request.labels.*.name, 'needs-verify') }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      # merge 미리보기 커밋이 아니라 PR 브랜치의 마지막 커밋을 받는다.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v6
+
+      # 검증 지시서와 올리기 스크립트는 main에 있는 것을 쓴다.
+      # PR이 자기 검증 기준을 고쳐 통과하지 못하게 하려는 것이다. main에 아직 없을 때만 PR 것을 쓴다.
+      - name: 검증 장치를 main에서 가져오기
+        run: |
+          mkdir -p .verify-out
+          for pair in ".claude/commands/verify-pr.md:instructions.md" ".github/scripts/post_verify.py:post_verify.py"; do
+            src="${pair%%:*}"; dst=".verify-out/${pair##*:}"
+            if git show "origin/main:$src" > "$dst" 2>/dev/null; then
+              echo "main의 $src 사용"
+            else
+              cp "$src" "$dst"; echo "::warning::main에 $src 가 없어 PR 브랜치 것을 사용"
+            fi
+          done
+          echo '[]' > .verify-out/followups.json
+
+      # 테스트·ruff는 모델이 아니라 이 단계가 돌린다. 결과(실패 포함)를 파일로 넘긴다.
+      - name: 테스트·ruff 다시 돌리기
+        working-directory: agent
+        run: |
+          out=../.verify-out/checks.txt
+          : > "$out"
+          for cmd in "uv sync --frozen" "uv run pytest -q" "uv run ruff check ." "uv run ruff format --check ."; do
+            echo "\$ $cmd" >> "$out"
+            if $cmd >> "$out" 2>&1; then echo "→ 종료 코드 0" >> "$out"; else echo "→ 종료 코드 $?" >> "$out"; fi
+            echo >> "$out"
+          done
+          tail -n 40 "$out"
+
+      - name: Claude로 검증
+        uses: anthropics/claude-code-action@v1.0.276
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          prompt: |
+            `.verify-out/instructions.md`를 읽고 그 지시를 그대로 따른다.
+            - 대상 GitHub PR 번호: ${{ env.PR_NUMBER }}
+            - 기준 커밋: ${{ env.HEAD_SHA }}
+            - needs-verify 라벨: ${{ env.NEEDS_VERIFY }}
+            - 테스트·ruff 결과는 `.verify-out/checks.txt`에 이미 있다. 다시 돌리지 말고 이 파일을 근거로 쓴다.
+            - 지금은 GitHub Action 안이다. 결과는 `.verify-out/comment.md`와 `.verify-out/followups.json`에 쓰고 끝낸다. 직접 코멘트를 달지 않는다.
+          claude_args: >-
+            --max-turns 80
+            --allowedTools "Read,Glob,Grep,Write(.verify-out/**),Edit(.verify-out/**),Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh issue view:*),Bash(gh issue list:*)"
+            --disallowedTools "Read(./.env),Read(./agent/.env)"
+
+      # 올리는 일은 모델이 아니라 이 단계가 한다. 같은 PR에는 코멘트가 늘 하나만 남는다.
+      - name: '[검증] 코멘트 올리기'
+        run: python3 .verify-out/post_verify.py --pr "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --dir .verify-out

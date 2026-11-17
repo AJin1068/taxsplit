@@ -9,5 +9,6 @@
 | [0005](0005-guardrails-by-machine.md) | 개발 과정의 벽은 역할 수가 아니라 기계로 지킨다 | 승인됨 |
 | [0006](0006-model-roles.md) | Claude를 기본 모델로, GPT는 채점(judge)에만 쓴다 | 승인됨 |
 | [0007](0007-frontend-react.md) | 화면은 React로 만든다 | 승인됨 |
+| [0008](0008-verify-by-action.md) | 검증은 GitHub Action이 하고, 맥락은 레포에 둔다 | 승인됨 |
 
 새 결정은 다음 번호로 파일을 추가하고, 바뀐 결정은 지우지 않고 상태를 "대체됨 (ADR-000N)"으로 바꾼다.
