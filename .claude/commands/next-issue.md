@@ -9,7 +9,7 @@ argument-hint: "[PR 번호] (예: 4, 14a. 생략하면 ready 라벨이 붙은 �
 (비어 있으면 `ready` 라벨이 붙은 열린 Issue 중 제목의 "PR N" 번호가 가장 작은 것을 고른다. Issue 번호(`#13`)가 아니라 제목의 PR 번호로 고른다. 번호가 같으면 1 < 1c < 1d < 1e < 2, 14a < 14b 순서다. `ready` Issue가 없으면 그렇게 말하고 멈춘다. 번호를 직접 줬는데 `ready`가 아니면, 비어 있는 칸(범위·하지 않을 것·완료 기준·정해진 결정·참고 문서)을 알려 주고 멈춘다. Issue를 채우는 건 기획(Claude 앱)이 한다.)
 
 0. `git checkout main && git pull origin main`으로 최신 `main`을 받는다. 커밋 안 된 변경이 있으면 멈추고 알린다.
-1. `gh issue list --state open --label ready`로 대상을 고른다. `gh issue view <번호> --comments`로 본문과 코멘트를 읽는다. Issue 본문의 "정해진 결정"과 코멘트를 같은 무게로 따른다. Issue에 `needs-verify` 라벨이 붙었는지 적어 둔다.
+1. `gh issue list --state open --label ready`로 대상을 고른다. `gh issue view <번호> --json title,body,labels,comments`로 본문과 코멘트를 읽는다(`--comments`만 쓰면 빈 결과가 나올 때가 있다). Issue 본문의 "정해진 결정"과 코멘트를 같은 무게로 따른다. Issue에 `needs-verify` 라벨이 붙었는지 적어 둔다.
 2. CLAUDE.md, 대상 Issue의 "참고 문서"(`docs/prd.md`, `docs/design.md`, `docs/eval-plan.md`, `docs/adr/`의 해당 절), 손댈 코드를 읽는다. 직전에 merge된 PR 설명(`gh pr list --state merged --limit 3`)의 "다음에 할 것"·"확인 필요" 중 이 Issue에 걸리는 것을 확인한다. `eval/`은 읽기만 한다.
 3. 계획을 보여 주고 **승인을 기다린다.** 계획에는 바꿀 파일(빠짐없이), 접근 방법, 대안 1개와 트레이드오프, 완료 기준을 어떻게 확인할지, 사람이 정해야 할 것을 담는다. 승인 전에는 코드를 쓰지 않는다.
    - **질문은 줄인다.** Issue 본문·코멘트("정해진 결정" 포함)·문서·ADR에 답이 있으면 묻지 않고 계획에 "정해진 대로: …(출처)"로 적는다. 함수 이름, 파일 배치, 테스트 방법처럼 개발이 정할 수 있는 건 묻지 않고 계획에 적는다.

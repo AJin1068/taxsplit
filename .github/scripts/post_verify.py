@@ -134,7 +134,7 @@ def main() -> None:
                            "-q", ".nameWithOwner").strip()  # fmt: skip
 
     # 바뀐 파일 목록은 GitHub에서 직접 받는다(검증 모델의 말에 기대지 않는다).
-    changed = gh("pr", "diff", str(args.pr), "--repo", repo, "--name-only").split()
+    changed = gh("pr", "diff", str(args.pr), "--repo", repo, "--name-only").splitlines()
     body = add_guard_warning(comment_path.read_text(encoding="utf-8"), changed)
     body = with_marker(body)
 

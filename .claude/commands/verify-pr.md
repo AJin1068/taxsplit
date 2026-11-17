@@ -12,7 +12,7 @@ argument-hint: "<GitHub PR 번호> (예: 61)"
 
 - 레포: `main`과 PR 브랜치. `git diff origin/main...HEAD`로 바뀐 곳을 본다.
 - PR 설명·diff·라벨: `gh pr view <번호> --json number,title,body,labels,headRefOid,files,closingIssuesReferences`, `gh pr diff <번호>`
-- PR이 닫는 Issue의 본문·코멘트: `gh issue view <Issue 번호> --comments`
+- PR이 닫는 Issue의 본문·코멘트: `gh issue view <Issue 번호> --json title,body,labels,comments` (`--comments`만 쓰면 빈 결과가 나올 때가 있다)
 - `CLAUDE.md`, `docs/` (Issue의 "참고 문서"에 적힌 절을 먼저)
 
 읽지 않는 것: `.env`(어떤 경로든), 레포 밖 파일. `eval/`은 읽기만 한다. 홀드아웃 시나리오는 찾지 않는다.

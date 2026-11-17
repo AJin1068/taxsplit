@@ -13,8 +13,9 @@ permissions:
   issues: write
 
 # 같은 PR에 커밋이 연달아 오면 앞의 검증은 취소하고 마지막 것만 남긴다.
+# needs-verify가 아닌 라벨 이벤트는 어차피 건너뛰므로 다른 묶음에 넣는다(돌던 검증을 취소하지 않게).
 concurrency:
-  group: verify-${{ github.event.pull_request.number }}
+  group: verify-${{ github.event.pull_request.number }}-${{ (github.event.action == 'labeled' && github.event.label.name != 'needs-verify') && 'skip' || 'run' }}
   cancel-in-progress: true
 
 jobs:
