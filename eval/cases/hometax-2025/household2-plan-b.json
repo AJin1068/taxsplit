@@ -1,9 +1,10 @@
 {
   "id": "hometax2025-h2-B",
-  "status": "draft",
+  "status": "confirmed",
   "review": {
-    "reviewer": null,
-    "date": null
+    "reviewer": "AJin1068",
+    "date": "2026-11-17",
+    "scope": "AJin1068 요청으로 Claude가 confirmed로 바꿈. 값 대조는 Claude가 했음(기록표 결정세액 일치, 화면 값끼리 더하고 빼는 식 확인). 사람이 캡처와 한 줄씩 대조한 기록은 없음. 빈칸은 README '확인 필요' 참고"
   },
   "tax_year": 2025,
   "source": {
