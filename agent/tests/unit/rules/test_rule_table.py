@@ -77,7 +77,21 @@ def test_every_group_has_rules(rules):
 def test_known_todos(rules):
     # Issue #48 정해진 결정: 조문 확인 필요·책자 안 불일치는 TODO로 둔다
     todos = {r.id for r in rules.values() if r.status == "todo"}
-    assert todos == {"2025.base.tax_rate", "2025.child.credit.base", "2025.medical.sublimit"}
+    # 자녀 추가액은 법률 제20615호로 확인돼 sourced (PR #54 검증 코멘트)
+    assert todos == {"2025.base.tax_rate", "2025.medical.sublimit"}
+
+
+def test_basic_deduction_has_age_requirements(rules):
+    # 나이요건이 없으면 엔진이 "72세 어머니를 기본공제할 수 있나"를 판단할 근거가 없다
+    v = rules["2025.dependent.basic"].value
+    for key in (
+        "lineal_ascendant_min_age",
+        "lineal_descendant_max_age",
+        "sibling_max_age",
+        "sibling_min_age",
+        "disabled_no_age_limit",
+    ):
+        assert key in v, key
 
 
 def test_rates_are_decimal(rules):
