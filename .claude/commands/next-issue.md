@@ -1,12 +1,14 @@
 ---
 description: 열린 GitHub Issue에서 다음 작업(PR 번호)을 골라 계획을 보여주고 승인을 기다린다
-argument-hint: "[PR 번호] (예: 4, 14a. 생략하면 ready 라벨이 붙은 열린 Issue 중 PR 번호가 가장 작은 것)"
+argument-hint: "[PR 번호] 또는 [PR 번호들] --plan (예: 4, 14a, 4 5 6 7 --plan. 생략하면 ready 라벨이 붙은 열린 Issue 중 PR 번호가 가장 작은 것)"
 ---
 
 이 레포의 개발 세션으로 일한다. CLAUDE.md의 "작업 순서"를 그대로 따른다.
 
 대상: $ARGUMENTS
 (비어 있으면 `ready` 라벨이 붙은 열린 Issue 중 제목의 "PR N" 번호가 가장 작은 것을 고른다. Issue 번호(`#13`)가 아니라 제목의 PR 번호로 고른다. 번호가 같으면 1 < 1c < 1d < 1e < 2, 14a < 14b 순서다. `ready` Issue가 없으면 그렇게 말하고 멈춘다. 번호를 직접 줬는데 `ready`가 아니면, 비어 있는 칸(범위·하지 않을 것·완료 기준·정해진 결정·참고 문서)을 알려 주고 멈춘다. Issue를 채우는 건 기획(Claude 앱)이 한다.)
+
+`--plan`이 있으면 아래 "묶음 계획 (`--plan`)"만 하고 멈춘다.
 
 0. `git checkout main && git pull origin main`으로 최신 `main`을 받는다. 커밋 안 된 변경이 있으면 멈추고 알린다.
 1. `gh issue list --state open --label ready`로 대상을 고른다. `gh issue view <번호> --json title,body,labels,comments`로 본문과 코멘트를 읽는다(`--comments`만 쓰면 빈 결과가 나올 때가 있다). Issue 본문의 "정해진 결정"과 코멘트를 같은 무게로 따른다. Issue에 `needs-verify` 라벨이 붙었는지 적어 둔다.
@@ -19,7 +21,18 @@ argument-hint: "[PR 번호] (예: 4, 14a. 생략하면 ready 라벨이 붙은 �
    - PR을 열 때 Issue에 `needs-verify` 라벨이 있으면 PR에도 붙인다(`gh pr create ... --label needs-verify`, 이미 열었으면 `gh pr edit <PR 번호> --add-label needs-verify`). 검증 Action이 이 라벨을 보고 점수를 다시 잰다.
    - PR을 열면 검증 Action이 `[검증]` 코멘트를 단다. 판정이 "미달"이나 "조건부 통과"면 고칠 것을 보고에 적는다.
 5. 끝나면 결과를 **한국어로, 쉬운 말로** 보고한다: 무엇을 했는지, 완료 기준 결과, PR 링크, 사람이 답해야 할 질문. PR 설명과 이 보고의 "사람이 답해야 할 질문"은 CLAUDE.md "PR 설명 쓰는 법"대로 요약하지 않고 풀어 쓴다(무슨 상황인가 → 확인할 곳 → 답에 따라 달라지는 것 → 추천).
-6. PR이 merge된 뒤 다시 부르면 다음 Issue의 계획까지만 보여주고 승인을 기다린다.
+6. 다시 부르면 다음 Issue의 계획까지만 보여주고 승인을 기다린다. 앞 PR이 merge되기 전에도 그 브랜치 위에 다음 Issue를 쌓아 진행할 수 있다. merge는 여전히 사람만, 쌓인 순서대로 한다. 쌓을 때는 앞 브랜치에서 새 브랜치를 만들고 `gh pr create --base <앞 브랜치>`로 연다.
+
+## 묶음 계획 (`--plan`)
+
+계획 승인은 Issue마다가 아니라 묶음으로 한 번 한다. 표시는 사람이 붙이는 `plan-ok` 라벨이다. 개발 세션·검증 Action·스크립트는 `plan-ok`를 붙이지 않는다. 기획은 앞 PR merge를 기다리지 않고 여러 Issue를 미리 채울 수 있다. `ready`는 여전히 사람이 Issue를 보고 승인한 뒤에만 붙는다.
+
+1. 0~2단계를 PR 번호마다 한다. `ready`가 아닌 Issue는 계획하지 않고 끝 보고에 비어 있는 칸을 적는다.
+2. 앞 번호의 계획이 바꿀 것을 뒤 번호 계획의 출발점으로 본다(쌓아서 진행하므로).
+3. Issue마다 3단계와 같은 내용의 계획을 `gh issue comment <Issue 번호> --body-file <파일>`로 남긴다. 첫 줄은 `[계획] PR N`이다. 이미 `[계획]` 코멘트가 있으면 새로 달지 않고 그 코멘트를 고쳐 쓴다(`gh api -X PATCH repos/{owner}/{repo}/issues/comments/<코멘트 id> -F body=@<파일>`).
+4. 계획에 "줄 확인"을 한 줄 넣는다. Issue의 "선행 PR"·"손대는 폴더" 칸(CLAUDE.md "goal 연속 실행")이 있는지, 계획이 바꿀 파일이 손대는 폴더 안에 다 들어가는지 본다. 칸이 없거나 바꿀 파일이 밖에 있으면 "정할 것"에 적는다(칸은 기획이 채운다).
+5. 코드는 쓰지 않고 브랜치도 만들지 않는다. 끝나면 PR 번호별 `[계획]` 코멘트 링크와 "정할 것"을 한 번에 보고한다. 사람은 계획을 보고 Issue마다 `plan-ok`를 붙인다.
+6. `plan-ok`가 붙은 Issue는 `[계획]` 코멘트대로 승인된 것으로 본다. 다음에 `/next-issue <PR 번호>`로 부르면 계획을 다시 묻지 않고 4단계(구현)부터 한다. `plan-ok` 뒤에 Issue 본문이나 코멘트가 바뀌었으면 "기획이 바뀐 경우"대로 바뀐 부분만 묻는다.
 
 ## 기획이 바뀐 경우 (처음부터 다시 하지 않는다)
 

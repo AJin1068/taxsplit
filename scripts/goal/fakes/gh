@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# 시험용 gh 대역. FAKE_DIR의 JSON 파일을 돌려준다 (실제 GitHub에 접속하지 않는다).
+#   issues.json            : gh issue list / issue view
+#   pr-list-<브랜치>.json   : gh pr list --head <브랜치>  (/ 는 _ 로)
+#   pr-<번호>.json          : gh pr view <번호>
+#   merged.json            : gh pr list --state merged (merge된 PR 제목들)
+d=${FAKE_DIR:?}
+jqf="."; head=""; state=""; args=()
+while (($#)); do
+  case $1 in
+    --jq) jqf=$2; shift 2 ;;
+    --head) head=$2; shift 2 ;;
+    --state) state=$2; shift 2 ;;
+    --json|--limit) shift 2 ;;
+    *) args+=("$1"); shift ;;
+  esac
+done
+case "${args[0]} ${args[1]}" in
+  "issue list") out=$(cat "$d/issues.json") ;;
+  "issue view") out=$(jq ".[] | select(.number == ${args[2]})" "$d/issues.json") ;;
+  "pr list")
+    if [[ $state == merged ]]; then out=$(cat "$d/merged.json" 2>/dev/null || echo '[]')
+    else out=$(cat "$d/pr-list-${head//\//_}.json" 2>/dev/null || echo '[]'); fi ;;
+  "pr view") out=$(cat "$d/pr-${args[2]}.json" 2>/dev/null) || exit 1 ;;
+  *) echo "fake gh: 모르는 명령 ${args[*]}" >&2; exit 1 ;;
+esac
+echo "$out" | jq -r "$jqf"
