@@ -38,12 +38,12 @@ uv run ruff format --check .
 ## 작업 순서
 
 1. 작업 전 최신 `main`을 받는다. 할 일은 GitHub Issue에 있고, `ready` 라벨이 붙은 Issue만 시작한다. Issue 제목의 "PR 번호"(예: `PR 4: 계산 엔진 ①`)가 작업 목록 번호이고, Issue 번호(`#13`)와는 다르다. 직전에 merge된 PR 설명의 "다음에 할 것"·"확인해 주세요"(예전 PR은 "확인 필요") 중 이 Issue에 걸리는 것이 있으면 계획에 반영한다.
-2. 코드를 쓰기 전에 계획을 보여준다: 바꿀 파일, 접근 방법, 대안 1개, 완료 기준을 어떻게 확인할지. 사람이 승인하기 전에는 코드를 쓰지 않는다. Issue와 설계 문서에 없는 새 단계·외부 서비스·DB 구조·화면이 필요하면 계획에 넣기 전에 먼저 묻는다.
+2. 코드를 쓰기 전에 계획을 보여준다: 바꿀 파일, 접근 방법, 대안 1개, 완료 기준을 어떻게 확인할지. 사람이 승인하기 전에는 코드를 쓰지 않는다. 계획 승인은 Issue마다가 아니라 묶음으로 한 번 한다. 표시는 사람이 붙이는 `plan-ok` 라벨이다. 개발 세션·검증 Action·스크립트는 `plan-ok`를 붙이지 않는다. 묶음 계획은 `/next-issue <PR 번호들> --plan`으로 Issue마다 `[계획]` 코멘트로 남긴다(한 Issue만 대화에서 계획·승인하는 것도 된다). Issue와 설계 문서에 없는 새 단계·외부 서비스·DB 구조·화면이 필요하면 계획에 넣기 전에 먼저 묻는다.
 3. 브랜치 이름은 `<종류>/pr<번호>-<짧은 설명>` (예: `feat/pr04-tax-engine-basic`). 종류는 feat, fix, chore, docs, eval.
 4. PR 하나는 Issue 하나를 닫는다. PR 설명에 `Closes #<Issue 번호>`를 쓰고, 범위와 완료 기준은 그 Issue를 따른다. 범위 밖 개선은 PR 설명의 "다음에 할 것"에 적는다. Issue에 `needs-verify` 라벨이 있으면 PR에도 붙인다.
 5. `uv run pytest`와 ruff가 통과해야 PR을 연다. 테스트를 건너뛰거나 지우거나 xfail로 바꿔서 통과시키지 않는다.
 6. PR 설명은 `.github/pull_request_template.md`를 채운다. 아래 "PR 설명 쓰는 법"을 따른다. 완료 기준 체크와 썰 노트 칸을 비워두지 않는다.
-7. merge는 사람만 한다. 사람의 말이 merge 요청인지 애매하면 하지 않고 묻는다. merge된 뒤에는 다음 Issue의 계획까지만 보여주고, 시작은 승인 뒤에 한다.
+7. merge는 사람만 한다. 사람의 말이 merge 요청인지 애매하면 하지 않고 묻는다. 앞 PR이 merge되기 전에도 그 브랜치 위에 다음 Issue를 쌓아 진행할 수 있다. merge는 여전히 사람만, 쌓인 순서대로 한다. 다음 Issue는 계획이 승인된 뒤에만 시작한다.
 
 ## PR 설명 쓰는 법
 
@@ -77,10 +77,36 @@ PR 설명 "확인해 주세요" 항목은 아래 순서로 닫는다. 원본 문
 
 사람 손은 판단(무엇을 만들지, 정답이 맞는지, merge할지)만 남긴다. 세션 사이에 내용을 옮기지 않는다. 맥락은 대화방이 아니라 레포(Issue·PR 코멘트·문서)에 둔다 (ADR-0008).
 
-- **기획 (Claude 앱)**: Issue를 쓰고 `ready`·`needs-verify` 라벨을 붙인다. `docs/`(PRD·설계·평가계획·ADR)의 기획 변경도 Issue로 낸다. 그 밖에 `eval/` 정답 만들기(원본 책자가 레포 밖이라 Action이 못 본다)와 홀드아웃 재기(레포에 두면 안 된다)를 맡는다. 정답은 `eval/` 브랜치의 별도 PR로 올린다.
+- **기획 (Claude 앱)**: Issue를 쓰고 `ready`·`needs-verify` 라벨을 붙인다. 기획은 앞 PR merge를 기다리지 않고 여러 Issue를 미리 채울 수 있다. `ready`는 여전히 사람이 Issue를 보고 승인한 뒤에만 붙는다. goal 연속 실행에 넣을 Issue에는 "선행 PR"·"손대는 폴더" 칸을 채운다(아래 "goal 연속 실행"). `docs/`(PRD·설계·평가계획·ADR)의 기획 변경도 Issue로 낸다. 그 밖에 `eval/` 정답 만들기(원본 책자가 레포 밖이라 Action이 못 본다)와 홀드아웃 재기(레포에 두면 안 된다)를 맡는다. 정답은 `eval/` 브랜치의 별도 PR로 올린다.
 - **개발 세션 (IDE, `/next-issue`)**: 계획 → 승인 → 구현 → PR. 평가 하네스의 실행 장치는 `agent/`에 만든다. `eval/`의 채점 규칙·채점 코드·정답은 돌려 보기만 한다. PR의 `[검증]` 코멘트를 읽고 반영한다.
 - **검증 Action (`.github/workflows/verify.yml`)**: 모든 PR에서 열릴 때와 새 커밋마다 새 문맥으로 돌아 `[검증]` 코멘트 하나를 남기고 고쳐 쓴다. 할 일과 형식은 `.claude/commands/verify-pr.md` 한 곳에 있고, IDE에서 `/verify-pr <PR 번호>`로 같은 검증을 돌릴 수 있다. `needs-verify` 라벨이 붙은 PR은 점수를 다시 잰다. 다음 PR에서 할 일은 해당 PR 번호의 열린 Issue에 코멘트로 남긴다(없으면 `ready` 없이 새 Issue). 코드 push·merge·승인·`ready` 붙이기는 하지 않는다. 정답이 틀려 보이면 고치지 않고 사람 확인 필요로 적는다.
-- **사람**: 계획 승인, 정답 검수(`draft` → `confirmed`), `[검증]` 코멘트를 보고 merge.
+- **사람**: 계획 승인(대화에서, 또는 묶음 계획을 보고 Issue마다 `plan-ok` 라벨), 정답 검수(`draft` → `confirmed`), `[검증]` 코멘트를 보고 쌓인 순서대로 merge.
+
+## goal 연속 실행
+
+사람이 "계속해줘"를 치지 않아도 여러 Issue를 밤새 돌리는 장치다 (ADR-0009, 세팅은 `scripts/README.md`).
+
+- 저녁: 기획이 Issue를 채우고 사람이 `ready`를 붙인다. 개발 세션이 `/next-issue <PR 번호들> --plan`으로 `[계획]` 코멘트를 남긴다. 사람이 계획을 보고 `plan-ok`를 붙인다.
+- 밤: 사람이 `scripts/goal-run.sh <PR 번호들>`을 실행한다(터미널, 또는 휴대폰으로 볼 지휘 세션에서 `/goal-night <PR 번호들>`). Issue마다 새 Claude가 `/goal`로 구현하고, 통과 여부는 goal의 판정 모델이 아니라 스크립트의 **기계 검문**으로 정한다.
+- 아침: `.goal-runs/<날짜>/summary.md`를 보고, 쌓인 PR을 `[검증]` 코멘트를 보며 줄마다 순서대로 merge하고, "확인해 주세요"에 답한다.
+- **줄(lane)**: Issue들을 줄로 나눠 줄끼리는 동시에(기본 최대 3개), 줄 안에서는 앞 Issue 위에 쌓아 순서대로 돌린다. 줄마다 레포 밖 작업 폴더(`../taxsplit-lanes/<실행 시각>/lane-<첫 PR>/`, git worktree)를 쓴다. 한 줄이 blocked·failed로 멈춰도 다른 줄은 계속한다.
+- **Issue의 두 칸** (기획이 이 모양 그대로 쓴다. 칸이 없거나 비면 스크립트가 그 Issue를 시작하지 않는다):
+
+  ```markdown
+  ## 선행 PR
+
+  - 4          (먼저 끝나야 하는 작업 목록 PR 번호. 없으면 "- 없음")
+
+  ## 손대는 폴더
+
+  - `agent/src/taxsplit/engine/`
+  - `agent/tests/engine/`
+  ```
+
+  - 선행 PR이 같은 실행에 있으면 같은 줄 뒤에 붙고, 이미 merge됐으면 독립이고, 둘 다 아니면 시작하지 않는다.
+  - 손대는 폴더가 겹치는 Issue끼리는 한 줄로 합친다. 끝이 `/`면 폴더, 아니면 그 파일(또는 그 이름의 폴더)이다.
+- **기계 검문** (`scripts/goal/lib-checks.sh`): ① `agent/`의 pytest·ruff 세 명령 ② `eval/`·`.github/`·`.claude/` 변경 없음 ③ base 대비 새 skip·xfail 없음, 지운 테스트 함수 없음 ④ 열린 PR, `Closes #<Issue>`, `needs-verify` 옮김, base·head 맞음 ⑤ 지금 커밋 기준 검증 Action의 `[검증]`이 "미달"이 아님 ⑥ 바뀐 파일이 모두 "손대는 폴더" 안. 떨어지면 떨어진 항목을 붙여 한 번만 다시 돌리고, 또 떨어지면 `failed`다.
+- 스크립트와 지휘 세션은 merge, 라벨(`ready`·`plan-ok`·`infra-ok`) 붙이기, force push, rebase를 하지 않는다. 지휘 세션은 코드·브랜치를 고치지 않는다.
 
 ## 벽 (점수를 믿을 수 있게 하는 규칙)
 

@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# 시험용 claude 대역. goal-run.sh가 내보낸 GOAL_CURRENT_* 값을 보고 흉내만 낸다.
+# FAKE_DIR/mode-<PR> 파일에 회차별 동작을 공백으로 적는다 (예: "fail pass").
+#   pass    : 브랜치·커밋을 만들고 PR과 [검증] 통과 코멘트를 가짜 gh에 남긴다
+#   fail    : 브랜치·커밋만 만들고 PR은 열지 않는다 (검문 4에서 걸림)
+#   blocked : 질문 파일을 쓰고 멈춘다
+#   slow    : 2초 기다린 뒤 pass (동시 실행 수 시험)
+#   hang    : 끝나지 않는다 (시간 상한 시험)
+# 시작·끝 시각을 FAKE_DIR/times.log에 남긴다.
+d=${FAKE_DIR:?}; pr=$GOAL_CURRENT_PR; issue=$GOAL_CURRENT_ISSUE; base=${GOAL_CURRENT_BASE#origin/}
+echo "$pr" >>"$d/claude-calls.log"
+echo "start $pr $(date +%s)" >>"$d/times.log"
+n=$(grep -c "^$pr\$" "$d/claude-calls.log")
+read -r -a modes <"$d/mode-$pr"
+last=$(( ${#modes[@]} - 1 )); i=$(( n - 1 < last ? n - 1 : last ))
+mode=${modes[$i]}
+case $mode in
+  hang) exec sleep 60 ;;
+  blocked) mkdir -p "$(dirname "$GOAL_BLOCKED_FILE")"; echo "- 질문: 가짜 질문입니다." >"$GOAL_BLOCKED_FILE"; exit 0 ;;
+  slow) sleep 2; mode=pass ;;
+esac
+br="feat/pr$pr-fake"
+git checkout -q -B "$br"
+# 손대는 폴더의 첫 번째 안에만 쓴다 (검문 6 통과). 동시에 돌아도 PR 번호가 겹치지 않게 PR 번호로 만든다.
+dir=$(head -1 <<<"$GOAL_CURRENT_FOLDERS"); dir=${dir%/}; mkdir -p "$dir"
+echo "$n" >"$dir/fake-pr$pr.md"; git add -A; git commit -q -m "fake pr $pr ($n)"
+sha=$(git rev-parse HEAD); num=$(( $(printf '%s' "$pr" | cksum | cut -d' ' -f1) % 400 + 500 ))
+if [[ $mode == pass ]]; then
+  jq -n --argjson num "$num" --arg body "Closes #$issue" --arg base "$base" --arg sha "$sha" \
+    '[{number: $num, url: "https://example.test/pull/\($num)", body: $body, labels: [],
+       baseRefName: $base, headRefOid: $sha}]' >"$d/pr-list-${br//\//_}.json"
+  jq -n --arg b "[검증] PR $pr / 판정: 통과 / 기준 커밋 ${sha:0:7}" \
+    '{state: "OPEN", comments: [{author: {login: "github-actions"}, body: $b}]}' >"$d/pr-$num.json"
+fi
+echo "end $pr $(date +%s)" >>"$d/times.log"
+echo '{"type":"result","subtype":"success","num_turns":3}'

@@ -10,5 +10,6 @@
 | [0006](0006-model-roles.md) | Claude를 기본 모델로, GPT는 채점(judge)에만 쓴다 | 승인됨 |
 | [0007](0007-frontend-react.md) | 화면은 React로 만든다 | 승인됨 |
 | [0008](0008-verify-by-action.md) | 검증은 GitHub Action이 하고, 맥락은 레포에 둔다 | 승인됨 |
+| [0009](0009-goal-runner.md) | 여러 Issue를 goal로 연속 실행하고, 통과는 스크립트의 기계 검문으로 정한다 | 승인됨 |
 
 새 결정은 다음 번호로 파일을 추가하고, 바뀐 결정은 지우지 않고 상태를 "대체됨 (ADR-000N)"으로 바꾼다.
