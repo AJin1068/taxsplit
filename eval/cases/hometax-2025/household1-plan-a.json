@@ -1,0 +1,252 @@
+{
+  "id": "hometax2025-h1-A",
+  "status": "draft",
+  "review": {
+    "reviewer": null,
+    "date": null
+  },
+  "tax_year": 2025,
+  "source": {
+    "tool": "홈택스 연말정산 미리보기 > 세액계산 화면 (2025 귀속)",
+    "run_date": "2026-11-17",
+    "run_by": "AJin1068",
+    "input_sheet": "프로젝트 파일 issue-drafts/pr03c-hometax-input-sheet.md, issue-drafts/pr03c-run-cards.md",
+    "captures_dir": "프로젝트 파일 hometax-2025-runs/ (레포 밖)",
+    "captures": {
+      "husband": [
+        "h1-A-남편.png"
+      ],
+      "wife": [
+        "h1-A-아내.png"
+      ]
+    }
+  },
+  "kind": "household",
+  "groups": [
+    "basic_flow",
+    "dependents",
+    "child",
+    "medical",
+    "education",
+    "card"
+  ],
+  "household": "h1",
+  "plan": "A",
+  "question": "가구 1(비슷한 소득, 어린 자녀 2명)에서 자녀 둘 다 남편이 기본공제를 받을 때 부부 각각의 결정세액은?",
+  "allocation": {
+    "첫째(10세) 기본공제·자녀세액공제·교육비": "husband",
+    "둘째(5세) 기본공제·교육비·의료비": "husband"
+  },
+  "inputs": {
+    "family": {
+      "children": [
+        {
+          "name": "첫째",
+          "age": 10,
+          "school": "초등학생",
+          "education": {
+            "item": "방과후학교 수업료",
+            "amount": 500000
+          }
+        },
+        {
+          "name": "둘째",
+          "age": 5,
+          "school": "취학 전",
+          "education": {
+            "item": "어린이집 보육료",
+            "amount": 1200000
+          },
+          "medical": 2000000
+        }
+      ],
+      "rule": "교육비·의료비는 자녀를 기본공제 받는 쪽이 낸 것으로 넣는다."
+    },
+    "husband": {
+      "gross_salary": 55000000,
+      "prepaid_tax": 0,
+      "national_pension": 2400000,
+      "health_insurance": 2000000,
+      "employment_insurance": 450000,
+      "screen_insurance_premium": 2450000,
+      "card": {
+        "credit": 18000000,
+        "debit": 3000000
+      },
+      "dependents_entered": {
+        "children": 2
+      },
+      "child_credit_basic_count": 1,
+      "education": {
+        "preschool": 1200000,
+        "elementary_to_high": 500000
+      },
+      "medical": {
+        "age6_or_under": 2000000
+      }
+    },
+    "wife": {
+      "gross_salary": 45000000,
+      "prepaid_tax": 0,
+      "national_pension": 2000000,
+      "health_insurance": 1600000,
+      "employment_insurance": 360000,
+      "screen_insurance_premium": 1960000,
+      "card": {
+        "credit": 10000000,
+        "debit": 6000000
+      },
+      "woman_deduction": false,
+      "woman_deduction_reason": "종합소득금액 3천만원 초과",
+      "dependents_entered": {
+        "children": 0
+      },
+      "child_credit_basic_count": 0,
+      "education": {},
+      "medical": {}
+    }
+  },
+  "expected": [
+    {
+      "person": "husband",
+      "stage": "basic_deduction_count",
+      "value": 3,
+      "capture": "h1-A-남편.png",
+      "screen_label": "인적공제 > 기본공제 (명, 본인 포함)"
+    },
+    {
+      "person": "husband",
+      "stage": "additional_deduction_disabled_count",
+      "value": 0,
+      "capture": "h1-A-남편.png",
+      "screen_label": "추가공제 > 장애인 (명)"
+    },
+    {
+      "person": "husband",
+      "stage": "additional_deduction_elderly_count",
+      "value": 0,
+      "capture": "h1-A-남편.png",
+      "screen_label": "추가공제 > 경로우대 (명)"
+    },
+    {
+      "person": "husband",
+      "stage": "pension_insurance_deduction",
+      "value": 2400000,
+      "capture": "h1-A-남편.png",
+      "screen_label": "연금보험료공제"
+    },
+    {
+      "person": "husband",
+      "stage": "insurance_premium_deduction",
+      "value": 2450000,
+      "capture": "h1-A-남편.png",
+      "screen_label": "특별소득공제 > 건강보험료 등"
+    },
+    {
+      "person": "husband",
+      "stage": "special_income_deduction_total",
+      "value": 2450000,
+      "capture": "h1-A-남편.png",
+      "screen_label": "특별소득공제"
+    },
+    {
+      "person": "husband",
+      "stage": "child_credit_age8plus_count",
+      "value": 1,
+      "capture": "h1-A-남편.png",
+      "screen_label": "세액감면·공제 > 자녀 > 기본 (명)"
+    },
+    {
+      "person": "husband",
+      "stage": "child_credit_birth_count",
+      "value": 0,
+      "capture": "h1-A-남편.png",
+      "screen_label": "세액감면·공제 > 자녀 > 출산입양 (명)"
+    },
+    {
+      "person": "husband",
+      "stage": "determined_tax",
+      "value": 2264375,
+      "capture": "h1-A-남편.png",
+      "screen_label": "(예상) 세액공제 결과 > 결정세액"
+    },
+    {
+      "person": "husband",
+      "stage": "refund_or_payment",
+      "value": 2264370,
+      "capture": "h1-A-남편.png",
+      "screen_label": "예상 추가납부세액"
+    },
+    {
+      "person": "wife",
+      "stage": "gross_salary",
+      "value": 45000000,
+      "capture": "h1-A-아내.png",
+      "screen_label": "총급여"
+    },
+    {
+      "person": "wife",
+      "stage": "income_deduction_total",
+      "value": 18885000,
+      "capture": "h1-A-아내.png",
+      "screen_label": "소득공제"
+    },
+    {
+      "person": "wife",
+      "stage": "taxable_income",
+      "value": 26115000,
+      "capture": "h1-A-아내.png",
+      "screen_label": "과세표준"
+    },
+    {
+      "person": "wife",
+      "stage": "marginal_rate_percent",
+      "value": 15,
+      "capture": "h1-A-아내.png",
+      "screen_label": "세율 (%)"
+    },
+    {
+      "person": "wife",
+      "stage": "computed_tax",
+      "value": 2657250,
+      "capture": "h1-A-아내.png",
+      "screen_label": "산출세액"
+    },
+    {
+      "person": "wife",
+      "stage": "tax_reduction_total",
+      "value": 0,
+      "capture": "h1-A-아내.png",
+      "screen_label": "세액감면"
+    },
+    {
+      "person": "wife",
+      "stage": "tax_credit_total",
+      "value": 660000,
+      "capture": "h1-A-아내.png",
+      "screen_label": "세액공제"
+    },
+    {
+      "person": "wife",
+      "stage": "determined_tax",
+      "value": 1997250,
+      "capture": "h1-A-아내.png",
+      "screen_label": "결정세액"
+    },
+    {
+      "person": "wife",
+      "stage": "refund_or_payment",
+      "value": 1997250,
+      "capture": "h1-A-아내.png",
+      "screen_label": "납부 할 세액"
+    }
+  ],
+  "not_run": [],
+  "notes": [
+    "모든 실행에서 근무기간 2025.1.1.~12.31., 비과세 소득 없음, 기납부세액 0원으로 넣었다. 그래서 refund_or_payment(차감징수세액)는 결정세액에서 10원 미만을 버린 값이다(화면 그대로).",
+    "남편·아내 모두 요약 화면 1장씩만 있다. 상세 화면(근로소득공제, 카드 공제, 근로소득세액공제, 의료비·교육비 세액공제 등)은 캡처하지 않아 중간값이 없다. 그래서 남편은 과세표준·산출세액도 없고, 아내는 요약 합계만 있다.",
+    "남편 입력은 칸별 입력 카드(run-cards)에 남아 있지 않다(카드를 줄이기 전에 실행). inputs는 입력표(pr03c-hometax-input-sheet.md)의 가구 1 배분안 A를 옮긴 것이다. 캡처로 확인되는 입력은 기본공제 3명, 연금보험료 2,400,000, 건강보험료 등 2,450,000, 자녀 기본 1명뿐이다.",
+    "기록표 메모: 처음에 자녀세액공제 '기본'을 2명으로 넣어 결정세액 1,964,375원이 나왔고, 5세 둘째는 8세 미만이라 1명으로 고쳐 2,264,375원을 얻었다. 정답은 고친 뒤 값이다.",
+    "부부 합계(두 결정세액을 더한 값, 화면에 없는 값): 4,261,625원. 배분안 B(4,216,625원)보다 45,000원 많다."
+  ]
+}
