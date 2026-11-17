@@ -1,0 +1,38 @@
+name: guard
+
+# 감시 검사: 검증 장치·벽 파일과 eval/ 변경을 막는다 (ADR-0005, ADR-0008 갱신).
+# pull_request_target은 PR이 아니라 main에 있는 이 파일로 돈다. 그래서 PR이 이 검사를 고쳐 끌 수 없다.
+# 안전 규칙: PR 코드를 checkout·실행하지 않는다. Secret을 쓰지 않는다. 바뀐 파일 목록은 API로 받는다.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+# 같은 PR에서 앞서 돌던 검사는 취소하고 마지막 것(최신 라벨·커밋)만 남긴다.
+concurrency:
+  group: guard-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    name: guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # main(base)의 판정 스크립트만 받는다. PR 브랜치는 받지 않는다.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+          sparse-checkout: .github/scripts
+
+      # PR 브랜치 이름은 PR 쪽에서 정하는 값이라 명령 줄에 바로 넣지 않고 env로 넘긴다.
+      - name: 바뀐 파일로 벽 검사
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: python3 .github/scripts/guard.py --pr "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --head-ref "$HEAD_REF"

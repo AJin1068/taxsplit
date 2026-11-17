@@ -40,3 +40,4 @@
 ## 갱신 (2026-11-17)
 
 - 검증 방식이 [ADR-0008](0008-verify-by-action.md)로 바뀌었다. 검증 세션·총괄 세션과 예약 작업을 없애고, 모든 PR을 GitHub Action이 검증한다. 점수 PR은 `needs-verify` 라벨로 표시한다. "점수 없는 PR은 코드 리뷰에만 기댄다"는 나쁜 점은 이 Action이 채운다.
+- (PR 1l) CI `eval-guard`를 없애고, `eval/` 벽을 감시 검사 `guard`로 옮겼다. `guard`는 `pull_request_target`으로 **`main`에 있는 설정**에서 돌아서, PR이 벽 검사를 고쳐 끌 수 없다. 검증 장치·설정 파일 변경도 `infra-ok` 라벨 없이는 막는다([ADR-0008](0008-verify-by-action.md) 갱신 절).

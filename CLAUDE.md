@@ -56,7 +56,8 @@ uv run ruff format --check .
 
 ## 벽 (점수를 믿을 수 있게 하는 규칙)
 
-- 개발 PR은 `eval/`을 고치지 않는다. CI가 막는다. `eval/` 변경은 `eval/` 브랜치의 별도 PR로만 한다.
+- 개발 PR은 `eval/`을 고치지 않는다. 감시 검사 `guard`가 막는다. `eval/` 변경은 `eval/` 브랜치의 별도 PR로만 한다.
+- 감시 검사 `guard`(`.github/workflows/guard.yml`)는 `main`에 있는 설정으로 돈다. 감시 대상 파일(`.github/**`, `.claude/commands/verify-pr.md`, `.claude/settings.json`)을 바꾼 PR은 사람이 diff를 보고 `infra-ok` 라벨을 붙여야 통과한다. 개발 세션과 검증 Action은 `infra-ok`를 붙이지 않는다. `eval/` 벽은 `infra-ok`로 풀리지 않는다.
 - 처리 코드와 프롬프트에 테스트 시나리오의 ID, 가구 이름, 사례 번호를 넣지 않는다. 처리 코드는 정답 파일을 읽지 않는다.
 - 정답 데이터는 `status: draft`로 만들고 사람이 검수해 `confirmed`로 바꾼다. 채점에는 `confirmed`만 쓴다.
 - 홀드아웃 시나리오는 레포에 없고 앱(Claude)만 다룬다. 개발 세션과 검증 Action은 찾거나 만들려고 하지 않는다.

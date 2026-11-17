@@ -32,3 +32,14 @@ ADR-0005 이후 일은 Claude 앱의 여러 스레드(기획·검증·총괄)와
 - 좋은 점: 사람은 Issue를 쓰고, 코멘트를 읽고, merge하면 된다. 모든 PR이 같은 기준으로 검증된다. 검증 내용이 PR에 남아 나중에 다시 볼 수 있다.
 - 나쁜 점: `pull_request` 이벤트는 workflow 파일을 PR 브랜치에서 읽는다. PR이 `verify.yml`을 고치면 그 PR에서는 고친 검증이 돈다. 그래서 검증 장치(`verify.yml`, `verify-pr.md`, `post_verify.py`)가 바뀐 PR은 `[검증]` 첫 줄에 "검증 장치 변경, 사람 확인 필요"를 띄우고 사람이 diff를 직접 본다. 이 경고는 GitHub에서 받은 바뀐 파일 목록으로 스크립트가 붙인다.
 - 나쁜 점: 검증 Action은 merge 필수 검사가 아니다. merge 판단은 사람이 코멘트를 보고 한다. 점수가 기준선보다 낮을 때 CI를 실패시키는 일은 PR 11 뒤 별도 Issue로 한다.
+
+## 갱신 (2026-11-17, PR 1l)
+
+- **감시 검사 `guard`** (`.github/workflows/guard.yml`, `.github/scripts/guard.py`): `pull_request_target`으로 돌아서 PR 쪽이 아니라 `main`에 있는 설정과 스크립트를 쓴다. PR이 이 검사를 고쳐서 끌 수 없다. PR 코드는 checkout·실행하지 않고, 바뀐 파일 목록은 GitHub API(PR files)로 받는다. Secret 없이 `contents: read`, `pull-requests: read`만 쓴다.
+  - 규칙 ①: 감시 대상 파일(`.github/**`, `.claude/commands/verify-pr.md`, `.claude/settings.json`)이 바뀌면 실패한다. 사람이 diff를 보고 **`infra-ok` 라벨**을 붙이면 다시 돌아 통과한다.
+  - 규칙 ②: `eval/` 벽(`eval/README.md` 제외). head 브랜치가 `eval/`로 시작할 때만 허용한다. `infra-ok`로 풀리지 않는다. 지금까지의 CI `eval-guard`를 대신한다.
+- 위 "나쁜 점"의 첫 항목 중 **벽 검사**는 이것으로 막힌다. 검증 장치를 고친 PR은 경고 문구뿐 아니라 빨간불이 뜬다.
+- 남은 한계:
+  - 검증 Action(`verify.yml`) 자체는 여전히 `pull_request`로 PR 쪽 파일을 쓴다. `workflow_run`으로 나누는 일은 v1(11/22) 뒤 별도 Issue로 한다.
+  - 개발 에이전트가 사람과 같은 계정이라 `infra-ok`를 직접 붙일 수 있다. 계정·토큰 분리는 별도 Issue로 한다. 지금은 "개발 세션은 `infra-ok`를 붙이지 않는다"는 규칙(`CLAUDE.md` "벽")으로만 지킨다.
+  - 필수 검사(ruleset)에 `guard`를 넣는 일은 사람이 GitHub 설정에서 한다.
