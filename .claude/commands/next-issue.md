@@ -10,7 +10,7 @@ argument-hint: "[PR 번호] (예: 4, 14a. 생략하면 ready 라벨이 붙은 �
 
 0. `git checkout main && git pull origin main`으로 최신 `main`을 받는다. 커밋 안 된 변경이 있으면 멈추고 알린다.
 1. `gh issue list --state open --label ready`로 대상을 고른다. `gh issue view <번호> --json title,body,labels,comments`로 본문과 코멘트를 읽는다(`--comments`만 쓰면 빈 결과가 나올 때가 있다). Issue 본문의 "정해진 결정"과 코멘트를 같은 무게로 따른다. Issue에 `needs-verify` 라벨이 붙었는지 적어 둔다.
-2. CLAUDE.md, 대상 Issue의 "참고 문서"(`docs/prd.md`, `docs/design.md`, `docs/eval-plan.md`, `docs/adr/`의 해당 절), 손댈 코드를 읽는다. 직전에 merge된 PR 설명(`gh pr list --state merged --limit 3`)의 "다음에 할 것"·"확인 필요" 중 이 Issue에 걸리는 것을 확인한다. `eval/`은 읽기만 한다.
+2. CLAUDE.md, 대상 Issue의 "참고 문서"(`docs/prd.md`, `docs/design.md`, `docs/eval-plan.md`, `docs/adr/`의 해당 절), 손댈 코드를 읽는다. 직전에 merge된 PR 설명(`gh pr list --state merged --limit 3`)의 "다음에 할 것"·"확인해 주세요"(예전 PR은 "확인 필요") 중 이 Issue에 걸리는 것을 확인한다. `eval/`은 읽기만 한다.
 3. 계획을 보여 주고 **승인을 기다린다.** 계획에는 바꿀 파일(빠짐없이), 접근 방법, 대안 1개와 트레이드오프, 완료 기준을 어떻게 확인할지, 사람이 정해야 할 것을 담는다. 승인 전에는 코드를 쓰지 않는다.
    - **질문은 줄인다.** Issue 본문·코멘트("정해진 결정" 포함)·문서·ADR에 답이 있으면 묻지 않고 계획에 "정해진 대로: …(출처)"로 적는다. 함수 이름, 파일 배치, 테스트 방법처럼 개발이 정할 수 있는 건 묻지 않고 계획에 적는다.
    - 답이 없는 것만 "정할 것" 칸에 모아 **한 번에** 묻고, 하나마다 추천안과 이유를 붙인다.
@@ -18,7 +18,7 @@ argument-hint: "[PR 번호] (예: 4, 14a. 생략하면 ready 라벨이 붙은 �
 4. 승인되면 `main`에서 `<종류>/pr<번호>-<짧은 설명>` 브랜치를 만들고 CLAUDE.md 4~7단계(구현 → `uv run pytest`·ruff → PR 템플릿 채우기 → `Closes #<Issue 번호>`)를 따른다. merge는 하지 않는다.
    - PR을 열 때 Issue에 `needs-verify` 라벨이 있으면 PR에도 붙인다(`gh pr create ... --label needs-verify`, 이미 열었으면 `gh pr edit <PR 번호> --add-label needs-verify`). 검증 Action이 이 라벨을 보고 점수를 다시 잰다.
    - PR을 열면 검증 Action이 `[검증]` 코멘트를 단다. 판정이 "미달"이나 "조건부 통과"면 고칠 것을 보고에 적는다.
-5. 끝나면 결과를 **한국어로, 쉬운 말로** 보고한다: 무엇을 했는지, 완료 기준 결과, PR 링크, 사람이 답해야 할 질문.
+5. 끝나면 결과를 **한국어로, 쉬운 말로** 보고한다: 무엇을 했는지, 완료 기준 결과, PR 링크, 사람이 답해야 할 질문. PR 설명과 이 보고의 "사람이 답해야 할 질문"은 CLAUDE.md "PR 설명 쓰는 법"대로 요약하지 않고 풀어 쓴다(무슨 상황인가 → 확인할 곳 → 답에 따라 달라지는 것 → 추천).
 6. PR이 merge된 뒤 다시 부르면 다음 Issue의 계획까지만 보여주고 승인을 기다린다.
 
 ## 기획이 바뀐 경우 (처음부터 다시 하지 않는다)
