@@ -1,0 +1,32 @@
+{
+  "id": "nts2025-p095-earned-income",
+  "status": "confirmed",
+  "review": {"reviewer": "AJin1068", "date": "2026-11-16", "scope": "마지막 답만 책자와 대조 (중간값·입력은 대조 안 함)"},
+  "tax_year": 2025,
+  "source": {
+    "book": "2025년 원천징수의무자를 위한 연말정산 신고안내 (국세청, 2025.12, 정오표 2026.02.03)",
+    "printed_pages": [95],
+    "title": "사례 근로소득금액 계산"
+  },
+  "kind": "item",
+  "groups": ["basic_flow"],
+  "question": "근로자가 '25년 3월 입사하여 '25.12.31.까지 받은 급여가 다음과 같을 때 근로소득공제금액 및 근로소득금액은?",
+  "inputs": {
+    "employment_period": {"start": "2025-03", "end": "2025-12-31", "months": 10},
+    "monthly_pay": 2000000,
+    "monthly_base_pay": 1000000,
+    "bonus_rate_of_base_pay": "800%",
+    "deemed_bonus": 5000000,
+    "child_tuition_support": 800000,
+    "nontaxable_expense_reimbursement": 2500000,
+    "in_kind_meals": "현물 식사 제공 (금액 없음)"
+  },
+  "expected": [
+    {"stage": "gross_salary", "value": 33800000, "page": 95, "booklet_text": "(200만원 × 10월) + (100만원 × 800%) + 500만원 + 80만원 = 3,380만원"},
+    {"stage": "earned_income_deduction", "value": 10320000, "page": 95, "booklet_text": "750만원 + (3,380만원 - 1,500만원) × 15% = 1,032만원"},
+    {"stage": "earned_income_amount", "value": 23480000, "page": 95, "booklet_text": "3,380만원 - 1,032만원 = 2,348만원"}
+  ],
+  "notes": [
+    "책자 풀이에서 실비변상적 비과세 급여 250만원과 현물 식사는 총급여액에서 빠져 있다(비과세소득 제외)."
+  ]
+}

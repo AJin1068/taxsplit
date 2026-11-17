@@ -1,0 +1,36 @@
+{
+  "id": "nts2025-p185-education",
+  "status": "confirmed",
+  "review": {"reviewer": "AJin1068", "date": "2026-11-16", "scope": "마지막 답만 책자와 대조 (중간값·입력은 대조 안 함)"},
+  "tax_year": 2025,
+  "source": {
+    "book": "2025년 원천징수의무자를 위한 연말정산 신고안내 (국세청, 2025.12, 정오표 2026.02.03)",
+    "printed_pages": [185],
+    "title": "교육비 세액공제 사례"
+  },
+  "kind": "item",
+  "groups": ["education"],
+  "question": "근로자가 자녀 및 생계를 같이하고 있는 형제자매(소득 없음)를 위해 아래의 교육비를 지출한 경우 해당 연도 교육비 세액공제금액은?",
+  "inputs": {
+    "expenses": [
+      {"for": "self", "school": "대학원 (1학기 이상의 교육과정)", "item": "교육비", "amount": 8000000},
+      {"for": "child", "school": "초등학교 취학 전 (1명)", "item": "보육료", "amount": 1200000},
+      {"for": "child", "school": "초등학생 (1명)", "item": "학원 및 체육시설 수강료", "amount": 1200000},
+      {"for": "child", "school": "중학생 (1명)", "item": "중학교 수업료", "amount": 3000000},
+      {"for": "sibling", "label": "처남", "age": 26, "school": "대학원생", "amount": 10000000},
+      {"for": "sibling", "label": "처남", "age": 22, "school": "대학생", "amount": 9000000},
+      {"for": "sibling", "label": "동생", "age": 25, "school": "대학생", "amount": 7500000}
+    ],
+    "siblings_income": 0
+  },
+  "expected": [
+    {"stage": "education_base_self", "value": 8000000, "page": 185, "booklet_text": "① 본인교육비：800만원"},
+    {"stage": "education_base_children", "value": 4200000, "page": 185, "booklet_text": "② 자녀 교육비：420만원(120만원+300만원)"},
+    {"stage": "education_base_siblings", "value": 16500000, "page": 185, "booklet_text": "③ 형제자매 교육비：1,650만원 (대학생 처남 900만원(공제한도), 동생 750만원)"},
+    {"stage": "education_credit_base", "value": 28700000, "page": 185, "booklet_text": "800만원 + 420만원 + 1,650만원 = 2,870만원"},
+    {"stage": "education_credit", "value": 4305000, "page": 185, "booklet_text": "2,870만원 × 15% = 4,305,000원"}
+  ],
+  "notes": [
+    "책자: 취학전 아동 보육료는 공제 대상, 초등학생 학원·체육시설 수강료는 대상 아님, 대학원생 처남 교육비는 대상 아님."
+  ]
+}
