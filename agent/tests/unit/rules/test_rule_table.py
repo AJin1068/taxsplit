@@ -36,6 +36,25 @@ EXPECTED_IDS = {
     "2025.card.min_usage_order",
     "2025.card.limit",
     "2025.card.additional_limit",
+    # PR 3d: 맞벌이 규칙·표준세액공제·카드 세부
+    "2025.base.standard_tax_credit",
+    "2025.dependent.additional.claimant",
+    "2025.medical.spouse_expense",
+    "2025.education.excluded_persons",
+    "2025.card.user_basis",
+    "2025.card.culture_over_limit",
+    "2025.card.rounding",
+}
+
+# PR 3d로 들어온 규칙이 엔진(PR 4~6)에 넘겨야 할 value 키
+NEW_RULE_KEYS = {
+    "2025.base.standard_tax_credit": {"amount", "applies_when_none_of", "per_person_choose_larger"},
+    "2025.dependent.additional.claimant": {"eligible_claimant"},
+    "2025.medical.spouse_expense": {"income_spouse_expense_claimant"},
+    "2025.education.excluded_persons": {"excluded", "lineal_ascendant_exception"},
+    "2025.card.user_basis": {"excluded_relations", "family_card_basis"},
+    "2025.card.culture_over_limit": {"gross_limit", "rate_by", "min_usage_by"},
+    "2025.card.rounding": {"stages"},
 }
 
 
@@ -78,7 +97,24 @@ def test_known_todos(rules):
     # Issue #48 정해진 결정: 조문 확인 필요·책자 안 불일치는 TODO로 둔다
     todos = {r.id for r in rules.values() if r.status == "todo"}
     # 자녀 추가액은 법률 제20615호로 확인돼 sourced (PR #54 검증 코멘트)
-    assert todos == {"2025.base.tax_rate", "2025.medical.sublimit"}
+    # 카드 절사는 2025 출처를 못 찾아 TODO (Issue #65 표 7번)
+    assert todos == {"2025.base.tax_rate", "2025.medical.sublimit", "2025.card.rounding"}
+
+
+@pytest.mark.parametrize("rule_id", sorted(NEW_RULE_KEYS))
+def test_new_rules_have_value_keys(rules, rule_id):
+    # 키가 빠지면 엔진이 규칙을 읽다가 멈춘다. 모르는 키가 섞여도 잡는다
+    assert set(rules[rule_id].value) == NEW_RULE_KEYS[rule_id]
+
+
+def test_culture_over_limit_matches_card_rate(rules):
+    # 같은 7천만원 문턱이 두 규칙에 있다. 한쪽만 고치면 어긋나므로 같은지 본다
+    over = rules["2025.card.culture_over_limit"].value["gross_limit"]
+    assert over == rules["2025.card.rate"].value["culture_gross_limit"]
+
+
+def test_standard_tax_credit_amount(rules):
+    assert rules["2025.base.standard_tax_credit"].value["amount"] == 130_000
 
 
 def test_basic_deduction_has_age_requirements(rules):
