@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # 시험용 gh 대역. FAKE_DIR의 JSON 파일을 돌려준다 (실제 GitHub에 접속하지 않는다).
-#   issues.json            : gh issue list / issue view
+#   issues.json            : gh issue list / issue view (.state가 없으면 OPEN, --state로 거름)
 #   pr-list-<브랜치>.json   : gh pr list --head <브랜치>  (/ 는 _ 로)
 #   pr-<번호>.json          : gh pr view <번호>
-#   merged.json            : gh pr list --state merged (merge된 PR 제목들)
+#   merged.json            : gh pr list --state merged (merge된 PR 제목들, 지금 스크립트는 안 씀)
 d=${FAKE_DIR:?}
 jqf="."; head=""; state=""; args=()
 while (($#)); do
@@ -16,7 +16,8 @@ while (($#)); do
   esac
 done
 case "${args[0]} ${args[1]}" in
-  "issue list") out=$(cat "$d/issues.json") ;;
+  "issue list") out=$(jq --arg s "$state" 'if $s == "" or $s == "all" then .
+      else map(select((.state // "OPEN") | ascii_downcase == $s)) end' "$d/issues.json") ;;
   "issue view") out=$(jq ".[] | select(.number == ${args[2]})" "$d/issues.json") ;;
   "pr list")
     if [[ $state == merged ]]; then out=$(cat "$d/merged.json" 2>/dev/null || echo '[]')

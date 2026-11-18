@@ -31,8 +31,15 @@ issue 111 11 "3" "agent/src/taxsplit/db/"
 issue 112 12 "2" "agent/src/taxsplit/api/"
 issue 113 13 "-" "agent/src/taxsplit/x/"
 issue 114 14 "없음" "agent/src/taxsplit/eng"
+issue 115 15 "4" "agent/src/taxsplit/report/"
+issue 116 16 "1" "agent/src/taxsplit/ui/"
+# 끝난 작업: PR 2·PR 1은 Issue가 닫힘. PR 1은 같은 번호의 열린 Issue가 또 있다.
+# merge된 PR 제목은 일부러 커밋 모양(feat: …)으로 둔다. 선행 판단은 PR 제목을 보지 않는다.
+ISSUES=$(jq '. + [{number: 102, title: "PR 2: 이미 끝남", body: "", labels: [], comments: [], state: "CLOSED"},
+  {number: 101, title: "PR 1: 끝남", body: "", labels: [], comments: [], state: "CLOSED"},
+  {number: 117, title: "PR 1: 다시 열림", body: "", labels: [], comments: [], state: "OPEN"}]' <<<"$ISSUES")
 echo "$ISSUES" >"$T/issues.json"
-echo '[{"title": "PR 2: 이미 merge됨"}]' >"$T/merged.json"
+echo '[{"title": "feat: 이미 merge됨 (PR 2)"}]' >"$T/merged.json"
 
 lanes_for() { # PR 번호들 → plan_lanes 결과
   local p; for p in "$@"; do collect_issue "$p" "$*"; done | jq -s . | plan_lanes
@@ -64,8 +71,12 @@ expect "칸 없는 Issue를 선행으로 둔 Issue도 시작 안 함 (줄에 없
   'lane-6 6' "$(lanes_for 9 10 6)"
 expect "선행 PR이 merge 안 됐고 이번 실행에도 없으면 시작 안 함" \
   "시작 안 함: 선행 PR 3 가 merge 안 됐고 이번 실행에도 없음" "$(skip_of 11 11)"
-expect "선행 PR이 이미 merge됐으면 독립 줄" \
+expect "선행 PR의 Issue가 닫혔으면 독립 줄 (merge된 PR 제목이 feat: …여도)" \
   'lane-12 12' "$(lanes_for 12)"
+expect "선행 PR의 Issue가 열려 있고 이번 실행에도 없으면 시작 안 함" \
+  "시작 안 함: 선행 PR 4 가 merge 안 됐고 이번 실행에도 없음" "$(skip_of 15 15)"
+expect "같은 번호의 Issue가 닫힌 것과 열린 것이 함께 있으면 끝나지 않은 것으로 봄" \
+  "시작 안 함: 선행 PR 1 가 merge 안 됐고 이번 실행에도 없음" "$(skip_of 16 16)"
 
 echo
 echo "맞음 $ok / 틀림 $bad"
