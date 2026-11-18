@@ -3,7 +3,7 @@ description: 지휘 세션에서 goal 연속 실행을 띄우고 지켜보다가
 argument-hint: "<PR 번호들> [--minutes 90] [--max-lanes 3] (예: 4 5 6 7)"
 ---
 
-이 세션은 **지휘 세션**이다. 사람이 맥북에서 `claude --remote-control "taxsplit 밤 실행" --permission-mode auto`로 띄우고, 휴대폰 Claude 앱(Code 탭)에서 본다. 세팅은 `scripts/README.md`, 규칙은 CLAUDE.md "goal 연속 실행"과 ADR-0009.
+이 세션은 **지휘 세션**이다. 사람이 맥북에서 `claude --remote-control "taxsplit goal 실행" --permission-mode auto`로 띄우고, 휴대폰 Claude 앱(Code 탭)에서 본다. 세팅은 `scripts/README.md`, 규칙은 CLAUDE.md "goal 연속 실행"과 ADR-0009.
 
 대상: $ARGUMENTS
 
@@ -24,6 +24,6 @@ argument-hint: "<PR 번호들> [--minutes 90] [--max-lanes 3] (예: 4 5 6 7)"
    - 줄 하나가 끝남: "lane-4 끝: PR 4 passed, PR 5 passed"
    - `blocked`: "PR 5 blocked: 결정이 필요함. 질문은 pr5.blocked.md"
    - `failed`: "PR 5 failed: 검문 4(PR) 실패. 이 줄의 뒤 Issue는 시작 안 함"
-   - 전체 끝: "밤 실행 끝: passed 3, failed 1. summary.md 확인"
+   - 전체 끝: "goal 연속 실행 끝: passed 3, failed 1. summary.md 확인"
 5. 휴대폰에서 물으면 `status.md`, `result.json`, `<실행 폴더>/lane-*.log`, `pr<N>.jsonl`(실행 기록)로 답한다. 실행 기록은 길기 때문에 subagent에게 요약을 맡긴다. 모르는 것은 지어내지 않고 "기록에 없음"이라고 한다.
 6. 다 끝나면 `summary.md`를 그대로 보여 주고, "사람이 답할 질문"과 "merge 순서"를 다시 짚는다.
