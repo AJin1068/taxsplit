@@ -540,6 +540,20 @@
     }
   ],
   "not_run": [],
+  "supplement": {
+    "status": "draft",
+    "review": {"reviewer": null, "date": null},
+    "values": [
+      {"path": "/husband/sex", "value": "male", "kind": "implied_by_source", "reason": "사람 역할 이름 '남편'에서 왔다.", "effect": "문서(입력표)에서 온 값이다."},
+      {"path": "/wife/sex", "value": "female", "kind": "implied_by_source", "reason": "사람 역할 이름 '아내'에서 왔다. 아내의 부녀자공제 여부(woman_deduction)도 입력에 있다.", "effect": "문서(입력표)에서 온 값이다."},
+      {"path": "/husband/birth_year", "value": 1988, "kind": "not_in_source", "reason": "입력표·입력 카드에 생년이 없다. 자녀·부모 나이와 어울리는 해를 골랐다.", "effect": "본인 나이는 경로우대(70세 이상) 판정에만 쓰인다. 70세 미만이면 경로우대 추가공제 대상이 아니다(규칙 2025.dependent.additional.elderly, min_age 70)."},
+      {"path": "/wife/birth_year", "value": 1990, "kind": "not_in_source", "reason": "입력표·입력 카드에 생년이 없다.", "effect": "본인 나이는 경로우대 판정에만 쓰인다. 70세 미만이면 경로우대 추가공제 대상이 아니다(규칙 2025.dependent.additional.elderly, min_age 70)."},
+      {"path": "/husband/has_spouse", "value": true, "kind": "implied_by_source", "reason": "맞벌이 부부 가구다.", "effect": "문서에서 온 값이다."},
+      {"path": "/wife/has_spouse", "value": true, "kind": "implied_by_source", "reason": "맞벌이 부부 가구다.", "effect": "문서에서 온 값이다."},
+      {"path": "/family/children/0/income", "value": 0, "kind": "not_in_source", "reason": "자녀 소득이 입력표에 없다. 어린 자녀라 0원으로 넣었다.", "effect": "홈택스에 기본공제 대상으로 넣었으니 소득요건 안이다. 0원이면 결과가 같다."},
+      {"path": "/family/children/1/income", "value": 0, "kind": "not_in_source", "reason": "자녀 소득이 입력표에 없다. 어린 자녀라 0원으로 넣었다.", "effect": "홈택스에 기본공제 대상으로 넣었으니 소득요건 안이다. 0원이면 결과가 같다."}
+    ]
+  },
   "notes": [
     "모든 실행에서 근무기간 2025.1.1.~12.31., 비과세 소득 없음, 기납부세액 0원으로 넣었다. 그래서 refund_or_payment(차감징수세액)는 결정세액에서 10원 미만을 버린 값이다(화면 그대로).",
     "남편 캡처는 상세2(과세표준·산출세액)에서 상세3(연금계좌 과학기술인 줄부터)으로 바로 넘어가, 세액감면 표와 근로소득세액공제·자녀(기본)·출산입양 줄이 캡처에 없다. 그래서 남편의 earned_income_credit, child_credit_age8plus, tax_reduction_total은 비워 두었다(계산해서 채우지 않음). 요약 화면의 세액감면은 0원.",

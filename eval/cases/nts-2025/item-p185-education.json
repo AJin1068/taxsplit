@@ -30,6 +30,20 @@
     {"stage": "education_credit_base", "value": 28700000, "page": 185, "booklet_text": "800만원 + 420만원 + 1,650만원 = 2,870만원"},
     {"stage": "education_credit", "value": 4305000, "page": 185, "booklet_text": "2,870만원 × 15% = 4,305,000원"}
   ],
+  "supplement": {
+    "status": "draft",
+    "review": {"reviewer": null, "date": null},
+    "values": [
+      {"path": "/self/sex", "value": "male", "kind": "not_in_source", "reason": "문서에 본인 성별이 없다. 부녀자 추가공제가 생기지 않는 쪽을 골랐다.", "effect": "이 사례는 교육비 세액공제만 비교한다."},
+      {"path": "/self/birth_year", "value": 1985, "kind": "not_in_source", "reason": "문서에 본인 출생연도가 없다. 2025년에 40세가 되는 해를 골랐다.", "effect": "본인 나이는 경로우대(70세 이상) 판정에만 쓰인다. 70세 미만이면 경로우대 추가공제 대상이 아니다(규칙 2025.dependent.additional.elderly, min_age 70)."},
+      {"path": "/self/gross_salary", "value": 100000000, "kind": "not_in_source", "reason": "문서에 본인 총급여가 없다. 교육비 세액공제액이 산출세액보다 커서 깎이는 일이 없도록 넉넉한 금액을 골랐다.", "effect": "교육비 세액공제는 대상금액의 15%(규칙 2025.education.rate)라 총급여를 쓰지 않는다. 다만 엔진이 산출세액 한도를 적용하면 총급여가 너무 작을 때 결과가 바뀔 수 있어 넉넉하게 넣었다."},
+      {"path": "/self/has_spouse", "value": true, "kind": "implied_by_source", "reason": "처남(배우자의 형제)이 있다.", "effect": "문서에서 온 값이다."},
+      {"path": "/expenses/1/age", "value": 5, "kind": "not_in_source", "reason": "문서에는 '초등학교 취학 전'만 있다. 학교 단계에 맞는 나이를 골랐다.", "effect": "교육비 한도는 학교 단계로 정해진다(규칙 2025.education.limit). 나이는 쓰이지 않는다."},
+      {"path": "/expenses/2/age", "value": 9, "kind": "not_in_source", "reason": "문서에는 '초등학생'만 있다.", "effect": "교육비는 학교 단계로 정해지고, 이 자녀의 학원비는 대상이 아니다."},
+      {"path": "/expenses/3/age", "value": 14, "kind": "not_in_source", "reason": "문서에는 '중학생'만 있다.", "effect": "교육비 한도는 학교 단계로 정해진다."},
+      {"path": "/children_income", "value": 0, "kind": "not_in_source", "reason": "자녀 소득이 문서에 없다.", "effect": "자녀 교육비는 기본공제대상자를 위해 낸 것이어야 하고, 소득 0원이면 소득요건 안이다."}
+    ]
+  },
   "notes": [
     "책자: 취학전 아동 보육료는 공제 대상, 초등학생 학원·체육시설 수강료는 대상 아님, 대학원생 처남 교육비는 대상 아님."
   ]
