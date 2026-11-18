@@ -74,9 +74,9 @@ expect "3 skip·삭제" "문서에 xfail 낱말" pass check_skips main
 case_branch c4; echo y >>docs/a.md; commit pr
 sha=$(git rev-parse HEAD)
 echo '[{"number":73,"title":"PR 1n: x","labels":[{"name":"ready"}],"comments":[]}]' >"$FAKE_DIR/issues.json"
-pr_json() { # <body> <labels-json> <base> <sha>
-  jq -n --arg b "$1" --argjson l "$2" --arg base "$3" --arg s "$4" \
-    '[{number: 9, url: "u", body: $b, labels: $l, baseRefName: $base, headRefOid: $s}]' >"$FAKE_DIR/pr-list-c4.json"
+pr_json() { # <body> <labels-json> <base> <sha> [제목]
+  jq -n --arg b "$1" --argjson l "$2" --arg base "$3" --arg s "$4" --arg t "${5:-PR 1n: x}" \
+    '[{number: 9, url: "u", title: $t, body: $b, labels: $l, baseRefName: $base, headRefOid: $s}]' >"$FAKE_DIR/pr-list-c4.json"
 }
 pr_json "Closes #73" '[]' main "$sha"
 expect "4 PR" "열린 PR, Closes #73, base·head 맞음" pass check_pr c4 73 origin/main
@@ -88,6 +88,10 @@ pr_json "Closes #73" '[]' feat/other "$sha"
 expect "4 PR" "PR base가 정한 base와 다름" block check_pr c4 73 origin/main
 pr_json "Closes #73" '[]' main 0000000
 expect "4 PR" "PR head가 로컬 HEAD와 다름 (push 안 됨)" block check_pr c4 73 origin/main
+pr_json "Closes #73" '[]' main "$sha" "feat: x (PR 1n)"
+expect "4 PR" "PR 제목이 커밋 모양 feat: … (PR 1n)" block check_pr c4 73 origin/main
+pr_json "Closes #73" '[]' main "$sha" "PR 1n: 다른 말"
+expect "4 PR" "PR 제목이 PR 1n: 으로 시작하지만 Issue 제목과 다름" block check_pr c4 73 origin/main
 echo '[{"number":73,"title":"PR 1n: x","labels":[{"name":"needs-verify"}],"comments":[]}]' >"$FAKE_DIR/issues.json"
 pr_json "Closes #73" '[]' main "$sha"
 expect "4 PR" "Issue에 needs-verify, PR에 없음" block check_pr c4 73 origin/main

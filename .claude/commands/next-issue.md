@@ -18,6 +18,7 @@ argument-hint: "[PR 번호] 또는 [PR 번호들] --plan (예: 4, 14a, 4 5 6 7 -
    - 답이 없는 것만 "정할 것" 칸에 모아 **한 번에** 묻고, 하나마다 추천안과 이유를 붙인다.
    - Issue와 설계 문서에 없는 새 단계·외부 서비스·DB 구조·화면이 필요하면 계획에 넣기 전에 먼저 묻는다.
 4. 승인되면 `main`에서 `<종류>/pr<번호>-<짧은 설명>` 브랜치를 만들고 CLAUDE.md 4~7단계(구현 → `uv run pytest`·ruff → PR 템플릿 채우기 → `Closes #<Issue 번호>`)를 따른다. merge는 하지 않는다.
+   - PR 제목은 닫는 Issue의 제목과 똑같이 쓴다(예: Issue `PR 4: 계산 엔진 ①` → PR `PR 4: 계산 엔진 ①`). `feat: …` 같은 커밋 메시지 모양은 커밋에만 쓴다. (`gh pr create --title "<Issue 제목 그대로>"`)
    - PR을 열 때 Issue에 `needs-verify` 라벨이 있으면 PR에도 붙인다(`gh pr create ... --label needs-verify`, 이미 열었으면 `gh pr edit <PR 번호> --add-label needs-verify`). 검증 Action이 이 라벨을 보고 점수를 다시 잰다.
    - PR을 열면 검증 Action이 `[검증]` 코멘트를 단다. 판정이 "미달"이나 "조건부 통과"면 고칠 것을 보고에 적는다.
 5. 끝나면 결과를 **한국어로, 쉬운 말로** 보고한다: 무엇을 했는지, 완료 기준 결과, PR 링크, 사람이 답해야 할 질문. PR 설명과 이 보고의 "사람이 답해야 할 질문"은 CLAUDE.md "PR 설명 쓰는 법"대로 요약하지 않고 풀어 쓴다(무슨 상황인가 → 확인할 곳 → 답에 따라 달라지는 것 → 추천).
