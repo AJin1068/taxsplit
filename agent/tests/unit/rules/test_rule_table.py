@@ -44,6 +44,10 @@ EXPECTED_IDS = {
     "2025.card.user_basis",
     "2025.card.culture_over_limit",
     "2025.card.rounding",
+    # PR 4: 연금·건강·고용보험료 공제(Issue #13 정해진 결정), 단계 값 원 미만 버림(p242)
+    "2025.base.pension_insurance_deduction",
+    "2025.base.insurance_premium_deduction",
+    "2025.base.rounding",
 }
 
 # PR 3d로 들어온 규칙이 엔진(PR 4~6)에 넘겨야 할 value 키
@@ -55,6 +59,10 @@ NEW_RULE_KEYS = {
     "2025.card.user_basis": {"excluded_relations", "family_card_basis"},
     "2025.card.culture_over_limit": {"gross_limit", "rate_by", "min_usage_by"},
     "2025.card.rounding": {"stages"},
+    # PR 4
+    "2025.base.pension_insurance_deduction": {"payer", "excess_over"},
+    "2025.base.insurance_premium_deduction": {"payer", "items"},
+    "2025.base.rounding": {"unit", "mode"},
 }
 
 
@@ -98,7 +106,19 @@ def test_known_todos(rules):
     todos = {r.id for r in rules.values() if r.status == "todo"}
     # 자녀 추가액은 법률 제20615호로 확인돼 sourced (PR #54 검증 코멘트)
     # 카드 절사는 2025 출처를 못 찾아 TODO (Issue #65 표 7번)
-    assert todos == {"2025.base.tax_rate", "2025.medical.sublimit", "2025.card.rounding"}
+    # 기본세율은 소법 §55 ①로 확인돼 sourced (Issue #13, p92)
+    assert todos == {"2025.medical.sublimit", "2025.card.rounding"}
+
+
+def test_tax_rate_sourced(rules):
+    rule = rules["2025.base.tax_rate"]
+    assert (rule.status, rule.statute, rule.todo) == ("sourced", "소법 §55 ①", "")
+    assert set(rule.pages) == {"PDF 6쪽", "p92"}
+
+
+def test_rounding_is_won_floor(rules):
+    # 원 미만 버림만 한다. 10원·100원 단위 절사는 하지 않는다(p242)
+    assert rules["2025.base.rounding"].value == {"unit": 1, "mode": "floor"}
 
 
 @pytest.mark.parametrize("rule_id", sorted(NEW_RULE_KEYS))
