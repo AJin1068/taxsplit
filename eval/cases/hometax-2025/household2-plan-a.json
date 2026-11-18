@@ -546,8 +546,8 @@
   ],
   "not_run": [],
   "supplement": {
-    "status": "draft",
-    "review": {"reviewer": null, "date": null},
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-18", "scope": "사람은 문서에서 알아낸 값(implied_by_source) 중 인쇄 100쪽 소득 0원, 177쪽 배우자 65세 미만, 212쪽 자녀 소득 0원을 원문과 대조함. 문서에 없어 골라 넣은 값(not_in_source)은 결과에 영향 없는 값이라 개별 대조 안 함"},
     "values": [
       {"path": "/husband/sex", "value": "male", "kind": "implied_by_source", "reason": "사람 역할 이름 '남편'에서 왔다.", "effect": "문서(입력표)에서 온 값이다."},
       {"path": "/wife/sex", "value": "female", "kind": "implied_by_source", "reason": "사람 역할 이름 '아내'에서 왔다. 아내의 부녀자공제 여부(woman_deduction)도 입력에 있다.", "effect": "문서(입력표)에서 온 값이다."},

@@ -118,7 +118,7 @@ python3 eval/cases/nts-2025/check_cases.py
 
 ## 보충 입력이 있는 사례
 
-문서에 없어 채운 값은 각 파일 `supplement`에 있습니다(형식은 `../../README.md` "보충 입력"). 모두 `status: draft`이고 사람이 검수합니다.
+문서에 없어 채운 값은 각 파일 `supplement`에 있습니다(형식은 `../../README.md` "보충 입력"). 2026-11-18 AJin1068이 검수해 모두 `confirmed`입니다(`supplement.review.scope`: 문서에서 알아낸 값만 원문 대조).
 
 표의 두 칸은 값을 어디서 가져왔는지로 나눈 것입니다. 한 사례에 두 종류가 섞여 있을 수 있고, "없음"은 그 종류의 값이 이 사례에는 하나도 없다는 뜻입니다.
 
