@@ -41,7 +41,7 @@
       {"path": "/self/has_spouse", "value": true, "kind": "implied_by_source", "reason": "배우자 의료비가 있다.", "effect": "문서에서 온 값이다."},
       {"path": "/expenses/0/age", "value": 65, "kind": "not_in_source", "reason": "문서에는 아버지가 '65세 이상'으로만 적혀 있다. 범위를 만족하는 가장 가까운 나이를 골랐다.", "effect": "의료비 한도 없는 대상은 65세 이상이라(규칙 2025.medical 한도 unlimited의 age_65_plus) 결과가 같다."},
       {"path": "/expenses/1/age", "value": 63, "kind": "not_in_source", "reason": "어머니 나이가 문서에 없다. 장애인이라 기본공제 나이요건이 없다(2025.dependent.basic disabled_no_age_limit).", "effect": "장애인 의료비는 나이와 관계없이 한도 없는 대상이라 결과가 같다."},
-      {"path": "/expenses/2/age", "value": 35, "kind": "implied_by_source", "reason": "배우자 나이가 문서에 없다. 책자 풀이가 배우자 의료비를 '그 외 부양가족'(한도 있는 쪽)으로 계산했으므로 65세 미만이다.", "effect": "65세 미만이면 결과가 같다."},
+      {"path": "/expenses/2/age", "value": 35, "kind": "implied_by_source", "reason": "배우자 나이가 문서에 없다. 배우자가 산후조리원비용·난임시술비를 썼으니(출산·난임시술 나이) 65세 미만이 분명하고, 책자 풀이도 배우자 의료비를 '그 외 부양가족'(한도 있는 쪽)으로 계산했다.", "effect": "65세 미만이면 결과가 같다."},
       {"path": "/family_income", "value": {"father": 0, "mother": 0, "spouse": 0}, "kind": "implied_by_source", "reason": "부양가족 소득이 문서에 없다. 문서가 모두 기본공제대상자(all_are_basic_deduction_dependents)라고 해 소득요건 충족으로 보고 0원으로 넣었다.", "effect": "소득요건 안이면 결과가 같다."}
     ]
   },
