@@ -48,6 +48,9 @@ EXPECTED_IDS = {
     "2025.base.pension_insurance_deduction",
     "2025.base.insurance_premium_deduction",
     "2025.base.rounding",
+    # PR 5: 의료비 문턱 빼는 순서(p173), 대학원은 본인만(p185)
+    "2025.medical.threshold_order",
+    "2025.education.graduate_self_only",
 }
 
 # PR 3d로 들어온 규칙이 엔진(PR 4~6)에 넘겨야 할 value 키
@@ -58,7 +61,9 @@ NEW_RULE_KEYS = {
     "2025.education.excluded_persons": {"excluded", "lineal_ascendant_exception"},
     "2025.card.user_basis": {"excluded_relations", "family_card_basis"},
     "2025.card.culture_over_limit": {"gross_limit", "rate_by", "min_usage_by"},
-    "2025.card.rounding": {"stages"},
+    "2025.card.rounding": {"unit", "mode", "stages"},
+    "2025.medical.threshold_order": {"order"},
+    "2025.education.graduate_self_only": {"levels", "eligible"},
     # PR 4
     "2025.base.pension_insurance_deduction": {"payer", "excess_over"},
     "2025.base.insurance_premium_deduction": {"payer", "items"},
@@ -105,9 +110,9 @@ def test_known_todos(rules):
     # Issue #48 정해진 결정: 조문 확인 필요·책자 안 불일치는 TODO로 둔다
     todos = {r.id for r in rules.values() if r.status == "todo"}
     # 자녀 추가액은 법률 제20615호로 확인돼 sourced (PR #54 검증 코멘트)
-    # 카드 절사는 2025 출처를 못 찾아 TODO (Issue #65 표 7번)
     # 기본세율은 소법 §55 ①로 확인돼 sourced (Issue #13, p92)
-    assert todos == {"2025.medical.sublimit", "2025.card.rounding"}
+    # 카드 절사는 원 미만 버림으로 확인돼 sourced (Issue #14 정해진 결정, p242)
+    assert todos == {"2025.medical.sublimit"}
 
 
 def test_tax_rate_sourced(rules):

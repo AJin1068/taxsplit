@@ -9,6 +9,15 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from taxsplit.engine.models_items import (
+    CardDeduction,
+    CardUsage,
+    EducationCredit,
+    EducationExpense,
+    MedicalCredit,
+    MedicalExpense,
+)
+
 # 0 이상 정수만 받는다. "100"(글자)이나 1.5(소수)는 거절한다
 Won = Annotated[int, Field(ge=0, strict=True)]
 
@@ -61,6 +70,8 @@ class OutOfScopeItem(_Frozen):
     kind: Literal["income_deduction", "tax_credit"]
     category: OutOfScopeCategory
     amount: Won
+    # 소득공제 종합한도(2,500만원) 대상인지. 5그룹 밖 법을 엔진이 판단하지 않도록 부르는 쪽이 표시
+    in_combined_limit: bool = False
 
     @model_validator(mode="after")
     def _kind_matches_category(self) -> OutOfScopeItem:
@@ -85,6 +96,10 @@ class WorkerInput(_Frozen):
     health_insurance: Won = 0
     employment_insurance: Won = 0
     long_term_care_insurance: Won = 0
+    # 이 근로자가 공제받는 의료비·교육비·카드 사용금액(공제 대상인 지출만)
+    medical: tuple[MedicalExpense, ...] = ()
+    education: tuple[EducationExpense, ...] = ()
+    card_usage: tuple[CardUsage, ...] = ()
     out_of_scope: tuple[OutOfScopeItem, ...] = ()
 
 
@@ -145,17 +160,34 @@ class TaxResult(_Frozen):
     pension_insurance_deduction: int
     insurance_premium_deduction: int
     out_of_scope_income_deduction: int
+    # 특별소득공제 = 보험료공제 + 5그룹 밖 특별소득공제(주택자금 등)
+    special_income_deduction_total: int
+    # 종합소득공제 = 인적공제 + 연금보험료공제 + 특별소득공제
+    comprehensive_income_deduction: int
+    income_after_deductions: int
+    card: CardDeduction
+    # 그 밖의 소득공제 = 카드 + 5그룹 밖 그 밖의 소득공제
+    other_income_deduction: int
+    combined_limit_target: int
+    combined_limit_excess: int
+    # 근로소득공제부터 모든 소득공제를 더하고 종합한도 초과액을 뺀 값(홈택스 "소득공제 합계")
+    income_deduction_total: int
     # 소득공제 합계가 근로소득금액을 넘어 공제되지 못한 금액
     deduction_excess: int
     taxable_income: int
     computed_tax: int
     earned_income_credit: EarnedIncomeCredit
     child_credit: ChildCredit
+    medical: MedicalCredit
+    education: EducationCredit
+    # 특별세액공제 = 의료비 + 교육비 + 5그룹 밖 특별세액공제(보험료·기부금 등)
+    special_tax_credit_total: int
     standard_tax_credit: int
     standard_credit_chosen: bool
     # 고르지 않은 쪽(특별공제 ↔ 표준세액공제)의 결정세액. 왜 골랐는지 설명할 때 쓴다
     other_option_determined_tax: int
     out_of_scope_tax_credit: int
+    tax_credit_total: int
     determined_tax: int
     out_of_scope: tuple[OutOfScopeResult, ...]
     rules_used: dict[str, tuple[str, ...]]

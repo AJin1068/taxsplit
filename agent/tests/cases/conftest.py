@@ -10,9 +10,16 @@ GROUP_ORDER = ["기본 흐름", "부양가족", "자녀", "의료비", "교육�
 def pytest_terminal_summary(terminalreporter):
     rows = all_rows()
     tr = terminalreporter
-    tr.section("사례 비교 (PR 4)")
-    tr.write_line("| 출처 | 그룹 | 일치 | 비교 | PR 5로 미룸 | 입력으로 씀 | 제외 |")
-    tr.write_line("| --- | --- | --- | --- | --- | --- | --- |")
+    tr.section("사례 비교 (PR 5)")
+    tr.write_line("| 출처 | 결정세액 일치 | 결정세액 비교 |")
+    tr.write_line("| --- | --- | --- |")
+    for source in ("국세청 사례", "홈택스"):
+        det = [r for r in rows if r.source == source and r.stage == "determined_tax"]
+        compared = [r for r in det if r.kind == "compare"]
+        tr.write_line(f"| {source} | {sum(r.ok for r in compared)} | {len(compared)} |")
+    tr.write_line("")
+    tr.write_line("| 출처 | 그룹 | 일치 | 비교 | 범위 밖 | 입력으로 씀 | 제외 | 연결 안 됨 |")
+    tr.write_line("| --- | --- | --- | --- | --- | --- | --- | --- |")
     for source in ("국세청 사례", "홈택스"):
         for group in GROUP_ORDER:
             mine = [r for r in rows if r.source == source and r.group == group]
@@ -21,8 +28,8 @@ def pytest_terminal_summary(terminalreporter):
             c = Counter(r.kind for r in mine)
             ok = sum(r.ok for r in mine)
             tr.write_line(
-                f"| {source} | {group} | {ok} | {c['compare']} | {c['deferred']} "
-                f"| {c['input']} | {c['excluded']} |"
+                f"| {source} | {group} | {ok} | {c['compare']} | {c['out_of_scope']} "
+                f"| {c['input']} | {c['excluded']} | {c['unknown']} |"
             )
     bad = [r for r in rows if r.kind == "compare" and not r.ok]
     # 1원 미만 차이 = 끝수 의심. 엔진 값은 원 단위 정수라 생기면 사례 쪽 소수를 의심한다

@@ -321,6 +321,9 @@ pages = ["p169", "p173"]
 status = "sourced"
 [rule.value]
 limit = 7_000_000
+# unlimited의 age_65_plus·age_6_or_under 나이 경계(요약 문장의 "65세 이상·6세 이하")
+age_65_plus_min_age = 65
+age_6_or_under_max_age = 6
 unlimited = [
   "self",
   "age_65_plus",
@@ -330,6 +333,19 @@ unlimited = [
   "health_insurance_special_case",
   "infertility",
 ]
+
+[[rule]]
+id = "2025.medical.threshold_order"
+year = 2025
+group = "medical"
+summary = "총급여 3% 문턱은 그 외 부양가족 의료비(㉣)에서 먼저 빼고, 모자라면 본인·65세 이상·6세 이하·장애인 등(㉢) → 미숙아·선천성이상아(㉡) → 난임시술비(㉠) 순서로 뺀다"
+# 근거: p173 표 "가~라" (Issue #14 정해진 결정 "의료비 문턱 빼는 순서")
+statute = "소법 §59의4 ②"
+pages = ["p173"]
+status = "sourced"
+[rule.value]
+# others = ㉣, special = ㉢, premature_congenital = ㉡, infertility = ㉠
+order = ["others", "special", "premature_congenital", "infertility"]
 
 [[rule]]
 id = "2025.medical.sublimit"
@@ -394,6 +410,19 @@ preschool = 3_000_000
 school = 3_000_000
 university = 9_000_000
 unlimited = ["self", "disabled_rehab"]
+
+[[rule]]
+id = "2025.education.graduate_self_only"
+year = 2025
+group = "education"
+summary = "대학원 교육비는 근로자 본인 것만 공제한다(부양가족의 대학원 교육비는 대상 아님)"
+# 근거: p185 교육비 사례 풀이에서 대학원생 처남 교육비를 대상에서 뺌. p178 쪽 대조는 기획 확인 대기(Issue #14 [계획] 정할 것 1)
+statute = "소법 §59의4 ③"
+pages = ["p185"]
+status = "sourced"
+[rule.value]
+levels = ["graduate"]
+eligible = ["self"]
 
 [[rule]]
 id = "2025.education.sublimit"
@@ -517,11 +546,13 @@ min_usage_by = "payment_method"
 id = "2025.card.rounding"
 year = 2025
 group = "card"
-summary = "카드 공제 계산의 원 단위 절사(공제제외금액·공제가능금액 등 어느 단계에서 버리는지)"
-statute = ""
-pages = []
-status = "todo"
-todo = "TODO(확인 필요): 2025 귀속 출처를 못 찾음. 2026 귀속 홈택스 미리보기 '신용카드 등 산출과정' 화면 비고에 '절사기준 적용'이 있음(사용자 캡처, 2026-11-17)"
+summary = "카드 공제 계산의 끝수: 원 미만만 버린다. 10원·100원 단위로는 버리지 않는다(원천징수영수증 서식에 적는 금액)"
+# 근거: p238~p242 근로소득 원천징수영수증 서식 작성방법 15 "그 외는 소수점 이하 값만 버리며" (Issue #14 정해진 결정, 2026-11-18 기획 확인)
+statute = "소득세법 시행규칙 별지 제24호서식(1) 작성방법 15"
+pages = ["p242"]
+status = "sourced"
 [rule.value]
-# 출처를 찾으면 절사하는 단계 이름을 채운다
-stages = []
+unit = 1
+mode = "floor"
+# 카드 계산의 모든 단계 값(① ~ ⑥, 공제가능금액, 한도)에 적용
+stages = ["all"]

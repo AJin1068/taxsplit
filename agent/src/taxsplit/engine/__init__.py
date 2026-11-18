@@ -8,10 +8,14 @@ from taxsplit.engine.models import (
     TaxResult,
     WorkerInput,
 )
+from taxsplit.engine.models_items import CardUsage, EducationExpense, MedicalExpense
 from taxsplit.engine.personal import basic_eligibility, is_spouse_with_income
 from taxsplit.engine.rulebook import Rulebook, RuleNotReadyError, RuleValueError
 
 __all__ = [
+    "CardUsage",
+    "EducationExpense",
+    "MedicalExpense",
     "Dependent",
     "OutOfScopeItem",
     "RuleNotReadyError",

@@ -7,12 +7,20 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import Any
 
-from taxsplit.engine import Dependent, OutOfScopeItem, SelfInfo, WorkerInput
+from cases.case_convert_items import (
+    education_expenses,
+    hometax_spending,
+    medical_expenses,
+    nts_card,
+    nts_out_of_scope,
+)
+from cases.case_convert_nts_items import nts_item_inputs
+from taxsplit.engine import Dependent, SelfInfo, WorkerInput
 
 # 사례에 본인 출생연도가 없을 때 쓰는 값(경로우대 70세 미만이면 비교 단계에 영향 없음)
 _ANY_BIRTH_YEAR = 1985
 # "20세 미만", "60세 이상"처럼 나이가 범위로만 적힌 경우, 범위를 만족하는 가장 가까운 나이
-_AGE_NOTES = {"20세 미만": 19, "60세 이상": 60}
+_AGE_NOTES = {"20세 미만": 19, "60세 이상": 60, "65세 이상": 65}
 _RELATIONS = {
     "spouse": "spouse",
     "child": "child",
@@ -34,6 +42,8 @@ class Run:
     credit_inputs: tuple[int, int] | None = None
     gross_is_input: bool = False
     excluded: list[dict[str, Any]] = field(default_factory=list)
+    # 의료비·교육비·카드 항목 사례면 그 계산만 부른다(medical | education | card)
+    item: str | None = None
 
 
 def _worker(gross: int, deps=(), sex="male", birth_year=_ANY_BIRTH_YEAR, **kw) -> WorkerInput:
@@ -95,8 +105,9 @@ def nts_runs(case: dict) -> list[Run]:
             Run(f"{case['id']}#q1", by_q["q1"], _worker(0, [spouse]), target="배우자"),
             Run(f"{case['id']}#q2", by_q["q2"], _worker(0, q2), target=inputs["q2"]["asked_about"]),
         ]
-    # 의료비·교육비·카드 항목 사례: 이번 PR은 실행하지 않고 모두 PR 5로 센다
-    return [Run(case["id"], expected)]
+    # 의료비·교육비·카드 항목 사례: 그 계산만 부른다(공제 선택과 무관하게 그 단계 값을 본다)
+    item, gross, deps, spend = nts_item_inputs(case)
+    return [Run(case["id"], expected, _worker(gross, deps, **spend), item=item)]
 
 
 def _nts_household(case: dict) -> Run:
@@ -114,16 +125,11 @@ def _nts_household(case: dict) -> Run:
                 birth_or_adoption_order=order,
             )
         )
-    paid = {e["item"]: e["amount"] for e in inputs["expenses"] if e["for"] == "worker"}
-    housing = sum(e["amount"] for e in inputs["expenses"] if e["category"] == "housing")
-    oos = (
-        OutOfScopeItem(
-            name="주택자금",
-            kind="income_deduction",
-            category="special_income_deduction",
-            amount=housing,
-        ),
-    )
+    expenses = inputs["expenses"]
+    paid = {e["item"]: e["amount"] for e in expenses if e["for"] == "worker"}
+    levels = {"self": "graduate"}
+    for row in inputs["family"]:
+        levels[row["role"]] = "preschool" if "취학전" in row.get("note", "") else "school"
     worker = _worker(
         _expected_value(case, "gross_salary"),
         deps,
@@ -131,7 +137,10 @@ def _nts_household(case: dict) -> Run:
         national_pension=paid.get("국민연금", 0),
         health_insurance=paid.get("건강보험료", 0),
         long_term_care_insurance=paid.get("노인장기요양보험료", 0),
-        out_of_scope=oos,
+        medical=medical_expenses(expenses),
+        education=education_expenses(expenses, levels),
+        card_usage=nts_card(inputs["card_usage"]),
+        out_of_scope=nts_out_of_scope(case),
     )
     return Run(case["id"], case["expected"], worker, gross_is_input=True)
 
@@ -143,6 +152,7 @@ def hometax_runs(case: dict) -> list[Run]:
     if "mother_in_law" in family:
         people["시어머니"] = (family["mother_in_law"], "lineal_ascendant")
     claimant: dict[str, list[Dependent]] = {"husband": [], "wife": []}
+    claimed_rows: dict[str, dict[str, dict]] = {"husband": {}, "wife": {}}
     for key, who in case["allocation"].items():
         name = key.split("(")[0]
         if "기본공제" in key and name in people:
@@ -154,6 +164,7 @@ def hometax_runs(case: dict) -> list[Run]:
                 income_amount=row.get("income", 0),
             )
             claimant[who].append(dep)
+            claimed_rows[who][name] = row
     runs = []
     for who, sex in (("husband", "male"), ("wife", "female")):
         rows = [e for e in case["expected"] if e["person"] == who]
@@ -172,6 +183,7 @@ def hometax_runs(case: dict) -> list[Run]:
             national_pension=me["national_pension"],
             health_insurance=me["health_insurance"],
             employment_insurance=me["employment_insurance"],
+            **hometax_spending(me, claimed_rows[who]),
         )
         runs.append(Run(f"{case['id']}/{who}", kept, worker, excluded=dropped))
     return runs
