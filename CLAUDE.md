@@ -37,7 +37,7 @@ uv run ruff format --check .
 
 ## 작업 순서
 
-1. 작업 전 최신 `main`을 받는다. 할 일은 GitHub Issue에 있고, `ready` 라벨이 붙은 Issue만 시작한다. Issue 제목의 "PR 번호"(예: `PR 4: 계산 엔진 ①`)가 작업 목록 번호이고, Issue 번호(`#13`)와는 다르다. 직전에 merge된 PR 설명의 "다음에 할 것"·"확인해 주세요"(예전 PR은 "확인 필요") 중 이 Issue에 걸리는 것이 있으면 계획에 반영한다.
+1. 작업 전 최신 `main`을 받는다. 할 일은 GitHub Issue에 있고, `ready` 라벨이 붙은 Issue만 시작한다. Issue 제목의 "PR 번호"(예: `PR 4: 계산 엔진 ①`)가 작업 목록 번호이고, Issue 번호(`#13`)와는 다르다. 직전에 merge된 PR 설명의 "다음에 할 것"·"확인해 주세요"(예전 PR은 "확인 필요") 중 이 Issue에 걸리는 것이 있으면 계획에 반영한다. `bundle` 라벨이 붙은 묶음 Issue는 작업이 아니므로 고르지 않는다(아래 "묶음 Issue").
 2. 코드를 쓰기 전에 계획을 보여준다: 바꿀 파일, 접근 방법, 대안 1개, 완료 기준을 어떻게 확인할지. 사람이 승인하기 전에는 코드를 쓰지 않는다. 계획 승인은 Issue마다가 아니라 묶음으로 한 번 한다. 표시는 사람이 붙이는 `plan-ok` 라벨이다. 개발 세션·검증 Action·스크립트는 `plan-ok`를 붙이지 않는다. 묶음 계획은 `/next-issue <PR 번호들> --plan`으로 Issue마다 `[계획]` 코멘트로 남긴다(한 Issue만 대화에서 계획·승인하는 것도 된다). Issue와 설계 문서에 없는 새 단계·외부 서비스·DB 구조·화면이 필요하면 계획에 넣기 전에 먼저 묻는다.
 3. 브랜치 이름은 `<종류>/pr<번호>-<짧은 설명>` (예: `feat/pr04-tax-engine-basic`). 종류는 feat, fix, chore, docs, eval.
 4. PR 하나는 Issue 하나를 닫는다. PR 설명에 `Closes #<Issue 번호>`를 쓰고, 범위와 완료 기준은 그 Issue를 따른다. 범위 밖 개선은 PR 설명의 "다음에 할 것"에 적는다. Issue에 `needs-verify` 라벨이 있으면 PR에도 붙인다.
@@ -77,7 +77,7 @@ PR 설명 "확인해 주세요" 항목은 아래 순서로 닫는다. 원본 문
 
 사람 손은 판단(무엇을 만들지, 정답이 맞는지, merge할지)만 남긴다. 세션 사이에 내용을 옮기지 않는다. 맥락은 대화방이 아니라 레포(Issue·PR 코멘트·문서)에 둔다 (ADR-0008).
 
-- **기획 (Claude 앱)**: Issue를 쓰고 `ready`·`needs-verify` 라벨을 붙인다. 기획은 앞 PR merge를 기다리지 않고 여러 Issue를 미리 채울 수 있다. `ready`는 여전히 사람이 Issue를 보고 승인한 뒤에만 붙는다. goal 연속 실행에 넣을 Issue에는 "선행 PR"·"손대는 폴더" 칸을 채운다(아래 "goal 연속 실행"). `docs/`(PRD·설계·평가계획·ADR)의 기획 변경도 Issue로 낸다. 그 밖에 `eval/` 정답 만들기(원본 책자가 레포 밖이라 Action이 못 본다)와 홀드아웃 재기(레포에 두면 안 된다)를 맡는다. 정답은 `eval/` 브랜치의 별도 PR로 올린다.
+- **기획 (Claude 앱)**: Issue를 쓰고 `ready`·`needs-verify` 라벨을 붙인다. 기획은 앞 PR merge를 기다리지 않고 여러 Issue를 미리 채울 수 있다. `ready`는 여전히 사람이 Issue를 보고 승인한 뒤에만 붙는다. goal 연속 실행에 넣을 Issue에는 "선행 PR"·"손대는 폴더" 칸을 채운다(아래 "goal 연속 실행"). `docs/`(PRD·설계·평가계획·ADR)의 기획 변경도 Issue로 낸다. 그 밖에 `eval/` 정답 만들기(원본 책자가 레포 밖이라 Action이 못 본다)와 홀드아웃 재기(레포에 두면 안 된다)를 맡는다. 정답은 `eval/` 브랜치의 별도 PR로 올린다. 밤 실행 단위로 묶음 Issue를 만들고 PR Issue를 그 하위로 단다(아래 "묶음 Issue").
 - **개발 세션 (IDE, `/next-issue`)**: 계획 → 승인 → 구현 → PR. 평가 하네스의 실행 장치는 `agent/`에 만든다. `eval/`의 채점 규칙·채점 코드·정답은 돌려 보기만 한다. PR의 `[검증]` 코멘트를 읽고 반영한다.
 - **검증 Action (`.github/workflows/verify.yml`)**: 모든 PR에서 열릴 때와 새 커밋마다 새 문맥으로 돌아 `[검증]` 코멘트 하나를 남기고 고쳐 쓴다. 할 일과 형식은 `.claude/commands/verify-pr.md` 한 곳에 있고, IDE에서 `/verify-pr <PR 번호>`로 같은 검증을 돌릴 수 있다. `needs-verify` 라벨이 붙은 PR은 점수를 다시 잰다. 다음 PR에서 할 일은 해당 PR 번호의 열린 Issue에 코멘트로 남긴다(없으면 `ready` 없이 새 Issue). 코드 push·merge·승인·`ready` 붙이기는 하지 않는다. 정답이 틀려 보이면 고치지 않고 사람 확인 필요로 적는다.
 - **사람**: 계획 승인(대화에서, 또는 묶음 계획을 보고 Issue마다 `plan-ok` 라벨), 정답 검수(`draft` → `confirmed`), `[검증]` 코멘트를 보고 쌓인 순서대로 merge.
@@ -108,6 +108,19 @@ PR 설명 "확인해 주세요" 항목은 아래 순서로 닫는다. 원본 문
 - **기계 검문** (`scripts/goal/lib-checks.sh`): ① `agent/`의 pytest·ruff 세 명령 ② `eval/`·`.github/`·`.claude/` 변경 없음 ③ base 대비 새 skip·xfail 없음, 지운 테스트 함수 없음 ④ 열린 PR, `Closes #<Issue>`, `needs-verify` 옮김, base·head 맞음 ⑤ 지금 커밋 기준 검증 Action의 `[검증]`이 "미달"이 아님 ⑥ 바뀐 파일이 모두 "손대는 폴더" 안. 떨어지면 떨어진 항목을 붙여 한 번만 다시 돌리고, 또 떨어지면 `failed`다.
 - 스크립트와 지휘 세션은 merge, 라벨(`ready`·`plan-ok`·`infra-ok`) 붙이기, force push, rebase를 하지 않는다. 지휘 세션은 코드·브랜치를 고치지 않는다.
 
+## 묶음 Issue
+
+밤 실행 한 번에 돌릴 PR Issue 여러 개를 묶은 것이 묶음이다.
+
+- **구조**: 묶음은 GitHub 상위 Issue 하나로 만들고, 기존 "PR N:" Issue를 그 아래 하위 Issue(GitHub sub-issue)로 단다. 지금 묶음: #83(묶음 1)~#89(묶음 7).
+- **제목**: 묶음 Issue 제목은 `묶음 N: …`이다. `PR N:`으로 시작하면 안 된다. `/next-issue`와 `scripts/goal-run.sh`(`scripts/goal/lib-lanes.sh`)는 제목이 `PR <번호>:`로 시작하는 Issue를 작업으로 고르기 때문이다.
+- **라벨**: 묶음 Issue에는 `bundle` 라벨만 붙인다. `ready`·`plan-ok`·`needs-verify`는 하위 PR Issue에만 붙인다.
+- **칸**: "선행 PR"·"손대는 폴더" 칸은 하위 PR Issue에만 쓴다. 스크립트는 하위 Issue의 칸만 읽고 묶음 Issue는 읽지 않는다. 묶음 Issue에 적은 "예상 줄"과 하위 Issue 칸이 다르면 하위 Issue가 맞다.
+- **기록 나누기**: 기능 기록(범위, 완료 기준, 정해진 결정, `[계획]` 코멘트, 선행 PR, 손대는 폴더)은 하위 Issue에 남긴다. 묶음 관리 기록(실행 명령과 시각, 마지노선 날짜, 아침 결과 요약, merge 순서, 막힌 것)은 묶음 Issue에 남긴다.
+- **날짜**: 스크립트는 날짜를 보지 않는다. 묶음 Issue의 "늦어도" 날짜는 마지노선일 뿐이고, 앞 묶음이 merge되고 하위 Issue가 `ready`·`plan-ok`이면 언제든 실행한다.
+- **묶음 완료**: 묶음 Issue의 하위 Issue가 모두 닫히면 그 묶음은 끝이다.
+- **"묶음 계획"과의 관계**: "작업 순서" 2번의 묶음 계획(`/next-issue <PR 번호들> --plan`)은 보통 한 묶음의 하위 PR Issue 번호들을 넘겨 한꺼번에 계획하는 것이다. `[계획]` 코멘트는 하위 Issue에 달고, 묶음 Issue 번호는 넘기지 않는다.
+
 ## 벽 (점수를 믿을 수 있게 하는 규칙)
 
 - 개발 PR은 `eval/`을 고치지 않는다. 감시 검사 `guard`가 막는다. `eval/` 변경은 `eval/` 브랜치의 별도 PR로만 한다.
@@ -124,4 +137,5 @@ PR 설명 "확인해 주세요" 항목은 아래 순서로 닫는다. 원본 문
 - **에이전트 하네스**: 서비스 안에서 모델에게 도구를 주고 호출을 검사·실행하는 루프 (`agent/`).
 - **검증 Action**: PR마다 새 문맥으로 도는 Claude Code GitHub Action. 레포·Issue·PR만 읽고 개발 세션의 대화를 넘겨받지 않는다. 결과는 `[검증]` 코멘트 하나다.
 - **`needs-verify`**: 점수가 나오는 PR에 붙이는 라벨. 기획이 Issue에 붙이고 개발 세션이 PR에 옮겨 붙인다. 붙은 PR은 검증 Action이 점수를 다시 잰다(평가 하네스 PR 11 전까지는 "아직 장치 없음").
+- **묶음**: 밤 실행 한 번에 돌릴 PR Issue들을 묶은 GitHub 상위 Issue. 제목은 `묶음 N:`, 라벨은 `bundle`만 붙는다("묶음 Issue" 절).
 - **서비스 안 검증 에이전트**: 서비스 실행 중 메인 에이전트의 판정과 근거를 다시 보는 기능. 평가 하네스로 채점받는 대상이다.
