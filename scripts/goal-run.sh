@@ -50,7 +50,7 @@ if [[ -n $(git status --porcelain) ]]; then
   exit 1
 fi
 mkdir -p "$RUN_DIR" "$LANES_DIR"
-# 맥북이 밤새 잠들지 않게 한다 (이 스크립트가 끝나면 같이 끝난다).
+# 실행 중에 맥북이 잠들지 않게 한다 (이 스크립트가 끝나면 같이 끝난다).
 command -v caffeinate >/dev/null && caffeinate -dims -w $$ &
 # 동시에 fetch하면 잠금이 부딪히므로 시작할 때 한 번만 받는다.
 git fetch -q origin
