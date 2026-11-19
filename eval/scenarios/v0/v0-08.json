@@ -1,10 +1,11 @@
 {
   "id": "v0-08",
   "version": "v0",
-  "status": "draft",
+  "status": "confirmed",
   "review": {
-    "reviewer": null,
-    "date": null
+    "reviewer": "AJin1068",
+    "date": "2026-11-19",
+    "scope": "사람은 PR #124 설명의 대조표(이야기와 계산기에 넣은 값, 정답을 가르는 줄)와 시나리오 요약을 봄. 세금 합계 숫자는 검증된 계산 엔진 값이라 따로 대조하지 않음"
   },
   "title": "부양가족 없는 맞벌이",
   "groups": [

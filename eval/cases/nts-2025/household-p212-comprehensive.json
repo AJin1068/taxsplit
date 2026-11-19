@@ -130,8 +130,8 @@
     {"stage": "refund_or_payment", "value": -759768, "page": 219, "booklet_text": "240,232원(결정세액) - 1,000,000원(기납부세액) = △ 759,768원 (음수 = 환급)"}
   ],
   "supplement": {
-    "status": "draft",
-    "review": {"reviewer": "AJin1068", "date": "2026-11-18", "scope": "사람은 문서에서 알아낸 값(implied_by_source) 중 인쇄 100쪽 소득 0원, 177쪽 배우자 65세 미만, 212쪽 자녀 소득 0원을 원문과 대조함. 문서에 없어 골라 넣은 값(not_in_source)은 결과에 영향 없는 값이라 개별 대조 안 함"},
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-19", "scope": "사람은 문서에서 알아낸 값(implied_by_source) 중 인쇄 100쪽 소득 0원, 177쪽 배우자 65세 미만, 212쪽 자녀 소득 0원을 원문과 대조함. 문서에 없어 골라 넣은 값(not_in_source)은 결과에 영향 없는 값이라 개별 대조 안 함 2026-11-19 배우자 있음(/worker/has_spouse, 인쇄 212쪽 가족 목록에 배우자가 있음)을 PR #124에서 사람이 검수함."},
     "values": [
       {"path": "/worker/sex", "value": "male", "kind": "not_in_source", "reason": "문서에 근로자 성별이 없다.", "effect": "근로소득금액 52,380,000원이 부녀자공제 소득 기준 3천만원(규칙 2025.dependent.additional.woman income_limit)을 넘어 여성이어도 결과가 같다."},
       {"path": "/family/1/income", "value": 0, "kind": "implied_by_source", "reason": "첫째 소득이 문서에 없다. 책자 풀이가 자녀 3명을 기본공제에 넣었으므로 소득요건 충족으로 보고 0원으로 넣었다.", "effect": "소득요건 안이면 결과가 같다."},
