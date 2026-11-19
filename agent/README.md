@@ -34,3 +34,32 @@ curl -N localhost:8000/conversations/$CID/messages -H 'content-type: application
 ```
 
 AI가 쓴 답은 다 받은 뒤 센서 3개(금액·판정·계산 전 답 금지)로 검사하고, 통과한 답만 조각으로 나눠 보낸다. 그래서 첫 글자가 조금 늦게 나온다.
+
+## 평가 하네스 (PR 11)
+
+시나리오(`eval/scenarios/v0/`)마다 "가상 사용자(AI) ↔ 메인 에이전트" 대화를 채팅 API로 돌리고, `eval/scoring/score.py`로 채점해 결과 JSON을 `eval-runs/`에 쓴다. 명령 하나로 실행·채점·저장·비교까지 한다.
+
+```bash
+cd agent
+# 실제 API (돈이 든다. 10개 × 3번에 약 10달러, 상한 기본 10달러)
+LLM_PROVIDER=anthropic uv run python -m taxsplit.harness run
+# 한 시나리오만 한 번
+LLM_PROVIDER=anthropic uv run python -m taxsplit.harness run --only v0-02 --repeat 1
+# 기준 결과와 비교(떨어지면 끝 값 1)
+LLM_PROVIDER=anthropic uv run python -m taxsplit.harness run --baseline eval-runs/<기준>.json
+```
+
+| 옵션 | 뜻 |
+| --- | --- |
+| `--scenarios <폴더>` | 시나리오 폴더(기본 `eval/scenarios/v0`). 레포 밖 홀드아웃 폴더도 읽는다 |
+| `--repeat N` | 시나리오마다 반복 수(기본 3) |
+| `--only <id>` | 그 시나리오만(여러 번 줄 수 있음) |
+| `--judge` | GPT 채점(최종 설명이 배분 결과와 맞나)도 한다. `OPENAI_API_KEY` 필요 |
+| `--baseline <JSON>` | 기준 결과와 비교: 떨어짐 / 같음 또는 좋아짐 / 비용 늘어남(경고) |
+| `--out <경로>` | 결과 JSON 경로(기본 `eval-runs/<날짜>-run.json`, 덮어쓰지 않음) |
+| `--max-cost-usd N` | 누적 비용 상한(기본 10). 넘으면 새 대화를 시작하지 않고 저장 |
+| `--base-url <주소>` | 떠 있는 서버를 부른다. 없으면 같은 프로세스에 앱을 띄운다 |
+
+- 가상 사용자 모델은 `LLM_MODEL_SIM_USER`(예: `claude-haiku-5-5`), 채점 모델은 `LLM_MODEL_JUDGE`(비면 `gpt-6.2-sol`).
+- 끝 값: 0 정상, 1 기준보다 떨어짐, 2 설정·시나리오 오류(파일 이름과 칸을 알려 줌).
+- pytest는 가짜 LLM으로 같은 명령을 끝까지 돌린다(`tests/harness/`, 돈이 들지 않음).
