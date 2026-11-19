@@ -44,6 +44,19 @@
       {"path": "/children_income", "value": 0, "kind": "not_in_source", "reason": "자녀 소득이 문서에 없다.", "effect": "자녀 교육비는 기본공제대상자를 위해 낸 것이어야 하고, 소득 0원이면 소득요건 안이다."}
     ]
   },
+  "eligibility": {
+    "status": "draft",
+    "review": {"reviewer": null, "date": null, "scope": null},
+    "rows": [
+      {"path": "/expenses/0", "deductible": true, "page": 185, "text": "① 본인교육비：800만원"},
+      {"path": "/expenses/1", "deductible": true, "page": 185, "text": "＊ 취학전 아동의 영유아 보육료 120만원은 공제 대상"},
+      {"path": "/expenses/2", "deductible": false, "filtered_by": "input", "page": 185, "text": "초등학생의 학원･체육시설 수강료는 공제 대상이 아님"},
+      {"path": "/expenses/3", "deductible": true, "page": 185, "text": "② 자녀 교육비：420만원(120만원+300만원)"},
+      {"path": "/expenses/4", "deductible": false, "filtered_by": "engine", "page": 185, "text": "대학원생인 처남의 교육비는 공제 대상이 아님"},
+      {"path": "/expenses/5", "deductible": true, "page": 185, "text": "대학생 처남 900만원(공제한도) (한도는 엔진 규칙)"},
+      {"path": "/expenses/6", "deductible": true, "page": 185, "text": "동생 750만원 공제가능"}
+    ]
+  },
   "notes": [
     "책자: 취학전 아동 보육료는 공제 대상, 초등학생 학원·체육시설 수강료는 대상 아님, 대학원생 처남 교육비는 대상 아님."
   ]

@@ -257,6 +257,15 @@
       {"path": "/family/children/1/income", "value": 0, "kind": "not_in_source", "reason": "자녀 소득이 입력표에 없다. 어린 자녀라 0원으로 넣었다.", "effect": "홈택스에 기본공제 대상으로 넣었으니 소득요건 안이다. 0원이면 결과가 같다."}
     ]
   },
+  "eligibility": {
+    "status": "draft",
+    "review": {"reviewer": null, "date": null, "scope": null},
+    "rows": [
+      {"path": "/family/children/0/education", "deductible": true, "text": "홈택스 모의계산 입력값: 입력한 사람(AJin1068)이 공제 대상으로 넣은 금액이다. 문서 풀이가 아니라 입력표 근거. 초등학생 방과후학교 수업료 → 교육비 초중고 칸"},
+      {"path": "/family/children/1/education", "deductible": true, "text": "홈택스 모의계산 입력값: 입력한 사람(AJin1068)이 공제 대상으로 넣은 금액이다. 문서 풀이가 아니라 입력표 근거. 취학 전 어린이집 보육료 → 교육비 취학전 칸"},
+      {"path": "/family/children/1/medical", "deductible": true, "text": "홈택스 모의계산 입력값: 입력한 사람(AJin1068)이 공제 대상으로 넣은 금액이다. 문서 풀이가 아니라 입력표 근거. 5세 자녀 의료비 → 의료비 6세 이하 칸"}
+    ]
+  },
   "notes": [
     "모든 실행에서 근무기간 2025.1.1.~12.31., 비과세 소득 없음, 기납부세액 0원으로 넣었다. 그래서 refund_or_payment(차감징수세액)는 결정세액에서 10원 미만을 버린 값이다(화면 그대로).",
     "남편·아내 모두 요약 화면 1장씩만 있다. 상세 화면(근로소득공제, 카드 공제, 근로소득세액공제, 의료비·교육비 세액공제 등)은 캡처하지 않아 중간값이 없다. 그래서 남편은 과세표준·산출세액도 없고, 아내는 요약 합계만 있다.",
