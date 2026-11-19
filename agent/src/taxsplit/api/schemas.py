@@ -1,10 +1,25 @@
 from datetime import datetime
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
 class CreateConversationRequest(BaseModel):
     title: str = Field(min_length=1, max_length=200)
+    # 간소화 PDF 추출 결과(ExtractedDoc 형식) 0~2개. 검사는 서비스가 PR 12 검사로 한다
+    documents: list[Any] = Field(default_factory=list)
+
+
+class SendMessageRequest(BaseModel):
+    content: str = Field(min_length=1, max_length=4000)
+
+
+class MessageResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    seq: int
+    role: Literal["user", "assistant"]
+    content: str
 
 
 class ConversationResponse(BaseModel):

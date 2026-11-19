@@ -20,6 +20,8 @@ def _config(out: io.StringIO) -> Config:
     cfg = Config(str(AGENT_DIR / "alembic.ini"), output_buffer=out)
     # 접속하지 않는 Postgres 주소. --sql 모드는 SQL 글만 만든다
     cfg.set_main_option("sqlalchemy.url", "postgresql+asyncpg://x:x@localhost:5432/x")
+    # pytest의 로그 설정을 alembic.ini가 덮어쓰지 않게 한다
+    cfg.attributes["configure_logger"] = False
     return cfg
 
 
@@ -80,6 +82,8 @@ def test_migration_matches_table_definitions(upgrade_sql: str) -> None:
         block = _create_block(upgrade_sql, table)
         columns = [line.split()[0] for line in block.strip().splitlines()]
         columns = [c for c in columns if c.islower() and c not in ("constraint",)]
+        # 뒤 리비전이 ALTER TABLE로 더한 칸은 CREATE TABLE 뒤에 붙는다
+        columns += re.findall(rf"ALTER TABLE {table} ADD COLUMN (\w+)", upgrade_sql)
         assert columns == [c.name for c in metadata.tables[table].columns], table
 
 
@@ -92,6 +96,7 @@ def test_downgrade_drops_five_tables() -> None:
 def test_online_upgrade_downgrade_upgrade_on_sqlite(tmp_path: Path) -> None:
     # 실제 DB에 적용·되돌리기·다시 적용이 되는지 SQLite 파일로 본다(Postgres 적용은 맥북에서 사람이)
     cfg = Config(str(AGENT_DIR / "alembic.ini"))
+    cfg.attributes["configure_logger"] = False
     cfg.set_main_option("sqlalchemy.url", f"sqlite+aiosqlite:///{tmp_path / 'm.db'}")
     command.upgrade(cfg, "head")
     command.downgrade(cfg, "base")

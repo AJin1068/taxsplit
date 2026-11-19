@@ -4,6 +4,12 @@ from collections.abc import AsyncIterator
 import anthropic
 import httpx2
 
+from taxsplit.llm.anthropic_blocks import (
+    ToolUseCollector,
+    request_params,
+    tool_uses_from,
+    usage_from,
+)
 from taxsplit.llm.base import (
     LLMError,
     LLMRequest,
@@ -14,15 +20,6 @@ from taxsplit.llm.base import (
     TextDelta,
     Usage,
 )
-
-
-def _usage(raw: object) -> Usage:
-    return Usage(
-        input_tokens=getattr(raw, "input_tokens", None) or 0,
-        output_tokens=getattr(raw, "output_tokens", None) or 0,
-        cache_creation_input_tokens=getattr(raw, "cache_creation_input_tokens", None) or 0,
-        cache_read_input_tokens=getattr(raw, "cache_read_input_tokens", None) or 0,
-    )
 
 
 def _to_llm_error(exc: Exception, usage: Usage | None = None) -> LLMError:
@@ -79,22 +76,8 @@ class AnthropicLLMClient:
             http_client=http_client,
         )
 
-    def _params(self, request: LLMRequest) -> dict:
-        if request.model is None or request.max_tokens is None:
-            raise ValueError(
-                "model과 max_tokens가 채워진 요청이어야 한다 (RecordingLLMClient 경유)"
-            )
-        params: dict = {
-            "model": request.model,
-            "max_tokens": request.max_tokens,
-            "messages": [{"role": m.role, "content": m.content} for m in request.messages],
-        }
-        if request.system is not None:
-            params["system"] = request.system
-        return params
-
     async def complete(self, request: LLMRequest) -> LLMResponse:
-        params = self._params(request)
+        params = request_params(request)
         try:
             async with asyncio.timeout(self._total_timeout):
                 message = await self._client.messages.create(**params)
@@ -104,13 +87,14 @@ class AnthropicLLMClient:
         return LLMResponse(
             text=text,
             model=message.model,
-            usage=_usage(message.usage),
+            usage=usage_from(message.usage),
             stop_reason=message.stop_reason,
             request_id=getattr(message, "_request_id", None),
+            tool_uses=tool_uses_from(message.content),
         )
 
     async def stream(self, request: LLMRequest) -> AsyncIterator[StreamEvent]:
-        params = self._params(request)
+        params = request_params(request)
         loop = asyncio.get_running_loop()
         deadline = loop.time() + self._total_timeout
         usage = Usage()
@@ -118,6 +102,7 @@ class AnthropicLLMClient:
         stop_reason: str | None = None
         parts: list[str] = []
         request_id: str | None = None
+        tools = ToolUseCollector()
 
         try:
             # 전체 마감은 "다음 이벤트를 기다리는 동안"에만 건다. yield를 감싸면
@@ -136,10 +121,16 @@ class AnthropicLLMClient:
                     match event.type:
                         case "message_start":
                             model = event.message.model
-                            usage = _usage(event.message.usage)
+                            usage = usage_from(event.message.usage)
                         case "content_block_delta" if event.delta.type == "text_delta":
                             parts.append(event.delta.text)
                             yield TextDelta(event.delta.text)
+                        case "content_block_start":
+                            tools.start(event.index, event.content_block)
+                        case "content_block_delta" if event.delta.type == "input_json_delta":
+                            tools.delta(event.index, event.delta.partial_json)
+                        case "content_block_stop":
+                            tools.stop(event.index)
                         case "message_delta":
                             stop_reason = event.delta.stop_reason
                             # message_delta의 usage는 누적값. 출력 토큰은 여기서 확정된다
@@ -170,5 +161,6 @@ class AnthropicLLMClient:
                 usage=usage,
                 stop_reason=stop_reason,
                 request_id=request_id,
+                tool_uses=tuple(tools.done),
             )
         )

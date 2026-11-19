@@ -1,6 +1,6 @@
 """Postgres 저장소 4개 (대화·메시지·가구·LLM 호출). 메모리 구현과 같은 메서드 모양이다.
 
-도구 호출(tool_calls) 저장소는 에이전트 루프와 잇는 PR 10(#19)에서 만든다.
+도구 호출(tool_calls) 저장소는 `db/tool_call_repository.py`에 있다.
 """
 
 import uuid
@@ -32,6 +32,7 @@ class SqlConversationRepository:
             "title": conversation.title,
             "household_id": conversation.household_id,
             "self_role": conversation.self_role,
+            "documents": conversation.documents,
         }
         # engine.begin(): 블록이 끝나면 커밋, 예외면 롤백
         async with self._engine.begin() as conn:
@@ -63,6 +64,7 @@ class SqlConversationRepository:
             id=row["id"],
             household_id=row["household_id"],
             self_role=row["self_role"],
+            documents=row["documents"],
         )
 
 
@@ -142,7 +144,7 @@ class SqlHouseholdRepository:
 
 
 class SqlLlmCallRepository:
-    """LlmCallRepository(llm/call_log.py)의 Postgres 구현. 대화 id는 PR 10이 잇는다."""
+    """LlmCallRepository(llm/call_log.py)의 Postgres 구현. 대화 번호(conversation_id)도 남긴다."""
 
     def __init__(self, engine: AsyncEngine) -> None:
         self._engine = engine
@@ -165,5 +167,5 @@ class SqlLlmCallRepository:
         return LlmCall(**data)
 
 
-# LlmCall과 llm_calls 표에 같이 있는 칸 (conversation_id는 표에만 있음)
-_LLM_CALL_FIELDS = tuple(c.name for c in llm_calls.columns if c.name != "conversation_id")
+# LlmCall과 llm_calls 표의 칸은 이름이 같다
+_LLM_CALL_FIELDS = tuple(c.name for c in llm_calls.columns)

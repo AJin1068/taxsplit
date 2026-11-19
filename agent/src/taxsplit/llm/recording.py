@@ -109,6 +109,7 @@ class RecordingLLMClient:
             error_type=error_type,
             status_code=status_code,
             request_id=request_id,
+            conversation_id=request.conversation_id,
         )
         log_call(call)
         await self._repo.add(call)

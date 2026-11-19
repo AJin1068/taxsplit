@@ -1,7 +1,7 @@
 from collections.abc import AsyncIterator, Sequence
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Literal, Protocol
+from typing import Any, Literal, Protocol
 
 
 class CallKind(StrEnum):
@@ -15,9 +15,46 @@ class CallKind(StrEnum):
 
 
 @dataclass(frozen=True)
-class Message:
-    role: Literal["user", "assistant"]
+class ToolSpec:
+    """AI에게 주는 도구 하나(이름, 설명, 입력 JSON 스키마)."""
+
+    name: str
+    description: str
+    input_schema: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class TextBlock:
+    text: str
+
+
+@dataclass(frozen=True)
+class ToolUseBlock:
+    """AI가 보낸 도구 호출 하나. id는 결과(ToolResultBlock)를 짝지을 때 쓴다."""
+
+    id: str
+    name: str
+    input: Any
+
+
+@dataclass(frozen=True)
+class ToolResultBlock:
+    """도구 결과를 AI에게 돌려주는 블록. is_error면 AI가 실패로 읽는다."""
+
+    tool_use_id: str
     content: str
+    is_error: bool = False
+
+
+type ContentBlock = TextBlock | ToolUseBlock | ToolResultBlock
+
+
+@dataclass(frozen=True)
+class Message:
+    """대화 한 줄. 글만 있으면 str, 도구 호출·결과가 있으면 블록 목록."""
+
+    role: Literal["user", "assistant"]
+    content: str | tuple[ContentBlock, ...]
 
 
 @dataclass(frozen=True)
@@ -29,6 +66,9 @@ class LLMRequest:
     system: str | None = None
     model: str | None = None
     max_tokens: int | None = None
+    tools: Sequence[ToolSpec] = ()
+    # 호출 기록(llm_calls)에 남길 대화 번호. 대화 밖 호출(추출·평가)은 None
+    conversation_id: int | None = None
 
 
 @dataclass(frozen=True)
@@ -46,6 +86,8 @@ class LLMResponse:
     usage: Usage
     stop_reason: str | None
     request_id: str | None = None
+    # AI가 이번 답에서 부른 도구들(없으면 빈 tuple)
+    tool_uses: tuple[ToolUseBlock, ...] = ()
 
 
 @dataclass(frozen=True)

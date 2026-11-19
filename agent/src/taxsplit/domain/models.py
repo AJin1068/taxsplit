@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 
 from taxsplit.allocation.models import Household
 
@@ -19,6 +19,8 @@ class Conversation:
     id: int | None = None
     household_id: int | None = None
     self_role: SelfRole | None = None
+    # 대화를 만들 때 받은 간소화 PDF 추출 결과(ExtractedDoc을 JSON으로 바꾼 것, 0~2개)
+    documents: list[dict[str, Any]] | None = None
 
 
 @dataclass
@@ -43,6 +45,14 @@ class StoredHousehold:
     created_at: datetime
     updated_at: datetime
     id: int | None = None
+
+
+class InvalidDocuments(Exception):
+    """대화 만들 때 받은 추출 결과가 검사에 떨어짐. errors는 '칸 경로: 이유' 한국어 줄."""
+
+    def __init__(self, errors: list[str]) -> None:
+        super().__init__("; ".join(errors))
+        self.errors = errors
 
 
 class ConversationNotFound(Exception):

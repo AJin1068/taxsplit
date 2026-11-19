@@ -8,6 +8,7 @@ from taxsplit.llm.base import (
     StreamEnd,
     StreamEvent,
     TextDelta,
+    ToolUseBlock,
     Usage,
 )
 
@@ -74,3 +75,53 @@ class FakeLLMClient:
         if self.skip_end:
             return
         yield StreamEnd(self._response(request))
+
+
+type ScriptStep = str | ToolUseBlock | tuple[ToolUseBlock, ...] | LLMError
+
+
+class ScriptedLLMClient:
+    """테스트가 차례를 정해 두는 가짜 클라이언트(에이전트 루프 테스트용).
+
+    steps의 한 칸이 호출 한 번의 답이다.
+      str              그 글로 답한다
+      ToolUseBlock(들)  그 도구를 그 인자로 부른다
+      LLMError         그 오류를 낸다
+    차례가 다 떨어지면 LLMError를 낸다(테스트가 호출 수를 잘못 셌다는 뜻).
+    """
+
+    provider = "fake"
+
+    def __init__(self, steps: list[ScriptStep], usage: Usage | None = None) -> None:
+        self.steps = list(steps)
+        self.usage = usage or Usage(input_tokens=10, output_tokens=5)
+        self.requests: list[LLMRequest] = []
+
+    def _next(self, request: LLMRequest) -> LLMResponse:
+        self.requests.append(request)
+        if not self.steps:
+            raise LLMError("가짜 대본이 끝났는데 또 불렀다")
+        step = self.steps.pop(0)
+        if isinstance(step, LLMError):
+            raise step
+        if isinstance(step, str):
+            text, uses, stop = step, (), "end_turn"
+        else:
+            text, uses, stop = "", (step if isinstance(step, tuple) else (step,)), "tool_use"
+        return LLMResponse(
+            text=text,
+            model=request.model or "fake",
+            usage=self.usage,
+            stop_reason=stop,
+            request_id="fake-request",
+            tool_uses=uses,
+        )
+
+    async def complete(self, request: LLMRequest) -> LLMResponse:
+        return self._next(request)
+
+    async def stream(self, request: LLMRequest) -> AsyncIterator[StreamEvent]:
+        response = self._next(request)
+        if response.text:
+            yield TextDelta(response.text)
+        yield StreamEnd(response)

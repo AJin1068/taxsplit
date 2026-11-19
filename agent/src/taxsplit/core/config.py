@@ -45,8 +45,13 @@ class Settings(BaseSettings):
     # 차원을 바꾸면 rag_chunks 표의 vector(384) 칸도 새 마이그레이션으로 바꿔야 한다
     rag_embedding_model: str = "intfloat/multilingual-e5-small"
     rag_embedding_dim: int = 384
+    # 근거 찾기 방법. 비우면 선택 의존성(--extra rag)이 깔려 있으면 hybrid, 아니면 keyword
+    rag_method: Literal["keyword", "vector", "hybrid"] | None = None
 
-    @field_validator("anthropic_api_key", "llm_base_url", mode="before")
+    # 에이전트 루프 운영값(세법 숫자 아님, 실제 대화를 본 뒤 조정). 도구 결과를 돌려주는 호출 포함
+    agent_max_llm_calls_per_turn: int = 10
+
+    @field_validator("anthropic_api_key", "llm_base_url", "rag_method", mode="before")
     @classmethod
     def _blank_is_none(cls, value: object) -> object:
         # .env.example처럼 `LLM_BASE_URL=`로 비워 두면 None(=SDK 기본값)으로 본다
