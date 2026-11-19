@@ -1,0 +1,21 @@
+[
+  {
+    "tax_year": 2024,
+    "worker_name": "가상남편",
+    "items": [
+      { "group": "card", "kind": "신용카드", "person_name": "가상남편", "amount": 18000000 },
+      { "group": "card", "kind": "현금영수증", "person_name": "가상남편", "amount": 2400000 },
+      { "group": "medical", "kind": "일반", "person_name": "가상어머니", "amount": 3200000 },
+      { "group": "insurance", "kind": "국민연금", "person_name": "가상남편", "amount": 2700000 }
+    ]
+  },
+  {
+    "tax_year": 2024,
+    "worker_name": "가상아내",
+    "items": [
+      { "group": "card", "kind": "신용카드", "person_name": "가상아내", "amount": 12000000 },
+      { "group": "education", "kind": "취학전", "person_name": "가상자녀", "amount": 1800000 },
+      { "group": "insurance", "kind": "국민연금", "person_name": "가상아내", "amount": 1800000 }
+    ]
+  }
+]
