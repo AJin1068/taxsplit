@@ -1,4 +1,4 @@
-"""confirmed 사례를 읽어 단계마다 비교 줄을 만든다(비교 / 범위 밖 / 입력으로 씀 / 제외).
+"""confirmed 사례를 읽어 단계마다 비교 줄을 만든다(비교 / 범위 밖 / 입력으로 씀 / 제외 / 입력 부족).
 
 PR 5부터 결정세액까지 비교한다. 5그룹 밖 단계 값은 엔진 입력으로 옮겨 "입력으로 씀"으로,
 환급·납부세액처럼 이번 범위 밖 단계는 "범위 밖"으로 센다(Issue #14).
@@ -11,8 +11,10 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
-from cases.case_convert import Run, hometax_runs, nts_runs
+from cases.case_convert import nts_runs
+from cases.case_convert_hometax import hometax_runs
 from cases.case_convert_items import OUT_OF_SCOPE_STAGES as MOVED_TO_INPUT
+from cases.case_run import Run
 from cases.case_stages import ITEM_STAGES, OUT_OF_SCOPE_STAGES, TARGET_STAGES, TOTAL_STAGES
 from taxsplit.engine import Rulebook, compute_tax
 from taxsplit.engine.card import card_deduction
@@ -25,7 +27,7 @@ CASES_DIR = Path(__file__).resolve().parents[3] / "eval" / "cases"
 SOURCES = {"nts-2025": "국세청 사례", "hometax-2025": "홈택스"}
 
 INPUT_STAGES = {"total_pay", "nontaxable_total", *MOVED_TO_INPUT}
-_ITEM_FUNCS = {"medical": medical_credit, "education": education_credit, "card": card_deduction}
+ITEM_FUNCS = {"medical": medical_credit, "education": education_credit, "card": card_deduction}
 
 
 @dataclass(frozen=True)
@@ -34,7 +36,7 @@ class Row:
     case: str
     stage: str
     group: str
-    kind: str  # compare | out_of_scope | input | excluded
+    kind: str  # compare | out_of_scope | input | excluded | missing_input
     expected: Any = None
     actual: Any = None
 
@@ -60,7 +62,7 @@ def group_of(stage: str) -> str:
 
 def _item_result(run: Run, rules) -> SimpleNamespace:
     """항목 사례: 그 항목 계산만 불러 r.medical / r.education / r.card 모양으로 돌려준다."""
-    return SimpleNamespace(**{run.item: _ITEM_FUNCS[run.item](run.worker, Rulebook(rules))})
+    return SimpleNamespace(**{run.item: ITEM_FUNCS[run.item](run.worker, Rulebook(rules))})
 
 
 def _rows(source: str, run: Run, rules) -> list[Row]:
@@ -97,10 +99,9 @@ def _rows(source: str, run: Run, rules) -> list[Row]:
         elif result and not run.item and stage in TOTAL_STAGES:
             kind, actual = "compare", TOTAL_STAGES[stage](result)
         rows.append(Row(source, run.label, stage, group_of(stage), kind, value, actual))
-    for e in run.excluded:
-        rows.append(
-            Row(source, run.label, e["stage"], group_of(e["stage"]), "excluded", e["value"])
-        )
+    for kind, extra in (("excluded", run.excluded), ("missing_input", run.missing)):
+        for e in extra:
+            rows.append(Row(source, run.label, e["stage"], group_of(e["stage"]), kind, e["value"]))
     return rows
 
 

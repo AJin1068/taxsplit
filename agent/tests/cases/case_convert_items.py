@@ -1,22 +1,12 @@
 """사례의 의료비·교육비·카드 지출 → 엔진 입력 변환(테스트 쪽에만 둔다).
 
-엔진은 "공제 대상인 지출"만 받는다(Issue #14 [계획] 정할 것 2). 그래서 책자 풀이가
-"대상 아님"으로 뺀 지출은 여기서 빼고, 왜 뺐는지 옆에 적는다.
+엔진은 "공제 대상인 지출"만 받는다(Issue #14 [계획] 정할 것 2). 지출 종류 자체가 대상이
+아닌 줄(보약, 학원비 등)은 사례 파일의 eligibility 칸(filtered_by: input)을 보고
+case_inputs.engine_inputs가 먼저 뺀다. 여기에는 "대상 아님" 목록을 따로 두지 않는다.
 """
 
 from taxsplit.engine import CardUsage, EducationExpense, MedicalExpense, OutOfScopeItem
 from taxsplit.engine.models_items import SELF
-
-# 책자 풀이가 공제 대상에서 뺀 지출(사례 파일 notes·풀이 문장 근거)
-NOT_ELIGIBLE_ITEMS = {
-    # p185 notes: 초등학생 학원·체육시설 수강료는 대상 아님
-    "학원 및 체육시설 수강료",
-    # p212 notes(교육비 세부): 학원비와 본인 대학원(비과세학자금)은 대상 아님
-    "학원수강료",
-    "대학원(박사과정)",
-    # p212 의료비 풀이 ③ 본인 등 180만원 = 입원치료비 130만 + 안경 50만. 건강증진 보약은 빠짐
-    "보약(건강증진)",
-}
 
 _MEDICAL_ITEMS = {
     "난임시술비": "infertility",
@@ -36,7 +26,7 @@ def medical_expenses(rows: list[dict]) -> tuple[MedicalExpense, ...]:
     """국세청 사례 expenses 줄 → 의료비 입력. for 이름이 그대로 부양가족 이름이 된다."""
     out = []
     for row in rows:
-        if row.get("category", "medical") != "medical" or row["item"] in NOT_ELIGIBLE_ITEMS:
+        if row.get("category", "medical") != "medical":
             continue
         item = _MEDICAL_ITEMS.get(row["item"], "general")
         out.append(MedicalExpense(for_name=_who(row["for"]), item=item, amount=row["amount"]))
@@ -47,7 +37,7 @@ def education_expenses(rows: list[dict], levels: dict[str, str]) -> tuple[Educat
     """국세청 사례 expenses 줄 → 교육비 입력. levels = 부양가족 이름 → 교육 과정."""
     out = []
     for row in rows:
-        if row.get("category", "education") != "education" or row["item"] in NOT_ELIGIBLE_ITEMS:
+        if row.get("category", "education") != "education":
             continue
         who = _who(row["for"])
         item = _EDUCATION_ITEMS.get(row["item"], "general")
