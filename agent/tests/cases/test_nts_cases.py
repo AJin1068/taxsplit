@@ -36,3 +36,14 @@ def test_case_rule_ids_exist_in_table():
             continue
         used = compute_tax(run.worker, rules).rules_used
         assert {i for ids in used.values() for i in ids} <= set(rules), run.label
+
+
+def test_every_stage_is_linked():
+    # 사례 단계가 모두 비교·입력으로 씀·범위 밖·제외 중 하나다(엔진 값과 연결 안 된 단계 없음)
+    assert [f"{r.case}:{r.stage}" for r in all_rows() if r.kind == "unknown"] == []
+
+
+def test_determined_tax_compared_for_every_household_run():
+    # 결정세액은 가구 사례마다 비교한다(홈택스 가구 2 배분안 B 아내는 제외 줄)
+    det = [r for r in all_rows() if r.stage == "determined_tax"]
+    assert det and all(r.kind in ("compare", "excluded") for r in det)

@@ -1,6 +1,6 @@
 """규칙 커버리지(rule_coverage.py)가 PR 무게 (라)에 쓸 만한지 확인한다."""
 
-from cases.case_compare import all_rows
+from cases.case_compare import all_rows, all_runs
 from cases.rule_coverage import CASE_TO_ENGINE, case_file_of, coverage
 from taxsplit.rules.loader import load_rules
 
@@ -25,11 +25,16 @@ def test_some_rules_are_covered_and_some_are_not():
 
 
 def test_rule_used_only_in_uncompared_stage_is_not_counted():
-    # 산출세액(세율)은 아직 어떤 사례도 비교하지 않는다(PR 5). 계산 중에 지나가도 0건이어야 한다
-    compared = {r.stage for r in all_rows() if r.kind == "compare"}
-    engine_stages = {s for c in compared for s in CASE_TO_ENGINE[c]}
-    assert "computed_tax" not in engine_stages
-    assert coverage()["2025.base.tax_rate"] == 0
+    # 근로소득공제만 비교하는 사례(국세청 인쇄 95쪽) 하나만 센다. 엔진은 끝까지 돌아 세율 규칙도
+    # 지나가지만, 산출세액을 비교하지 않으므로 세율 규칙은 0건이어야 한다.
+    # (PR 5부터 다른 사례가 산출세액을 비교하므로 전체 사례가 아니라 이 사례로 본다)
+    label = next(run.label for _, run in all_runs() if "p095" in run.label)
+    rows = [r for r in all_rows() if r.case == label]
+    compared = {r.stage for r in rows if r.kind == "compare"}
+    assert compared and "computed_tax" not in compared
+    result = coverage(rows, [(s, run) for s, run in all_runs() if run.label == label])
+    assert result["2025.base.earned_income_deduction"] == 1
+    assert result["2025.base.tax_rate"] == 0
 
 
 def test_case_file_of_strips_sub_run():

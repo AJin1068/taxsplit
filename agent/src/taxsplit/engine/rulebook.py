@@ -44,6 +44,31 @@ ENGINE_KEYS: dict[str, frozenset[str]] = {
     "dependent.judgment_date": frozenset({"month_day", "deceased_or_cured", "age"}),
     "child.credit.base": frozenset({"min_age", "one", "two", "extra_per_child_over_two"}),
     "child.credit.birth": frozenset({"first", "second", "third_or_more"}),
+    "base.combined_deduction_limit": frozenset({"limit"}),
+    "medical.threshold": frozenset({"gross_rate"}),
+    "medical.threshold_order": frozenset({"order"}),
+    "medical.rate": frozenset({"general", "premature_congenital", "infertility"}),
+    "medical.limit.others": frozenset(
+        {"limit", "unlimited", "age_65_plus_min_age", "age_6_or_under_max_age"}
+    ),
+    "medical.sublimit": frozenset({"glasses_per_person", "postnatal_care_per_birth"}),
+    "education.rate": frozenset({"rate"}),
+    "education.limit": frozenset({"preschool", "school", "university", "unlimited"}),
+    "education.sublimit": frozenset({"field_trip_per_year", "uniform_middle_high_per_year"}),
+    "education.excluded_persons": frozenset({"excluded", "lineal_ascendant_exception"}),
+    "education.graduate_self_only": frozenset({"levels", "eligible"}),
+    "card.threshold": frozenset({"gross_rate"}),
+    "card.rate": frozenset(
+        {"credit", "cash_debit", "culture", "culture_gross_limit", "market", "transit"}
+    ),
+    "card.min_usage_order": frozenset({"order"}),
+    "card.limit": frozenset({"gross_split", "at_or_below", "above"}),
+    "card.additional_limit": frozenset(
+        {"gross_split", "at_or_below", "above", "culture_excluded_above"}
+    ),
+    "card.user_basis": frozenset({"excluded_relations", "family_card_basis"}),
+    "card.culture_over_limit": frozenset({"gross_limit", "rate_by", "min_usage_by"}),
+    "card.rounding": frozenset({"unit", "mode", "stages"}),
 }
 
 ROUNDING = "base.rounding"
@@ -100,11 +125,16 @@ class Rulebook:
             ids.append(rule_id)
         return rule.value
 
-    def floor(self, amount: Decimal | int, stage: str) -> int:
-        """단계 값의 끝수 처리(원 미만 버림, 인쇄 p242). 단위와 방식은 규칙표에서 읽는다."""
-        v = self.value(ROUNDING, stage)
+    def floor(self, amount: Decimal | int, stage: str, rule: str = ROUNDING) -> int:
+        """단계 값의 끝수 처리(원 미만 버림, 인쇄 p242). 단위와 방식은 규칙표에서 읽는다.
+
+        카드 계산은 rule="card.rounding"으로 카드 전용 규칙을 쓴다(같은 p242 근거).
+        """
+        v = self.value(rule, stage)
         if v["mode"] != "floor":
-            raise RuleValueError(f"{self.full_id(ROUNDING)}: 모르는 mode {v['mode']!r}")
+            raise RuleValueError(f"{self.full_id(rule)}: 모르는 mode {v['mode']!r}")
+        if "stages" in v and v["stages"] != ["all"]:
+            raise RuleValueError(f"{self.full_id(rule)}: 모르는 stages {v['stages']!r}")
         unit = Decimal(v["unit"])
         return int((Decimal(amount) / unit).to_integral_value(ROUND_FLOOR) * unit)
 

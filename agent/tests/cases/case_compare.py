@@ -1,59 +1,33 @@
-"""confirmed 사례를 읽어 단계마다 비교 줄을 만든다(비교 / PR 5로 미룸 / 입력으로 씀 / 제외).
+"""confirmed 사례를 읽어 단계마다 비교 줄을 만든다(비교 / 범위 밖 / 입력으로 씀 / 제외 / 입력 부족).
 
-비교 단계는 Issue #13 "사례 테스트"의 목록이다. 나머지(과세표준·산출세액·결정세액,
-의료비·교육비·카드 등)는 지우지 않고 "PR 5에서 비교"로 센다.
+PR 5부터 결정세액까지 비교한다. 5그룹 밖 단계 값은 엔진 입력으로 옮겨 "입력으로 씀"으로,
+환급·납부세액처럼 이번 범위 밖 단계는 "범위 밖"으로 센다(Issue #14).
 """
 
 import json
-from collections.abc import Callable
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
-from cases.case_convert import Run, hometax_runs, nts_runs
-from taxsplit.engine import Rulebook, TaxResult, compute_tax
+from cases.case_convert import nts_runs
+from cases.case_convert_hometax import hometax_runs
+from cases.case_convert_items import OUT_OF_SCOPE_STAGES as MOVED_TO_INPUT
+from cases.case_run import Run
+from cases.case_stages import ITEM_STAGES, OUT_OF_SCOPE_STAGES, TARGET_STAGES, TOTAL_STAGES
+from taxsplit.engine import Rulebook, compute_tax
+from taxsplit.engine.card import card_deduction
 from taxsplit.engine.credits import earned_income_tax_credit
+from taxsplit.engine.education import education_credit
+from taxsplit.engine.medical import medical_credit
 from taxsplit.rules.loader import load_rules
 
 CASES_DIR = Path(__file__).resolve().parents[3] / "eval" / "cases"
 SOURCES = {"nts-2025": "국세청 사례", "hometax-2025": "홈택스"}
 
-Getter = Callable[[TaxResult], Any]
-# 사람 전체 값을 읽는 단계
-TOTAL_STAGES: dict[str, Getter] = {
-    "gross_salary": lambda r: r.gross_salary,
-    "earned_income_deduction": lambda r: r.earned_income_deduction,
-    "earned_income_amount": lambda r: r.earned_income_amount,
-    "basic_deduction_count": lambda r: r.personal.basic_count,
-    "basic_deduction_total": lambda r: r.personal.basic_total,
-    "basic_deduction_self": lambda r: r.personal.basic_self,
-    "basic_deduction_dependents_count": lambda r: r.personal.basic_count - 1,
-    "basic_deduction_dependents": lambda r: r.personal.basic_dependents,
-    "additional_deduction_elderly_count": lambda r: r.personal.elderly_count,
-    "additional_deduction_elderly": lambda r: r.personal.elderly,
-    "additional_deduction_disabled_count": lambda r: r.personal.disabled_count,
-    "additional_deduction_disabled": lambda r: r.personal.disabled,
-    "additional_deduction_woman": lambda r: r.personal.woman,
-    "personal_deduction_total": lambda r: r.personal.total,
-    "pension_insurance_deduction": lambda r: r.pension_insurance_deduction,
-    "insurance_premium_deduction": lambda r: r.insurance_premium_deduction,
-    "earned_income_credit_limit": lambda r: r.earned_income_credit.limit,
-    "child_credit_age8plus_count": lambda r: r.child_credit.age8plus_count,
-    "child_credit_age8plus": lambda r: r.child_credit.age8plus,
-    "child_credit_birth_count": lambda r: r.child_credit.birth_count,
-    "child_credit_birth": lambda r: r.child_credit.birth,
-    "child_credit": lambda r: r.child_credit.total,
-}
-# 부양가족 한 명의 값을 묻는 사례(p99·p100)에서 그 사람 값을 읽는 단계
-TARGET_STAGES = {
-    "basic_deduction_person": lambda d: d.basic,
-    "additional_deduction_disabled": lambda d: d.disabled,
-    "additional_deduction_elderly": lambda d: d.elderly,
-    "personal_deduction_person_total": lambda d: d.basic + d.elderly + d.disabled,
-    "spouse_basic_deduction_eligible": lambda d: d.eligible,
-}
-INPUT_STAGES = {"total_pay", "nontaxable_total"}
+INPUT_STAGES = {"total_pay", "nontaxable_total", *MOVED_TO_INPUT}
+ITEM_FUNCS = {"medical": medical_credit, "education": education_credit, "card": card_deduction}
 
 
 @dataclass(frozen=True)
@@ -62,7 +36,7 @@ class Row:
     case: str
     stage: str
     group: str
-    kind: str  # compare | deferred | input | excluded
+    kind: str  # compare | out_of_scope | input | excluded | missing_input
     expected: Any = None
     actual: Any = None
 
@@ -86,8 +60,17 @@ def group_of(stage: str) -> str:
     return "기본 흐름"
 
 
+def _item_result(run: Run, rules) -> SimpleNamespace:
+    """항목 사례: 그 항목 계산만 불러 r.medical / r.education / r.card 모양으로 돌려준다."""
+    return SimpleNamespace(**{run.item: ITEM_FUNCS[run.item](run.worker, Rulebook(rules))})
+
+
 def _rows(source: str, run: Run, rules) -> list[Row]:
-    result = compute_tax(run.worker, rules) if run.worker else None
+    result = None
+    if run.worker and run.item:
+        result = _item_result(run, rules)
+    elif run.worker:
+        result = compute_tax(run.worker, rules)
     target = None
     if result and run.target:
         target = next(d for d in result.personal.dependents if d.name == run.target)
@@ -97,8 +80,10 @@ def _rows(source: str, run: Run, rules) -> list[Row]:
     rows = []
     for e in run.expected:
         stage, value = e["stage"], e["value"]
-        actual, kind = None, "deferred"
-        if stage in INPUT_STAGES or (stage == "gross_salary" and run.gross_is_input):
+        actual, kind = None, "unknown"
+        if stage in OUT_OF_SCOPE_STAGES:
+            kind = "out_of_scope"
+        elif stage in INPUT_STAGES or (stage == "gross_salary" and run.gross_is_input):
             kind = "input"
         elif credit and stage.startswith("earned_income_credit"):
             kind = "compare"
@@ -109,13 +94,14 @@ def _rows(source: str, run: Run, rules) -> list[Row]:
             }[stage]
         elif target and stage in TARGET_STAGES:
             kind, actual = "compare", TARGET_STAGES[stage](target)
-        elif result and stage in TOTAL_STAGES:
+        elif result and run.item and stage in ITEM_STAGES:
+            kind, actual = "compare", ITEM_STAGES[stage](result)
+        elif result and not run.item and stage in TOTAL_STAGES:
             kind, actual = "compare", TOTAL_STAGES[stage](result)
         rows.append(Row(source, run.label, stage, group_of(stage), kind, value, actual))
-    for e in run.excluded:
-        rows.append(
-            Row(source, run.label, e["stage"], group_of(e["stage"]), "excluded", e["value"])
-        )
+    for kind, extra in (("excluded", run.excluded), ("missing_input", run.missing)):
+        for e in extra:
+            rows.append(Row(source, run.label, e["stage"], group_of(e["stage"]), kind, e["value"]))
     return rows
 
 

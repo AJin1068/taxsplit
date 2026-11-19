@@ -1,6 +1,6 @@
 """표준세액공제 선택: 특별공제가 없으면 13만원, 특별공제가 더 유리하면 13만원을 받지 않는다."""
 
-from taxsplit.engine import OutOfScopeItem, compute_tax
+from taxsplit.engine import EducationExpense, MedicalExpense, OutOfScopeItem, compute_tax
 
 
 def _std(rules):
@@ -56,3 +56,27 @@ def test_deductions_over_income_leave_zero_taxable(rules, make_worker):
     assert r.taxable_income == 0
     assert r.deduction_excess > 0
     assert r.determined_tax == 0
+
+
+def test_medical_and_education_count_as_special_credit(rules, make_worker):
+    # 의료비·교육비(특별세액공제)가 13만원보다 크면 특별공제 쪽을 고른다(PR 5)
+    w = make_worker(
+        40_000_000,
+        medical=(MedicalExpense(amount=3_000_000),),
+        education=(EducationExpense(amount=1_000_000),),
+    )
+    r = compute_tax(w, rules)
+    assert not r.standard_credit_chosen
+    assert r.special_tax_credit_total == r.medical.amount + r.education.amount > _std(rules)
+    assert r.tax_credit_total == (
+        r.earned_income_credit.amount + r.child_credit.total + r.special_tax_credit_total
+    )
+
+
+def test_small_medical_loses_to_standard(rules, make_worker):
+    # 문턱을 조금 넘는 의료비는 공제액이 13만원보다 작아 표준세액공제를 고른다
+    w = make_worker(40_000_000, medical=(MedicalExpense(amount=1_300_000),))
+    r = compute_tax(w, rules)
+    assert r.standard_credit_chosen
+    assert r.medical.amount == 0 and r.special_tax_credit_total == 0
+    assert r.determined_tax < r.other_option_determined_tax

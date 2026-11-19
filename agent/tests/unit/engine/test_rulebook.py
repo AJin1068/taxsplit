@@ -2,7 +2,15 @@
 
 import pytest
 
-from taxsplit.engine import Dependent, Rulebook, RuleNotReadyError, compute_tax
+from taxsplit.engine import (
+    CardUsage,
+    Dependent,
+    EducationExpense,
+    MedicalExpense,
+    Rulebook,
+    RuleNotReadyError,
+    compute_tax,
+)
 from taxsplit.engine.rulebook import ENGINE_KEYS
 
 TODO = "TODO(확인 필요): 테스트용"
@@ -39,10 +47,14 @@ def test_empty_todo_raises_not_silently_skipped(rules, make_worker):
         compute_tax(make_worker(40_000_000), fake)
 
 
-def test_real_empty_todo_card_rounding_raises(rules):
-    # 카드 계산은 PR 5지만, 빈 todo를 꺼내면 멈추는 것은 지금 확인한다
-    with pytest.raises(RuleNotReadyError):
-        Rulebook(rules).value("card.rounding", "card_deduction")
+def test_real_empty_todo_card_rounding_raises(rules, make_worker):
+    # 카드 절사는 PR 5에서 sourced(원 미만 버림, p242)가 됐다. 실제 표는 그대로 읽히고,
+    # 값이 빈 todo로 되돌리면 카드 계산이 조용히 넘어가지 않고 멈춘다
+    assert Rulebook(rules).value("card.rounding", "card_deduction")["unit"] == 1
+    fake = _as_todo(rules, "2025.card.rounding", value={"unit": [], "mode": "", "stages": []})
+    w = make_worker(40_000_000, card_usage=(CardUsage(credit=20_000_000),))
+    with pytest.raises(RuleNotReadyError, match="2025.card.rounding"):
+        compute_tax(w, fake)
 
 
 def _sample_workers(make_worker):
@@ -52,8 +64,17 @@ def _sample_workers(make_worker):
         Dependent(name="c", relation="lineal_ascendant", birth_year=1950, disabled=True),
         Dependent(name="d", relation="spouse", birth_year=1985, income_amount=10**7),
     )
+    # 의료비·교육비·카드(PR 5) 규칙 ID도 결과에 나오게 지출을 넣는다
+    spend = {
+        "medical": (
+            MedicalExpense(for_name="c", amount=3_000_000),
+            MedicalExpense(for_name="d", item="glasses", amount=600_000),
+        ),
+        "education": (EducationExpense(for_name="a", amount=4_000_000),),
+        "card_usage": (CardUsage(credit=30_000_000, culture_credit=1_000_000, market=500_000),),
+    }
     return [
-        make_worker(g, dependents=deps, national_pension=g // 20, health_insurance=g // 30)
+        make_worker(g, dependents=deps, national_pension=g // 20, health_insurance=g // 30, **spend)
         for g in (0, 5_000_000, 33_000_001, 70_000_000, 150_000_000, 10**9)
     ]
 

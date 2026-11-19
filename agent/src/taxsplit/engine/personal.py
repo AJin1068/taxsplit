@@ -39,6 +39,14 @@ def age_in_year(birth_year: int, book: Rulebook, stage: str = STAGE) -> int:
     return book.year - birth_year
 
 
+def dependent_named(worker: WorkerInput, name: str) -> Dependent:
+    """지출 대상 이름으로 부양가족을 찾는다. 의료비·교육비는 기본공제 요건과 따로 본다."""
+    for dep in worker.dependents:
+        if dep.name == name:
+            return dep
+    raise ValueError(f"부양가족 목록에 없는 지출 대상: {name!r}")
+
+
 def income_within_limit(dep: Dependent, book: Rulebook, stage: str = STAGE) -> bool:
     """소득요건: 연 소득금액 100만원 이하, 근로소득만 있으면 총급여 500만원 이하(p95)."""
     v = book.value(BASIC, stage)
