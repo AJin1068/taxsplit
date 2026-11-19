@@ -1,0 +1,87 @@
+{
+  "tax_year": 2024,
+  "worker_name": "한바다",
+  "items": [
+    {
+      "group": "insurance",
+      "kind": "국민연금",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 2310000,
+      "source_text": "한바다 880214 국민연금공단 국민연금 2,310,000",
+      "mark": "none"
+    },
+    {
+      "group": "insurance",
+      "kind": "건강보험",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 1870200,
+      "source_text": "한바다 880214 국민건강보험공단 건강보험 1,870,200",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "일반",
+      "person_name": "한이음",
+      "person_birth": "170905",
+      "amount": 210000,
+      "source_text": "한이음 170905 솔빛소아과 일반 210,000",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "일반",
+      "person_name": "박정희",
+      "person_birth": "540722",
+      "amount": 980000,
+      "source_text": "박정희 540722 새길정형외과 일반 980,000",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 13100000,
+      "source_text": "한바다 880214 신용카드 13,100,000",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "현금영수증",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 1120000,
+      "source_text": "한바다 880214 현금영수증 1,120,000",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "대중교통",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 540000,
+      "source_text": "한바다 880214 대중교통 540,000",
+      "mark": "none"
+    }
+  ],
+  "totals": [
+    {
+      "group": "insurance",
+      "amount": 4180200
+    },
+    {
+      "group": "medical",
+      "amount": 1190000
+    },
+    {
+      "group": "card",
+      "amount": 14760000
+    }
+  ],
+  "prior_year": true,
+  "notes": [
+    "작년 자료: 올해 달라진 값은 대화로 고칩니다"
+  ]
+}

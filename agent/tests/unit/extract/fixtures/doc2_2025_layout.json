@@ -1,0 +1,346 @@
+{
+  "tax_year": 2025,
+  "worker_name": "윤솔",
+  "items": [
+    {
+      "group": "card",
+      "kind": "직불·선불카드",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 162340,
+      "source_text": "162,340 직불·선불카드 윤솔 1월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "현금영수증",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 174680,
+      "source_text": "174,680 현금영수증 윤솔 2월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "전통시장",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 187020,
+      "source_text": "187,020 전통시장 윤솔 3월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "대중교통",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 199360,
+      "source_text": "199,360 대중교통 윤솔 4월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "문화체육",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 211700,
+      "source_text": "211,700 문화체육 윤솔 5월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 224040,
+      "source_text": "224,040 신용카드 윤솔 6월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "직불·선불카드",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 236380,
+      "source_text": "236,380 직불·선불카드 윤솔 7월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "현금영수증",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 248720,
+      "source_text": "248,720 현금영수증 윤솔 8월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "전통시장",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 261060,
+      "source_text": "261,060 전통시장 윤솔 9월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "대중교통",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 273400,
+      "source_text": "273,400 대중교통 윤솔 10월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "문화체육",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 285740,
+      "source_text": "285,740 문화체육 윤솔 11월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 298080,
+      "source_text": "298,080 신용카드 윤솔 12월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 85000,
+      "source_text": "85,000 신용카드 최나래 1월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 90000,
+      "source_text": "90,000 신용카드 최나래 2월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 95000,
+      "source_text": "95,000 신용카드 최나래 3월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 100000,
+      "source_text": "100,000 신용카드 최나래 4월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 105000,
+      "source_text": "105,000 신용카드 최나래 5월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 110000,
+      "source_text": "110,000 신용카드 최나래 6월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 115000,
+      "source_text": "115,000 신용카드 최나래 7월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 120000,
+      "source_text": "120,000 신용카드 최나래 8월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 125000,
+      "source_text": "125,000 신용카드 최나래 9월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 130000,
+      "source_text": "130,000 신용카드 최나래 10월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 135000,
+      "source_text": "135,000 신용카드 최나래 11월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 140000,
+      "source_text": "140,000 신용카드 최나래 12월 사용분 601118",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "전통시장",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 0,
+      "source_text": "0 전통시장 윤솔 12월 사용분 910630",
+      "mark": "none"
+    },
+    {
+      "group": "other",
+      "kind": "기부금",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 300000,
+      "source_text": "300,000 기부금 윤솔 나눔복지재단 910630",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "일반",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 640000,
+      "source_text": "640,000 일반 최나래 푸른한의원 601118",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "산후조리원",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 2000000,
+      "source_text": "2,000,000 산후조리원 윤솔 고운산후조리원 910630",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "일반",
+      "person_name": "윤라온",
+      "person_birth": "250402",
+      "amount": 38700,
+      "source_text": "38,700 일반 윤라온 해맑은소아과 250402",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "난임",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 1350000,
+      "source_text": "1,350,000 난임 윤솔 미래여성의원 910630",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "실손보험금 수령",
+      "person_name": "최나래",
+      "person_birth": "601118",
+      "amount": 420000,
+      "source_text": "420,000 실손보험금 수령 최나래 든든손해보험 601118",
+      "mark": "subtract"
+    },
+    {
+      "group": "education",
+      "kind": "대학",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 2500000,
+      "source_text": "2,500,000 대학 윤솔 한빛대학교 910630",
+      "mark": "none"
+    },
+    {
+      "group": "education",
+      "kind": "대학",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 2500000,
+      "source_text": "2,500,000 대학 윤솔 한빛대학교 910630",
+      "mark": "none"
+    },
+    {
+      "group": "insurance",
+      "kind": "건강보험",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 1420000,
+      "source_text": "1,420,000 건강보험 윤솔 국민건강보험공단 910630",
+      "mark": "none"
+    },
+    {
+      "group": "insurance",
+      "kind": "국민연금",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 1890000,
+      "source_text": "1,890,000 국민연금 윤솔 국민연금공단 910630",
+      "mark": "none"
+    },
+    {
+      "group": "other",
+      "kind": "연금저축",
+      "person_name": "윤솔",
+      "person_birth": "910630",
+      "amount": 2400000,
+      "source_text": "2,400,000 연금저축 윤솔 튼튼증권 910630",
+      "mark": "none"
+    }
+  ],
+  "totals": [
+    {
+      "group": "card",
+      "amount": 4112520
+    },
+    {
+      "group": "medical",
+      "amount": 4028700
+    },
+    {
+      "group": "insurance",
+      "amount": 3310000
+    }
+  ],
+  "prior_year": false,
+  "notes": []
+}

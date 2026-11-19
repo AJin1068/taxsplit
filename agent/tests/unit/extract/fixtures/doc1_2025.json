@@ -1,0 +1,161 @@
+{
+  "tax_year": 2025,
+  "worker_name": "한바다",
+  "items": [
+    {
+      "group": "insurance",
+      "kind": "국민연금",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 2430000,
+      "source_text": "한바다 880214 국민연금공단 국민연금 2,430,000",
+      "mark": "none"
+    },
+    {
+      "group": "insurance",
+      "kind": "건강보험",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 1980400,
+      "source_text": "한바다 880214 국민건강보험공단 건강보험 1,980,400",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "일반",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 182000,
+      "source_text": "한바다 880214 가람내과의원 일반 182,000",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "일반",
+      "person_name": "한이음",
+      "person_birth": "170905",
+      "amount": 96500,
+      "source_text": "한이음 170905 솔빛소아과 일반 96,500",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "일반",
+      "person_name": "한도담",
+      "person_birth": "200311",
+      "amount": 54300,
+      "source_text": "한도담 200311 솔빛소아과 일반 54,300",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "일반",
+      "person_name": "박정희",
+      "person_birth": "540722",
+      "amount": 1240000,
+      "source_text": "박정희 540722 새길정형외과 일반 1,240,000",
+      "mark": "none"
+    },
+    {
+      "group": "medical",
+      "kind": "안경",
+      "person_name": "한이음",
+      "person_birth": "170905",
+      "amount": 500000,
+      "source_text": "한이음 170905 밝은눈안경 안경 500,000",
+      "mark": "none"
+    },
+    {
+      "group": "education",
+      "kind": "초중고",
+      "person_name": "한이음",
+      "person_birth": "170905",
+      "amount": 320000,
+      "source_text": "한이음 170905 가온초등학교 초중고 320,000",
+      "mark": "none"
+    },
+    {
+      "group": "education",
+      "kind": "취학 전",
+      "person_name": "한도담",
+      "person_birth": "200311",
+      "amount": 1800000,
+      "source_text": "한도담 200311 다솜유치원 취학 전 1,800,000",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "신용카드",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 14250000,
+      "source_text": "한바다 880214 신용카드 14,250,000",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "직불·선불카드",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 2310000,
+      "source_text": "한바다 880214 직불·선불카드 2,310,000",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "현금영수증",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 980000,
+      "source_text": "한바다 880214 현금영수증 980,000",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "전통시장",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 430000,
+      "source_text": "한바다 880214 전통시장 430,000",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "대중교통",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 610000,
+      "source_text": "한바다 880214 대중교통 610,000",
+      "mark": "none"
+    },
+    {
+      "group": "card",
+      "kind": "문화체육",
+      "person_name": "한바다",
+      "person_birth": "880214",
+      "amount": 720000,
+      "source_text": "한바다 880214 문화체육 720,000",
+      "mark": "none"
+    }
+  ],
+  "totals": [
+    {
+      "group": "insurance",
+      "amount": 4410400
+    },
+    {
+      "group": "medical",
+      "amount": 2072800
+    },
+    {
+      "group": "education",
+      "amount": 2120000
+    },
+    {
+      "group": "card",
+      "amount": 19300000
+    }
+  ],
+  "prior_year": false,
+  "notes": []
+}
