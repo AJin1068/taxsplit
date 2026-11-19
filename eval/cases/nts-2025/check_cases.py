@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from eligibility import check_eligibility  # noqa: E402
 from supplement import check_supplement  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
@@ -76,6 +77,7 @@ def check(path: Path) -> list[str]:
     if not isinstance(case["notes"], list):
         errs.append("notes는 목록")
     errs += check_supplement(case)
+    errs += check_eligibility(case)
     return errs
 
 

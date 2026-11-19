@@ -557,6 +557,13 @@
       {"path": "/wife/has_spouse", "value": true, "kind": "implied_by_source", "reason": "맞벌이 부부 가구다.", "effect": "문서에서 온 값이다."}
     ]
   },
+  "eligibility": {
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-19", "scope": "모든 줄이 공제 대상(홈택스 입력값). 사람이 PR #112에서 국세청 사례의 '공제 대상 아님' 줄과 함께 승인함"},
+    "rows": [
+      {"path": "/family/mother_in_law/medical", "deductible": true, "text": "홈택스 모의계산 입력값: 입력한 사람(AJin1068)이 공제 대상으로 넣은 금액이다. 문서 풀이가 아니라 입력표 근거. 72세 시어머니 의료비 → 의료비 65세 이상 칸(남편)"}
+    ]
+  },
   "notes": [
     "모든 실행에서 근무기간 2025.1.1.~12.31., 비과세 소득 없음, 기납부세액 0원으로 넣었다. 그래서 refund_or_payment(차감징수세액)는 결정세액에서 10원 미만을 버린 값이다(화면 그대로).",
     "시어머니 의료비는 '65세 이상(한도 없음)' 칸에 넣었다. 카드로 결제한 것으로 치지 않고 의료비 칸에만 넣었다.",

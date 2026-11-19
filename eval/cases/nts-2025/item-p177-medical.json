@@ -45,6 +45,19 @@
       {"path": "/family_income", "value": {"father": 0, "mother": 0, "spouse": 0}, "kind": "implied_by_source", "reason": "부양가족 소득이 문서에 없다. 문서가 모두 기본공제대상자(all_are_basic_deduction_dependents)라고 해 소득요건 충족으로 보고 0원으로 넣었다.", "effect": "소득요건 안이면 결과가 같다."}
     ]
   },
+  "eligibility": {
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-19", "scope": "모든 줄이 공제 대상. 기획이 사례 풀이 숫자(인쇄 177쪽)로 대조하고 사람이 PR #112에서 승인함"},
+    "rows": [
+      {"path": "/expenses/0", "deductible": true, "page": 177, "text": "나. 본인･65세 이상자･장애인의 공제대상의료비 = 300만원 + 100만원 + 50만원 = 450만원"},
+      {"path": "/expenses/1", "deductible": true, "page": 177, "text": "나. 본인･65세 이상자･장애인의 공제대상의료비 = 300만원 + 100만원 + 50만원 = 450만원"},
+      {"path": "/expenses/2", "deductible": true, "page": 177, "text": "가. = {(550만원 - 300만원 - 100만원 - 100만원) + 80만원+200만원} - 90만원"},
+      {"path": "/expenses/3", "deductible": true, "page": 177, "text": "다. 난임시술비 = 100만원"},
+      {"path": "/expenses/4", "deductible": true, "page": 177, "text": "가. = {(550만원 - 300만원 - 100만원 - 100만원) + 80만원+200만원} - 90만원"},
+      {"path": "/expenses/5", "deductible": true, "page": 177, "text": "나. 본인･65세 이상자･장애인의 공제대상의료비 = 300만원 + 100만원 + 50만원 = 450만원"},
+      {"path": "/expenses/6", "deductible": true, "page": 177, "text": "가. … + 80만원+200만원 (산후조리원 250만원 중 200만원, 한도는 엔진 규칙)"}
+    ]
+  },
   "notes": [
     "책자 풀이에서 산후조리원비용 250만원은 200만원으로 들어가 있다(한도가 풀이에 명시되지는 않음).",
     "의료비 550만원 중 배우자 몫 150만원을 '난임 100만원 + 그 외 50만원'으로 나눈 것은 책자 문장(150만원(난임시술비 100만원 포함))을 그대로 나눈 것이다."
