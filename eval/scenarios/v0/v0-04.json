@@ -1,0 +1,288 @@
+{
+  "id": "v0-04",
+  "version": "v0",
+  "status": "confirmed",
+  "review": {
+    "reviewer": "AJin1068",
+    "date": "2026-11-19",
+    "scope": "사람은 PR #124 설명의 대조표(이야기와 계산기에 넣은 값, 정답을 가르는 줄)와 시나리오 요약을 봄. 세금 합계 숫자는 검증된 계산 엔진 값이라 따로 대조하지 않음"
+  },
+  "title": "대학생 자녀 등록금을 소득이 적은 쪽이 낸 가구",
+  "groups": [
+    "child",
+    "education"
+  ],
+  "spouse_names": {
+    "husband": "정우성",
+    "wife": "고미란"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 88000000,
+      "sex": "male",
+      "birth_year": 1975,
+      "national_pension": 3960000,
+      "health_insurance": 3119000,
+      "employment_insurance": 792000,
+      "long_term_care_insurance": 404000
+    },
+    "wife": {
+      "gross_salary": 46000000,
+      "sex": "female",
+      "birth_year": 1977,
+      "national_pension": 2070000,
+      "health_insurance": 1630000,
+      "employment_insurance": 414000,
+      "long_term_care_insurance": 211000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "정하은",
+          "relation": "child",
+          "birth_year": 2005
+        }
+      },
+      {
+        "dependent": {
+          "name": "정시우",
+          "relation": "child",
+          "birth_year": 2013
+        }
+      }
+    ],
+    "education": [
+      {
+        "payer": "wife",
+        "for_whom": "정하은",
+        "level": "university",
+        "amount": 7000000
+      },
+      {
+        "payer": "husband",
+        "for_whom": "정시우",
+        "amount": 400000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 26000000
+      },
+      {
+        "user": "wife",
+        "credit": 12000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "정우성",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "정우성",
+          "person_birth": "1975",
+          "amount": 3960000,
+          "source_text": "정우성 국민연금보험료 3,960,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "정우성",
+          "person_birth": "1975",
+          "amount": 3119000,
+          "source_text": "정우성 건강보험료 3,119,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "정우성",
+          "person_birth": "1975",
+          "amount": 792000,
+          "source_text": "정우성 고용보험료 792,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "정우성",
+          "person_birth": "1975",
+          "amount": 404000,
+          "source_text": "정우성 노인장기요양보험료 404,000",
+          "mark": "none"
+        },
+        {
+          "group": "education",
+          "kind": "대학교",
+          "person_name": "정하은",
+          "person_birth": "2005",
+          "amount": 7000000,
+          "source_text": "정하은 대학교 7,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "education",
+          "kind": "초중고",
+          "person_name": "정시우",
+          "person_birth": "2013",
+          "amount": 400000,
+          "source_text": "정시우 초중고 400,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "정우성",
+          "person_birth": "1975",
+          "amount": 26000000,
+          "source_text": "정우성 신용카드 26,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "고미란",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "고미란",
+          "person_birth": "1977",
+          "amount": 2070000,
+          "source_text": "고미란 국민연금보험료 2,070,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "고미란",
+          "person_birth": "1977",
+          "amount": 1630000,
+          "source_text": "고미란 건강보험료 1,630,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "고미란",
+          "person_birth": "1977",
+          "amount": 414000,
+          "source_text": "고미란 고용보험료 414,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "고미란",
+          "person_birth": "1977",
+          "amount": 211000,
+          "source_text": "고미란 노인장기요양보험료 211,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "고미란",
+          "person_birth": "1977",
+          "amount": 12000000,
+          "source_text": "고미란 신용카드 12,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "남편 8,800만, 아내 4,600만이에요. 대학생 딸이랑 중학생 아들이 있어요. 자료 올렸어요.",
+  "persona": "아내. 꼼꼼하게 답함.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 고미란 1977년생, 남편 정우성 1975년생."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "딸 정하은 2005년생 대학생, 아들 정시우 2013년생 중학생. 둘 다 소득 없음, 장애 없음."
+    },
+    {
+      "id": "f3",
+      "kind": "may_assume",
+      "text": "아이들은 소득이 없다(학생)."
+    },
+    {
+      "id": "f4",
+      "kind": "must_ask",
+      "text": "딸 대학 등록금 700만 원은 내(아내) 통장에서 냈다."
+    },
+    {
+      "id": "f5",
+      "kind": "background",
+      "text": "아들 학교 돈 40만 원은 남편이 냈다."
+    }
+  ],
+  "gold": {
+    "plan_count": 4,
+    "best_assignments": [
+      {
+        "정시우": "husband",
+        "정하은": "wife"
+      }
+    ],
+    "best_total": 9066500,
+    "plans": [
+      {
+        "assignment": {
+          "정시우": "husband",
+          "정하은": "wife"
+        },
+        "total": 9066500
+      },
+      {
+        "assignment": {
+          "정시우": "wife",
+          "정하은": "wife"
+        },
+        "total": 9211500
+      },
+      {
+        "assignment": {
+          "정시우": "husband",
+          "정하은": "husband"
+        },
+        "total": 9931500
+      },
+      {
+        "assignment": {
+          "정시우": "wife",
+          "정하은": "husband"
+        },
+        "total": 10176500
+      }
+    ],
+    "headline_saving": 865000,
+    "members": [
+      {
+        "name": "정하은",
+        "relation": "child",
+        "birth_year": 2005
+      },
+      {
+        "name": "정시우",
+        "relation": "child",
+        "birth_year": 2013
+      }
+    ],
+    "engine": {
+      "commit": "0102841",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

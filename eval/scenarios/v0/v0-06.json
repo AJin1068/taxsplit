@@ -1,0 +1,284 @@
+{
+  "id": "v0-06",
+  "version": "v0",
+  "status": "confirmed",
+  "review": {
+    "reviewer": "AJin1068",
+    "date": "2026-11-19",
+    "scope": "사람은 PR #124 설명의 대조표(이야기와 계산기에 넣은 값, 정답을 가르는 줄)와 시나리오 요약을 봄. 세금 합계 숫자는 검증된 계산 엔진 값이라 따로 대조하지 않음"
+  },
+  "title": "올해 둘째가 태어난 가구",
+  "groups": [
+    "child",
+    "medical"
+  ],
+  "spouse_names": {
+    "husband": "이도현",
+    "wife": "백하린"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 95000000,
+      "sex": "male",
+      "birth_year": 1990,
+      "national_pension": 4275000,
+      "health_insurance": 3368000,
+      "employment_insurance": 855000,
+      "long_term_care_insurance": 436000
+    },
+    "wife": {
+      "gross_salary": 32000000,
+      "sex": "female",
+      "birth_year": 1991,
+      "national_pension": 1440000,
+      "health_insurance": 1134000,
+      "employment_insurance": 288000,
+      "long_term_care_insurance": 147000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "이서윤",
+          "relation": "child",
+          "birth_year": 2021
+        }
+      },
+      {
+        "dependent": {
+          "name": "이서하",
+          "relation": "child",
+          "birth_year": 2025,
+          "birth_or_adoption_order": 2
+        }
+      }
+    ],
+    "medical": [
+      {
+        "payer": "wife",
+        "for_whom": "wife",
+        "item": "postnatal_care",
+        "amount": 2500000
+      },
+      {
+        "payer": "husband",
+        "for_whom": "이서하",
+        "amount": 800000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 17000000
+      },
+      {
+        "user": "wife",
+        "credit": 6000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "이도현",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "이도현",
+          "person_birth": "1990",
+          "amount": 4275000,
+          "source_text": "이도현 국민연금보험료 4,275,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "이도현",
+          "person_birth": "1990",
+          "amount": 3368000,
+          "source_text": "이도현 건강보험료 3,368,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "이도현",
+          "person_birth": "1990",
+          "amount": 855000,
+          "source_text": "이도현 고용보험료 855,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "이도현",
+          "person_birth": "1990",
+          "amount": 436000,
+          "source_text": "이도현 노인장기요양보험료 436,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "이서하",
+          "person_birth": "2025",
+          "amount": 800000,
+          "source_text": "이서하 의료비 800,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "이도현",
+          "person_birth": "1990",
+          "amount": 17000000,
+          "source_text": "이도현 신용카드 17,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "백하린",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "백하린",
+          "person_birth": "1991",
+          "amount": 1440000,
+          "source_text": "백하린 국민연금보험료 1,440,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "백하린",
+          "person_birth": "1991",
+          "amount": 1134000,
+          "source_text": "백하린 건강보험료 1,134,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "백하린",
+          "person_birth": "1991",
+          "amount": 288000,
+          "source_text": "백하린 고용보험료 288,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "백하린",
+          "person_birth": "1991",
+          "amount": 147000,
+          "source_text": "백하린 노인장기요양보험료 147,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "산후조리원",
+          "person_name": "백하린",
+          "person_birth": "1991",
+          "amount": 2500000,
+          "source_text": "백하린 산후조리원 2,500,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "백하린",
+          "person_birth": "1991",
+          "amount": 6000000,
+          "source_text": "백하린 신용카드 6,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "올해 아기가 태어났어요. 남편 연봉 9,500만, 저 3,200만이에요. 산후조리원도 다녀왔고요. 자료 올려요.",
+  "persona": "아내. 묻지 않은 가족 이야기는 먼저 하지 않음.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 백하린 1991년생, 남편 이도현 1990년생."
+    },
+    {
+      "id": "f2",
+      "kind": "must_ask",
+      "text": "2021년생 첫째 이서윤이 있다. 그래서 올해 태어난 이서하(2025년생)는 둘째다."
+    },
+    {
+      "id": "f3",
+      "kind": "may_assume",
+      "text": "아이들은 소득이 없다(어린 자녀)."
+    },
+    {
+      "id": "f4",
+      "kind": "background",
+      "text": "산후조리원 250만 원은 내가 냈고, 아기 병원비 80만 원은 남편이 냈다."
+    }
+  ],
+  "gold": {
+    "plan_count": 4,
+    "best_assignments": [
+      {
+        "이서윤": "husband",
+        "이서하": "husband"
+      }
+    ],
+    "best_total": 9756358,
+    "plans": [
+      {
+        "assignment": {
+          "이서윤": "husband",
+          "이서하": "husband"
+        },
+        "total": 9756358
+      },
+      {
+        "assignment": {
+          "이서윤": "wife",
+          "이서하": "husband"
+        },
+        "total": 10015108
+      },
+      {
+        "assignment": {
+          "이서윤": "husband",
+          "이서하": "wife"
+        },
+        "total": 10195840
+      },
+      {
+        "assignment": {
+          "이서윤": "wife",
+          "이서하": "wife"
+        },
+        "total": 10555840
+      }
+    ],
+    "headline_saving": 0,
+    "members": [
+      {
+        "name": "이서윤",
+        "relation": "child",
+        "birth_year": 2021
+      },
+      {
+        "name": "이서하",
+        "relation": "child",
+        "birth_year": 2025
+      }
+    ],
+    "engine": {
+      "commit": "0102841",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

@@ -1,0 +1,272 @@
+{
+  "id": "v0-03",
+  "version": "v0",
+  "status": "confirmed",
+  "review": {
+    "reviewer": "AJin1068",
+    "date": "2026-11-19",
+    "scope": "사람은 PR #124 설명의 대조표(이야기와 계산기에 넣은 값, 정답을 가르는 줄)와 시나리오 요약을 봄. 세금 합계 숫자는 검증된 계산 엔진 값이라 따로 대조하지 않음"
+  },
+  "title": "부모 의료비를 누가 냈느냐에 따라 달라지는 가구",
+  "groups": [
+    "medical"
+  ],
+  "spouse_names": {
+    "husband": "김준호",
+    "wife": "윤소희"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 45000000,
+      "sex": "male",
+      "birth_year": 1983,
+      "national_pension": 2025000,
+      "health_insurance": 1595000,
+      "employment_insurance": 405000,
+      "long_term_care_insurance": 206000
+    },
+    "wife": {
+      "gross_salary": 40000000,
+      "sex": "female",
+      "birth_year": 1985,
+      "national_pension": 1800000,
+      "health_insurance": 1418000,
+      "employment_insurance": 360000,
+      "long_term_care_insurance": 183000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "윤재호",
+          "relation": "lineal_ascendant",
+          "birth_year": 1950
+        },
+        "family_of": "wife"
+      },
+      {
+        "dependent": {
+          "name": "김나래",
+          "relation": "child",
+          "birth_year": 2018
+        }
+      }
+    ],
+    "medical": [
+      {
+        "payer": "wife",
+        "for_whom": "윤재호",
+        "amount": 6000000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 13000000
+      },
+      {
+        "user": "wife",
+        "credit": 11000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "김준호",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "김준호",
+          "person_birth": "1983",
+          "amount": 2025000,
+          "source_text": "김준호 국민연금보험료 2,025,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "김준호",
+          "person_birth": "1983",
+          "amount": 1595000,
+          "source_text": "김준호 건강보험료 1,595,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "김준호",
+          "person_birth": "1983",
+          "amount": 405000,
+          "source_text": "김준호 고용보험료 405,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "김준호",
+          "person_birth": "1983",
+          "amount": 206000,
+          "source_text": "김준호 노인장기요양보험료 206,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "윤재호",
+          "person_birth": "1950",
+          "amount": 6000000,
+          "source_text": "윤재호 의료비 6,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "김준호",
+          "person_birth": "1983",
+          "amount": 13000000,
+          "source_text": "김준호 신용카드 13,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "윤소희",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "윤소희",
+          "person_birth": "1985",
+          "amount": 1800000,
+          "source_text": "윤소희 국민연금보험료 1,800,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "윤소희",
+          "person_birth": "1985",
+          "amount": 1418000,
+          "source_text": "윤소희 건강보험료 1,418,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "윤소희",
+          "person_birth": "1985",
+          "amount": 360000,
+          "source_text": "윤소희 고용보험료 360,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "윤소희",
+          "person_birth": "1985",
+          "amount": 183000,
+          "source_text": "윤소희 노인장기요양보험료 183,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "윤소희",
+          "person_birth": "1985",
+          "amount": 11000000,
+          "source_text": "윤소희 신용카드 11,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "저 4,500만 원, 아내 4,000만 원이에요. 아이 하나 있고 장인어른도 저희가 부양해요. 장인어른 병원비가 꽤 나왔는데 누가 공제받는 게 좋을까요?",
+  "persona": "남편. 묻는 것만 답함.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 남편 김준호 1983년생, 아내 윤소희 1985년생."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "딸 김나래 2018년생, 소득 없음. 장인어른 윤재호 1950년생, 소득 없음, 장애 없음, 같이 삼."
+    },
+    {
+      "id": "f3",
+      "kind": "may_assume",
+      "text": "딸은 소득이 없다(어린 자녀)."
+    },
+    {
+      "id": "f4",
+      "kind": "must_ask",
+      "text": "장인어른 병원비 600만 원은 아내가 자기 카드로 냈다."
+    }
+  ],
+  "gold": {
+    "plan_count": 4,
+    "best_assignments": [
+      {
+        "김나래": "husband",
+        "윤재호": "wife"
+      },
+      {
+        "김나래": "wife",
+        "윤재호": "wife"
+      }
+    ],
+    "best_total": 2292825,
+    "plans": [
+      {
+        "assignment": {
+          "김나래": "husband",
+          "윤재호": "wife"
+        },
+        "total": 2292825
+      },
+      {
+        "assignment": {
+          "김나래": "wife",
+          "윤재호": "wife"
+        },
+        "total": 2292825
+      },
+      {
+        "assignment": {
+          "김나래": "husband",
+          "윤재호": "husband"
+        },
+        "total": 3012825
+      },
+      {
+        "assignment": {
+          "김나래": "wife",
+          "윤재호": "husband"
+        },
+        "total": 3012825
+      }
+    ],
+    "headline_saving": 0,
+    "members": [
+      {
+        "name": "윤재호",
+        "relation": "lineal_ascendant",
+        "birth_year": 1950
+      },
+      {
+        "name": "김나래",
+        "relation": "child",
+        "birth_year": 2018
+      }
+    ],
+    "engine": {
+      "commit": "0102841",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

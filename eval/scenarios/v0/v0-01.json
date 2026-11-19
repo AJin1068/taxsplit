@@ -1,0 +1,331 @@
+{
+  "id": "v0-01",
+  "version": "v0",
+  "status": "confirmed",
+  "review": {
+    "reviewer": "AJin1068",
+    "date": "2026-11-19",
+    "scope": "사람은 PR #124 설명의 대조표(이야기와 계산기에 넣은 값, 정답을 가르는 줄)와 시나리오 요약을 봄. 세금 합계 숫자는 검증된 계산 엔진 값이라 따로 대조하지 않음"
+  },
+  "title": "자녀 둘 맞벌이, 기본 흐름",
+  "groups": [
+    "dependent",
+    "child",
+    "education",
+    "card"
+  ],
+  "spouse_names": {
+    "husband": "한민수",
+    "wife": "오세라"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 62000000,
+      "sex": "male",
+      "birth_year": 1987,
+      "national_pension": 2790000,
+      "health_insurance": 2197000,
+      "employment_insurance": 558000,
+      "long_term_care_insurance": 284000
+    },
+    "wife": {
+      "gross_salary": 48000000,
+      "sex": "female",
+      "birth_year": 1989,
+      "national_pension": 2160000,
+      "health_insurance": 1701000,
+      "employment_insurance": 432000,
+      "long_term_care_insurance": 220000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "한서준",
+          "relation": "child",
+          "birth_year": 2016
+        }
+      },
+      {
+        "dependent": {
+          "name": "한지우",
+          "relation": "child",
+          "birth_year": 2020
+        }
+      }
+    ],
+    "medical": [
+      {
+        "payer": "wife",
+        "for_whom": "한지우",
+        "amount": 2300000
+      }
+    ],
+    "education": [
+      {
+        "payer": "wife",
+        "for_whom": "한지우",
+        "level": "preschool",
+        "amount": 3000000
+      },
+      {
+        "payer": "husband",
+        "for_whom": "한서준",
+        "amount": 600000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 21000000,
+        "transit": 600000
+      },
+      {
+        "user": "wife",
+        "credit": 7000000,
+        "cash_debit": 6500000,
+        "market": 900000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "한민수",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "한민수",
+          "person_birth": "1987",
+          "amount": 2790000,
+          "source_text": "한민수 국민연금보험료 2,790,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "한민수",
+          "person_birth": "1987",
+          "amount": 2197000,
+          "source_text": "한민수 건강보험료 2,197,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "한민수",
+          "person_birth": "1987",
+          "amount": 558000,
+          "source_text": "한민수 고용보험료 558,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "한민수",
+          "person_birth": "1987",
+          "amount": 284000,
+          "source_text": "한민수 노인장기요양보험료 284,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "한지우",
+          "person_birth": "2020",
+          "amount": 2300000,
+          "source_text": "한지우 의료비 2,300,000",
+          "mark": "none"
+        },
+        {
+          "group": "education",
+          "kind": "취학전 아동(유치원)",
+          "person_name": "한지우",
+          "person_birth": "2020",
+          "amount": 3000000,
+          "source_text": "한지우 취학전 아동(유치원) 3,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "education",
+          "kind": "초중고",
+          "person_name": "한서준",
+          "person_birth": "2016",
+          "amount": 600000,
+          "source_text": "한서준 초중고 600,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "한민수",
+          "person_birth": "1987",
+          "amount": 21000000,
+          "source_text": "한민수 신용카드 21,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "대중교통",
+          "person_name": "한민수",
+          "person_birth": "1987",
+          "amount": 600000,
+          "source_text": "한민수 대중교통 600,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "오세라",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "오세라",
+          "person_birth": "1989",
+          "amount": 2160000,
+          "source_text": "오세라 국민연금보험료 2,160,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "오세라",
+          "person_birth": "1989",
+          "amount": 1701000,
+          "source_text": "오세라 건강보험료 1,701,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "오세라",
+          "person_birth": "1989",
+          "amount": 432000,
+          "source_text": "오세라 고용보험료 432,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "오세라",
+          "person_birth": "1989",
+          "amount": 220000,
+          "source_text": "오세라 노인장기요양보험료 220,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "오세라",
+          "person_birth": "1989",
+          "amount": 7000000,
+          "source_text": "오세라 신용카드 7,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "직불카드·현금영수증",
+          "person_name": "오세라",
+          "person_birth": "1989",
+          "amount": 6500000,
+          "source_text": "오세라 직불카드·현금영수증 6,500,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "전통시장",
+          "person_name": "오세라",
+          "person_birth": "1989",
+          "amount": 900000,
+          "source_text": "오세라 전통시장 900,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "남편 연봉 6,200만 원, 저는 4,800만 원이에요. 아이가 둘(2016년생, 2020년생)이고 간소화 자료 올렸어요. 둘째 병원비랑 유치원비는 제가 냈고, 첫째 학교 돈은 남편이 냈어요. 공제를 누구 앞으로 넣으면 좋을까요?",
+  "persona": "아내. 묻는 말에 친절하게 답함.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 오세라, 1989년생. 남편은 한민수, 1987년생."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "첫째 한서준 2016년생, 둘째 한지우 2020년생. 둘 다 소득 없음, 장애 없음."
+    },
+    {
+      "id": "f3",
+      "kind": "may_assume",
+      "text": "아이들은 소득이 없다(어린 자녀)."
+    },
+    {
+      "id": "f4",
+      "kind": "background",
+      "text": "다른 가족은 없다. 부모님은 따로 사시고 각자 소득이 있어 공제하지 않는다."
+    }
+  ],
+  "gold": {
+    "plan_count": 4,
+    "best_assignments": [
+      {
+        "한서준": "husband",
+        "한지우": "wife"
+      }
+    ],
+    "best_total": 5258450,
+    "plans": [
+      {
+        "assignment": {
+          "한서준": "husband",
+          "한지우": "wife"
+        },
+        "total": 5258450
+      },
+      {
+        "assignment": {
+          "한서준": "wife",
+          "한지우": "wife"
+        },
+        "total": 5348450
+      },
+      {
+        "assignment": {
+          "한서준": "husband",
+          "한지우": "husband"
+        },
+        "total": 5837450
+      },
+      {
+        "assignment": {
+          "한서준": "wife",
+          "한지우": "husband"
+        },
+        "total": 5927450
+      }
+    ],
+    "headline_saving": 579000,
+    "members": [
+      {
+        "name": "한서준",
+        "relation": "child",
+        "birth_year": 2016
+      },
+      {
+        "name": "한지우",
+        "relation": "child",
+        "birth_year": 2020
+      }
+    ],
+    "engine": {
+      "commit": "0102841",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}
