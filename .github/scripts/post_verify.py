@@ -31,6 +31,7 @@ GUARDED_FILES = {
     ".claude/commands/verify-pr.md",
     ".github/scripts/post_verify.py",
     ".github/scripts/pr_weight.py",
+    ".github/scripts/reweigh.py",
 }
 GUARD_WARNING = "⚠️ 검증 장치 변경, 사람 확인 필요"
 

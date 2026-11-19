@@ -3,14 +3,22 @@
 # 줄 안의 Issue는 앞 Issue 위에 쌓인다. 하나가 passed가 아니면 그 줄만 멈춘다 (다른 줄은 계속).
 # 쓰는 전역값: TEMPLATE TURNS LIMIT_SEC RUN_DIR ISSUES_JSON
 
-# 시작 조건: ready·plan-ok 라벨이 둘 다 있고 [계획] 코멘트가 있다. 안 맞으면 이유를 출력한다.
+# 시작 조건: ready 라벨과 [계획] 코멘트가 있고, 아래 둘 중 하나면 시작한다. 안 맞으면 이유를 출력한다.
+#   ① 가장 최근 [계획]의 "## 정할 것" 칸이 정확히 "- 없음" (사람이 정할 것이 없음)
+#   ② plan-ok 라벨이 있음 (사람이 "정할 것"에 답하고 붙인 표시)
+# "정할 것" 칸이 아예 없는 예전 [계획]은 "남음"으로 본다(plan-ok가 있어야 시작).
 start_blocker() {
   local issue=$1 info
   info=$("$GOAL_GH" issue view "$issue" --json labels,comments) || { echo "Issue를 읽지 못함"; return; }
   jq -e '[.labels[].name] | index("ready")' >/dev/null <<<"$info" || { echo "ready 라벨 없음"; return; }
-  jq -e '[.labels[].name] | index("plan-ok")' >/dev/null <<<"$info" || { echo "plan-ok 라벨 없음"; return; }
   jq -e '[.comments[].body | select(startswith("[계획]"))] | length > 0' >/dev/null <<<"$info" \
     || { echo "[계획] 코멘트 없음"; return; }
+  jq -e '[.labels[].name] | index("plan-ok")' >/dev/null <<<"$info" && return
+  # "## 정할 것" 제목 뒤부터 다음 "## " 제목 앞까지를 잘라, 앞뒤 빈칸을 지우고 "- 없음"인지 본다.
+  jq -e '[.comments[].body | select(startswith("[계획]"))] | last
+    | (split("\n## 정할 것") | if length > 1 then .[1] | split("\n## ")[0]
+       | sub("^[^\n]*\n"; "") | gsub("^\\s+|\\s+$"; "") else "" end) == "- 없음"' \
+    >/dev/null <<<"$info" || echo "정할 것 남음"
 }
 
 # Issue 하나: 시작 조건 → 쌓을 base로 옮기기 → goal(최대 2번) → 검문 → result.json

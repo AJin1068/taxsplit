@@ -22,6 +22,15 @@
    - `/config`에 "No mobile registered"가 보이면 휴대폰 앱을 한 번 열어 주세요.
    - iPhone은 집중 모드나 알림 요약이 푸시를 막거나 늦출 수 있습니다(설정 → 알림 → Claude).
 
+### 어떤 Issue가 시작되나 (시작 조건)
+
+`ready` 라벨과 `[계획]` 코멘트가 있고, 아래 둘 중 하나면 시작합니다. 둘 다 아니면 "시작 안 함: 정할 것 남음"으로 건너뜁니다.
+
+1. `[계획]`의 `## 정할 것` 칸이 정확히 `- 없음`이다. 사람이 정할 것이 없다는 뜻이라 사람 승인 없이 시작합니다.
+2. `plan-ok` 라벨이 있다. 사람이 "정할 것"에 답하고 붙인 표시입니다.
+
+"정할 것" 칸이 없는 예전 `[계획]`은 "남음"으로 봅니다(`plan-ok`가 있으면 지금처럼 시작). 무엇을 "정할 것"에 적는지는 `CLAUDE.md` "작업 순서" 2번에 있습니다.
+
 ### 돌릴 때마다
 
 3. 레포 루트에서 지휘 세션을 띄우고 명령을 줍니다.
@@ -72,5 +81,7 @@ uv run python tests/cases/rule_coverage.py                    # 규칙 ID마다 
 uv run python tests/cases/rule_coverage.py --json > /tmp/cov.json
 uv run python ../.github/scripts/pr_weight.py --pr <PR 번호> --coverage /tmp/cov.json   # 무게 판정(JSON)
 ```
+
+PR 설명만 고치면(새 커밋 없이 ✅·➡️ 달기 등) 검증 Action의 `reweigh` job이 Claude 없이 무게만 다시 재서 `[검증]` 첫 줄 무게·"PR 무게" 칸·`human-review` 라벨을 맞춥니다(`.github/scripts/reweigh.py`). 나머지 `[검증]` 글은 다음 커밋의 전체 검증이 다시 씁니다.
 
 `tomllib`이 필요해서 파이썬 3.11 이상으로 돌립니다(맥 기본 `python3`가 아니라 `uv run python`).
