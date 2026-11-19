@@ -34,7 +34,7 @@ _status_rebuild() {
   local tmp f
   tmp=$(mktemp "$RUN_DIR/.status.XXXXXX")
   {
-    echo "# 밤 실행 상태 ($(date +%H:%M:%S) 갱신)"
+    echo "# goal 연속 실행 상태 ($(date +%H:%M:%S) 갱신)"
     for f in "$RUN_DIR"/status/*.md; do [[ -f $f ]] && { echo; cat "$f"; }; done
   } >"$tmp" && mv "$tmp" "$RUN_DIR/status.md"
   if [[ -n ${GOAL_STATUS_SNAPSHOTS:-} ]]; then

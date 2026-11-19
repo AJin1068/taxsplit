@@ -75,10 +75,10 @@ check_skips() {
 
 # 4. 이 브랜치의 PR이 열려 있고, Closes #이슈, needs-verify 옮김, base·head가 맞는가
 check_pr() {
-  local branch=$1 issue=$2 base=$3 json body head pr_base issue_nv pr_nv
+  local branch=$1 issue=$2 base=$3 json body head pr_base issue_nv pr_nv pr_title issue_title
   CHECK_REASON=""; PR_NUMBER=""; PR_URL=""
   json=$("$GOAL_GH" pr list --head "$branch" --state open \
-    --json number,url,body,labels,baseRefName,headRefOid 2>/dev/null || echo '[]')
+    --json number,url,title,body,labels,baseRefName,headRefOid 2>/dev/null || echo '[]')
   PR_NUMBER=$(jq -r '.[0].number // empty' <<<"$json")
   if [[ -z $PR_NUMBER ]]; then
     CHECK_REASON="브랜치 $branch 의 열린 PR 없음"
@@ -88,6 +88,7 @@ check_pr() {
   body=$(jq -r '.[0].body' <<<"$json")
   pr_base=$(jq -r '.[0].baseRefName' <<<"$json")
   head=$(jq -r '.[0].headRefOid' <<<"$json")
+  pr_title=$(jq -r '.[0].title // ""' <<<"$json")
   # "#7"이 "#73"에 맞지 않도록 숫자 뒤를 막는다
   grep -Eiq "closes #${issue}([^0-9]|$)" <<<"$body" \
     || CHECK_REASON="PR 설명에 Closes #$issue 없음"
@@ -95,6 +96,10 @@ check_pr() {
     || CHECK_REASON="${CHECK_REASON:+$CHECK_REASON; }PR base가 $pr_base (기대: ${base#origin/})"
   [[ $head == "$(git rev-parse HEAD)" ]] \
     || CHECK_REASON="${CHECK_REASON:+$CHECK_REASON; }PR head가 로컬 HEAD와 다름 (push 안 됨)"
+  # PR 제목은 Issue 제목과 똑같이 ("PR N: …"). 다음 묶음의 선행 PR 판단과 사람이 PR 목록을 읽기 쉽게.
+  issue_title=$("$GOAL_GH" issue view "$issue" --json title --jq .title 2>/dev/null || true)
+  [[ -n $issue_title && $pr_title == "$issue_title" ]] \
+    || CHECK_REASON="${CHECK_REASON:+$CHECK_REASON; }PR 제목을 Issue 제목과 같게: \"$issue_title\" (지금: \"$pr_title\", gh pr edit --title로 고침)"
   issue_nv=$("$GOAL_GH" issue view "$issue" --json labels \
     --jq '[.labels[].name] | index("needs-verify") != null' 2>/dev/null || echo false)
   pr_nv=$(jq -r '[.[0].labels[].name] | index("needs-verify") != null' <<<"$json")

@@ -26,6 +26,21 @@
     {"stage": "basic_deduction_count", "value": 7, "page": 97, "booklet_text": "공제대상가족수：본인, 배우자, 자녀 3명, 직계존속 2명"},
     {"stage": "basic_deduction_total", "value": 10500000, "page": 97, "booklet_text": "1,050만원 [본인 포함 공제대상가족(7명)×150만원]"}
   ],
+  "supplement": {
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-18", "scope": "사람은 문서에서 알아낸 값(implied_by_source) 중 인쇄 100쪽 소득 0원, 177쪽 배우자 65세 미만, 212쪽 자녀 소득 0원을 원문과 대조함. 문서에 없어 골라 넣은 값(not_in_source)은 결과에 영향 없는 값이라 개별 대조 안 함"},
+    "values": [
+      {"path": "/self/sex", "value": "male", "kind": "not_in_source", "reason": "문서에 본인 성별이 없다. 부녀자 추가공제가 생기지 않는 쪽을 골랐다.", "effect": "이 사례는 기본공제 인원·합계만 비교한다. 부녀자공제는 추가공제라 기본공제 합계에 들어가지 않는다."},
+      {"path": "/self/birth_year", "value": 1985, "kind": "not_in_source", "reason": "문서에 본인 출생연도가 없다. 2025년에 40세가 되는 해를 골랐다.", "effect": "본인 나이는 경로우대(70세 이상) 판정에만 쓰인다. 70세 미만이면 경로우대 추가공제 대상이 아니다(규칙 2025.dependent.additional.elderly, min_age 70)."},
+      {"path": "/self/gross_salary", "value": 40000000, "kind": "not_in_source", "reason": "문서에는 '근로자 본인'이라고만 있고 총급여가 없다. 기본공제 소득요건에 걸리지 않는 보통 근로자 금액을 골랐다.", "effect": "인적공제 단계만 비교하는 사례라 총급여는 결과에 쓰이지 않는다(기본공제 금액은 규칙 2025.dependent.basic의 1명당 150만원)."},
+      {"path": "/self/has_spouse", "value": true, "kind": "implied_by_source", "reason": "가족에 배우자가 있다.", "effect": "문서에서 온 값이다."},
+      {"path": "/family/0/age", "value": 40, "kind": "not_in_source", "reason": "배우자 나이가 문서에 없다. 배우자 기본공제는 나이요건이 없다(규칙 2025.dependent.basic 나이요건에 배우자 없음).", "effect": "배우자 나이는 기본공제에 쓰이지 않는다. 70세 미만이라 경로우대도 없다."},
+      {"path": "/family/2/age", "value": 19, "kind": "not_in_source", "reason": "문서에는 '20세 미만'만 있다. 범위를 만족하는 가장 가까운 나이를 골랐다.", "effect": "직계비속 나이요건은 20세 이하라(2025.dependent.basic lineal_descendant_max_age 20) 0~19세 어느 나이든 결과가 같다."},
+      {"path": "/family/3/age", "value": 19, "kind": "not_in_source", "reason": "위와 같은 이유로 '20세 미만'을 19세로 넣었다.", "effect": "직계비속 나이요건은 20세 이하라 0~19세 어느 나이든 결과가 같다."},
+      {"path": "/family/4/age", "value": 60, "kind": "not_in_source", "reason": "문서에는 '60세 이상'만 있다. 범위를 만족하는 가장 가까운 나이를 골랐다.", "effect": "직계존속 나이요건은 60세 이상이라(2025.dependent.basic lineal_ascendant_min_age 60) 결과가 같다. 70세 이상이면 경로우대가 붙지만 이 사례는 경로우대를 비교하지 않는다."},
+      {"path": "/family/5/age", "value": 60, "kind": "not_in_source", "reason": "'60세 이상'을 60세로 넣었다.", "effect": "직계존속 나이요건은 60세 이상이라 결과가 같다. 경로우대는 이 사례가 비교하지 않는다."}
+    ]
+  },
   "notes": [
     "책자: 해당 과세기간 중에 20세에 도달하더라도 기본공제 가능.",
     "직계존속의 정확한 나이는 책자에 없다(60세 이상으로만 적힘)."

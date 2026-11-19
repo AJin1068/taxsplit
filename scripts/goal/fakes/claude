@@ -29,7 +29,8 @@ echo "$n" >"$dir/fake-pr$pr.md"; git add -A; git commit -q -m "fake pr $pr ($n)"
 sha=$(git rev-parse HEAD); num=$(( $(printf '%s' "$pr" | cksum | cut -d' ' -f1) % 400 + 500 ))
 if [[ $mode == pass ]]; then
   jq -n --argjson num "$num" --arg body "Closes #$issue" --arg base "$base" --arg sha "$sha" \
-    '[{number: $num, url: "https://example.test/pull/\($num)", body: $body, labels: [],
+    --arg title "$("$GOAL_GH" issue view "$issue" --json title --jq .title 2>/dev/null)" \
+    '[{number: $num, url: "https://example.test/pull/\($num)", title: $title, body: $body, labels: [],
        baseRefName: $base, headRefOid: $sha}]' >"$d/pr-list-${br//\//_}.json"
   jq -n --arg b "[검증] PR $pr / 판정: 통과 / 기준 커밋 ${sha:0:7}" \
     '{state: "OPEN", comments: [{author: {login: "github-actions"}, body: $b}]}' >"$d/pr-$num.json"

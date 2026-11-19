@@ -1,9 +1,11 @@
 """검증 결과를 GitHub에 올린다. GitHub Action과 IDE(/verify-pr)가 같이 쓴다.
 
-하는 일 두 가지:
+하는 일 세 가지:
 1. `[검증]` 코멘트를 PR에 하나만 둔다. 숨은 표시가 붙은 코멘트가 있으면 고쳐 쓰고, 없으면 새로 단다.
 2. 다음 PR에서 할 일(followups.json)을 해당 "PR N" 열린 Issue에 코멘트로 남긴다.
    그런 Issue가 없으면 `ready` 없이 새 Issue를 만든다.
+3. PR 무게(weight.json, pr_weight.py가 만든 것)가 있으면 첫 줄에 무게를 붙이고
+   무거우면 `human-review` 라벨을 붙인다(가벼우면 뗀다). 모델의 말이 아니라 이 파일을 따른다.
 
 파이썬 기본 기능과 `gh` 명령만 쓴다. 사용법:
     python3 .github/scripts/post_verify.py --pr 61 [--dir .verify-out] [--dry-run]
@@ -16,6 +18,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+# 같은 폴더의 pr_weight.py (Action에서는 둘 다 main에서 .verify-out/로 가져온다)
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pr_weight  # noqa: E402
+
 # 같은 PR의 [검증] 코멘트를 찾는 숨은 표시. 바꾸면 기존 코멘트를 못 찾아 새로 달린다.
 MARKER = "<!-- taxsplit-verify -->"
 
@@ -24,6 +30,7 @@ GUARDED_FILES = {
     ".github/workflows/verify.yml",
     ".claude/commands/verify-pr.md",
     ".github/scripts/post_verify.py",
+    ".github/scripts/pr_weight.py",
 }
 GUARD_WARNING = "⚠️ 검증 장치 변경, 사람 확인 필요"
 
@@ -136,6 +143,10 @@ def main() -> None:
     # 바뀐 파일 목록은 GitHub에서 직접 받는다(검증 모델의 말에 기대지 않는다).
     changed = gh("pr", "diff", str(args.pr), "--repo", repo, "--name-only").splitlines()
     body = add_guard_warning(comment_path.read_text(encoding="utf-8"), changed)
+    weight_path = out_dir / "weight.json"
+    weight = json.loads(weight_path.read_text(encoding="utf-8")) if weight_path.exists() else None
+    if weight:
+        body = pr_weight.with_weight(body, weight)
     body = with_marker(body)
 
     followups_path = out_dir / "followups.json"
@@ -146,6 +157,10 @@ def main() -> None:
     print(upsert_comment(repo, args.pr, body, args.dry_run))
     for line in post_followups(repo, args.pr, items, args.dry_run):
         print(line)
+    if weight:
+        heavy = weight["weight"] == "무거움"
+        labels = set(weight.get("labels", []))
+        print(pr_weight.sync_label(repo, args.pr, heavy, labels, args.dry_run))
     if args.dry_run:
         print("--- 올릴 코멘트 (dry-run) ---")
         print(body)

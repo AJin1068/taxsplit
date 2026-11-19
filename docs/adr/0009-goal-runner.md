@@ -19,7 +19,7 @@ Claude Code의 `/goal`은 끝나는 조건을 주면 조건을 채울 때까지 
 - **통과는 기계 검문으로**: goal의 판정 모델은 "다음 턴을 할지" 신호로만 쓴다. 통과 여부는 `scripts/goal-run.sh`가 goal이 끝난 뒤 직접 다시 확인한 6항목으로 정한다(테스트·ruff, 막힌 폴더, 새 skip·지운 테스트, PR 모양, 지금 커밋의 `[검증]`, 손대는 폴더). 평가 하네스와 같은 원리다(ADR-0004 "정답은 외부에서 온다"). 떨어지면 떨어진 항목을 붙여 한 번만 다시 돌린다.
 - **Issue마다 새 Claude** (`claude -p --permission-mode auto --permission-prompts none "/goal …"`): 한 대화로 몇 시간 돌리면 앞 Issue 내용이 섞이고, 자동 요약 때 규칙을 놓칠 수 있다.
 - **줄(lane)로 병렬**: Issue 본문의 "선행 PR"·"손대는 폴더" 칸으로만 줄을 정한다(짐작하지 않음). 줄끼리는 동시에(기본 최대 3개, 동시 세션만큼 사용량이 늘어남), 줄 안은 쌓아서 순서대로. 줄마다 레포 밖 git worktree를 쓰고, 한 줄이 멈춰도 다른 줄은 계속한다. 손대는 폴더 밖 수정은 검문 6이 막는다.
-- **휴대폰으로 보기**: `-p` 세션은 휴대폰에서 볼 수 없어서, 대화형 지휘 세션(`claude --remote-control … --permission-mode auto`, `/goal-night`)이 스크립트를 띄우고 `status.md`·`result.json`을 지켜보다 푸시로 알린다. 지휘 세션은 코드를 고치지 않는다.
+- **휴대폰으로 보기**: `-p` 세션은 휴대폰에서 볼 수 없어서, 대화형 지휘 세션(`claude --remote-control … --permission-mode auto`, `/goal-run`)이 스크립트를 띄우고 `status.md`·`result.json`을 지켜보다 푸시로 알린다. 지휘 세션은 코드를 고치지 않는다.
 - 기존 GitHub 장치(검증 Action, `guard`, `eval/` 벽, 라벨, PR 템플릿, `.claude/settings.json` 금지 목록)는 바꾸지 않는다. `verify.yml`·`guard.yml`·`ci.yml`은 base를 가리지 않아 쌓인 PR에도 돈다. 금지 목록은 worktree 안의 `claude -p`에도 적용되는 것을 시험했다.
 
 ## 검토한 대안
@@ -33,7 +33,7 @@ Claude Code의 `/goal`은 끝나는 조건을 주면 조건을 채울 때까지 
 
 ## 결과
 
-- 좋은 점: 사람 손은 저녁(Issue·계획 승인)과 아침(merge·질문 답)에만 든다. 통과 판정이 말이 아니라 명령 결과에서 온다.
+- 좋은 점: 사람 손은 돌리기 전(Issue·계획 승인)과 끝난 뒤(merge·질문 답)에만 든다. 통과 판정이 말이 아니라 명령 결과에서 온다.
 - 나쁜 점: 쌓인 PR은 앞 PR을 merge하고 브랜치를 지워야 base가 `main`으로 바뀐다. 레포 설정 "Automatically delete head branches"가 꺼져 있으면 사람이 `gh pr edit <번호> --base main`을 해야 한다.
 - 나쁜 점: 개발 에이전트가 사람과 같은 계정이라 `[검증]` 코멘트를 흉내 낼 수 있다. 검문 5는 작성자가 `github-actions`이고 기준 커밋이 지금 PR head인 코멘트만 센다.
 - 나쁜 점: 스크립트 시험(`scripts/goal/test-*.sh`)은 CI에 없다. `ci.yml`이 감시 대상이라 별도 Issue로 넣는다.
