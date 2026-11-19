@@ -38,6 +38,7 @@ async def measure(fake: bool, model: str | None) -> dict:
     chunks = load_chunks()
 
     store = MemoryChunkStore(embedder)
+    _ = embedder.dim  # 모델 내려받기·불러오기는 벡터화 시간에서 뺀다
     started = time.perf_counter()
     await store.add(chunks)
     embed_seconds = time.perf_counter() - started
