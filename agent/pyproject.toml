@@ -15,9 +15,15 @@ dependencies = [
     "asyncpg>=0.32.0",
     "fastapi>=0.143.0",
     "pdfplumber>=0.11.10",
+    "pgvector>=0.5.1",
     "pydantic-settings>=2.16.1",
     "sqlalchemy[asyncio]>=2",
     "uvicorn>=0.54.0",
+]
+
+[project.optional-dependencies]
+rag = [
+    "sentence-transformers>=6.3.0",
 ]
 
 [build-system]

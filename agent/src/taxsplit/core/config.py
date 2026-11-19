@@ -41,6 +41,11 @@ class Settings(BaseSettings):
     llm_model_verifier: str = ""
     llm_model_judge: str = ""
 
+    # 근거 검색(RAG) 임베딩 모델. 맥북 CPU에서 도는 공개 다국어 모델(돈이 들지 않음)
+    # 차원을 바꾸면 rag_chunks 표의 vector(384) 칸도 새 마이그레이션으로 바꿔야 한다
+    rag_embedding_model: str = "intfloat/multilingual-e5-small"
+    rag_embedding_dim: int = 384
+
     @field_validator("anthropic_api_key", "llm_base_url", mode="before")
     @classmethod
     def _blank_is_none(cls, value: object) -> object:
