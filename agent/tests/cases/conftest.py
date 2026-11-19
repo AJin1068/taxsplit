@@ -3,6 +3,7 @@
 from collections import Counter
 
 from cases.case_compare import all_rows
+from cases.case_household import hometax_plans
 
 GROUP_ORDER = ["기본 흐름", "부양가족", "자녀", "의료비", "교육비", "카드"]
 
@@ -40,6 +41,23 @@ def pytest_terminal_summary(terminalreporter):
     for r in bad:
         tr.write_line(
             f"  - {r.case} {r.stage}: 기대 {r.expected} / 엔진 {r.actual} / 차이 {_diff(r)}"
+        )
+    _allocation_table(tr)
+
+
+def _allocation_table(tr):
+    """홈택스 사례의 배분안별 부부 합계(PR 6). *는 홈택스 결과가 아니라 문서 근거로 가져온 값."""
+    tr.section("홈택스 배분안 비교 (PR 6)")
+    tr.write_line("| 사례 | 남편 기대/엔진 | 아내 기대/엔진 | 합계 기대/엔진 | 일치 |")
+    tr.write_line("| --- | --- | --- | --- | --- |")
+    for p in hometax_plans():
+        mark = {w: "*" if w in p.not_run else "" for w in ("husband", "wife")}
+        r, e = p.result, p.expected
+        total = sum(e.values())
+        tr.write_line(
+            f"| {p.case_id} | {e['husband']:,}{mark['husband']} / {r.husband_tax:,} "
+            f"| {e['wife']:,}{mark['wife']} / {r.wife_tax:,} | {total:,} / {r.total:,} "
+            f"| {'O' if total == r.total else 'X'} |"
         )
 
 
