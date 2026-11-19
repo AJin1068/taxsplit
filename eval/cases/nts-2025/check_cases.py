@@ -9,6 +9,9 @@ import json
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from supplement import check_supplement  # noqa: E402
+
 HERE = Path(__file__).resolve().parent
 REQUIRED = [
     "id",
@@ -72,6 +75,7 @@ def check(path: Path) -> list[str]:
                 errs.append(f"expected[{i}].page {exp['page']}가 source.printed_pages에 없음")
     if not isinstance(case["notes"], list):
         errs.append("notes는 목록")
+    errs += check_supplement(case)
     return errs
 
 

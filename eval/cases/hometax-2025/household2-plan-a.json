@@ -545,6 +545,18 @@
     }
   ],
   "not_run": [],
+  "supplement": {
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-18", "scope": "사람은 문서에서 알아낸 값(implied_by_source) 중 인쇄 100쪽 소득 0원, 177쪽 배우자 65세 미만, 212쪽 자녀 소득 0원을 원문과 대조함. 문서에 없어 골라 넣은 값(not_in_source)은 결과에 영향 없는 값이라 개별 대조 안 함"},
+    "values": [
+      {"path": "/husband/sex", "value": "male", "kind": "implied_by_source", "reason": "사람 역할 이름 '남편'에서 왔다.", "effect": "문서(입력표)에서 온 값이다."},
+      {"path": "/wife/sex", "value": "female", "kind": "implied_by_source", "reason": "사람 역할 이름 '아내'에서 왔다. 아내의 부녀자공제 여부(woman_deduction)도 입력에 있다.", "effect": "문서(입력표)에서 온 값이다."},
+      {"path": "/husband/birth_year", "value": 1980, "kind": "not_in_source", "reason": "입력표·입력 카드에 생년이 없다. 자녀·부모 나이와 어울리는 해를 골랐다.", "effect": "본인 나이는 경로우대(70세 이상) 판정에만 쓰인다. 70세 미만이면 경로우대 추가공제 대상이 아니다(규칙 2025.dependent.additional.elderly, min_age 70)."},
+      {"path": "/wife/birth_year", "value": 1982, "kind": "not_in_source", "reason": "입력표·입력 카드에 생년이 없다.", "effect": "본인 나이는 경로우대 판정에만 쓰인다. 70세 미만이면 경로우대 추가공제 대상이 아니다(규칙 2025.dependent.additional.elderly, min_age 70)."},
+      {"path": "/husband/has_spouse", "value": true, "kind": "implied_by_source", "reason": "맞벌이 부부 가구다.", "effect": "문서에서 온 값이다."},
+      {"path": "/wife/has_spouse", "value": true, "kind": "implied_by_source", "reason": "맞벌이 부부 가구다.", "effect": "문서에서 온 값이다."}
+    ]
+  },
   "notes": [
     "모든 실행에서 근무기간 2025.1.1.~12.31., 비과세 소득 없음, 기납부세액 0원으로 넣었다. 그래서 refund_or_payment(차감징수세액)는 결정세액에서 10원 미만을 버린 값이다(화면 그대로).",
     "시어머니 의료비는 '65세 이상(한도 없음)' 칸에 넣었다. 카드로 결제한 것으로 치지 않고 의료비 칸에만 넣었다.",
