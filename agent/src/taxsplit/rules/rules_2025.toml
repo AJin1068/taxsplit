@@ -384,6 +384,22 @@ status = "sourced"
 [rule.value]
 income_spouse_expense_claimant = "payer"
 
+[[rule]]
+id = "2025.medical.no_claimant_payer"
+year = 2025
+group = "medical"
+summary = "맞벌이 부부: 부부 누구도 기본공제 받지 않는 가족(나이·소득요건 미달)의 의료비는 지출한 근로자가 공제(의료비 대상 가족은 나이·소득 제한 없음)"
+# 근거 문장: p173 "기본공제대상자(나이 및 소득의 제한을 받지 않음)를 위하여 … 의료비를 지급한 경우",
+# PDF 8쪽 요건표(의료비: 나이 ×, 소득 ×). 조문은 의료비 절(p173)의 조문을 적었다.
+# PR 6 [기획 확인] 1번, Issue #15 정해진 결정(2026-11-19)
+statute = "소법 §59의4 ②"
+pages = ["p173"]
+status = "sourced"
+[rule.value]
+claimant = "payer"
+checks_age = false
+checks_income = false
+
 # ── 교육비 ─────────────────────────────────────────────────────
 
 [[rule]]
@@ -449,6 +465,37 @@ status = "sourced"
 excluded = ["spouse_with_income", "lineal_ascendant"]
 # 직계존속이라도 장애인특수교육비는 공제된다
 lineal_ascendant_exception = ["disabled_special_education"]
+
+[[rule]]
+id = "2025.education.couple_rule"
+year = 2025
+group = "education"
+summary = "맞벌이 부부: 부양가족 교육비는 그 가족을 기본공제 받은 쪽이 지출한 것만 공제(의료비 2025.medical.couple_rule과 같음)"
+# 근거: p389 부록 4 표의 의료비·교육비 "배우자 외 부양가족" 칸이 한 칸으로 합쳐져
+# "부부 중 부양가족을 기본공제 받는 근로자가 부양가족을 위해 지출한 금액 공제". p181 예규 원천-361.
+# PR 6 [기획 확인] 2번, Issue #15 정해진 결정(2026-11-19)
+statute = "원천-361"
+pages = ["p181", "p389"]
+status = "sourced"
+[rule.value]
+eligible_payer = "basic_deduction_claimant"
+
+[[rule]]
+id = "2025.education.no_claimant_payer"
+year = 2025
+group = "education"
+summary = "맞벌이 부부: 부부 누구도 기본공제 받지 않는 가족(나이요건 미달)의 교육비는 지출한 근로자가 공제. 나이 제한 없음, 소득요건은 기본공제와 같음, 배우자·직계비속·형제자매만(직계존속 제외)"
+# 근거 문장: p178·p180 "기본공제대상자(나이 제한을 받지 않음)인 배우자·직계비속·형제자매·입양자 및
+# 위탁아동", p185 사례(25세 동생, 22세 처남 대학 등록금 공제), p181 예규 원천-361("근로자가 지출한 비용").
+# 조문은 교육비 절의 조문을 적었다. PR 6 [기획 확인] 1번, Issue #15 정해진 결정(2026-11-19)
+statute = "소법 §59의4 ③"
+pages = ["p178", "p180", "p181", "p185"]
+status = "sourced"
+[rule.value]
+claimant = "payer"
+relations = ["spouse", "child", "sibling"]
+checks_age = false
+checks_income = true
 
 # ── 신용카드 등 ────────────────────────────────────────────────
 
@@ -557,3 +604,20 @@ unit = 1
 mode = "floor"
 # 카드 계산의 모든 단계 값(① ~ ⑥, 공제가능금액, 한도)에 적용
 stages = ["all"]
+
+[[rule]]
+id = "2025.card.no_claimant_family"
+year = 2025
+group = "card"
+summary = "연 소득금액 100만원 이하(근로소득만 있으면 총급여 500만원 이하)인 배우자·직계존비속이 쓴 카드 등 사용금액은 나이와 상관없이 포함할 수 있음(다른 거주자의 기본공제를 받는 사람, 형제자매 제외)"
+# 근거: p134 "연간 소득금액 합계액이 100만원 … 이하인 배우자 또는 직계존비속 … 명의의 신용카드 등
+# 사용금액은 … 포함할 수 있음", PDF 8쪽 요건표(카드: 나이 ×, 소득 ○).
+# 맞벌이 부부 중 누구에게 넣을지는 문서에 없다. 사람 결정(2026-11-19, Issue #15): 배분 비교가
+# 두 쪽을 모두 계산해 부부 결정세액 합이 작은 쪽. 세법 규칙이 아니라서 배분 코드에 둔다.
+statute = "조특법 §126의2"
+pages = ["p134"]
+status = "sourced"
+[rule.value]
+relations = ["spouse", "lineal_ascendant", "child"]
+checks_age = false
+checks_income = true
