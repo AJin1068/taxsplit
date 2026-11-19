@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     app_env: Literal["local", "test", "prod"] = "local"
 
     database_url: str
+    # 대화·LLM 호출 기록을 어디 저장하나. 테스트·CI가 DB 없이 돌도록 기본은 memory
+    storage: Literal["memory", "postgres"] = "memory"
 
     # 키 없이도 서버·테스트가 돌고 돈이 나가지 않도록 기본은 fake
     llm_provider: Literal["fake", "anthropic"] = "fake"

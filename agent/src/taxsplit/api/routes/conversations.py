@@ -10,7 +10,7 @@ router = APIRouter(prefix="/conversations", tags=["conversations"])
 async def create_conversation(
     body: CreateConversationRequest, service: ConversationServiceDep
 ) -> ConversationResponse:
-    conversation = service.create(body.title)
+    conversation = await service.create(body.title)
     return ConversationResponse.model_validate(conversation)
 
 
@@ -18,5 +18,5 @@ async def create_conversation(
 async def get_conversation(
     conversation_id: int, service: ConversationServiceDep
 ) -> ConversationResponse:
-    conversation = service.get(conversation_id)
+    conversation = await service.get(conversation_id)
     return ConversationResponse.model_validate(conversation)
