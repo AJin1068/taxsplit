@@ -74,6 +74,7 @@ class EligibilityCheck(unittest.TestCase):
     def test_confirmed_needs_reviewer(self):
         case = copy.deepcopy(self.case)
         case["eligibility"]["status"] = "confirmed"
+        case["eligibility"]["review"] = {"reviewer": None, "date": None, "scope": None}
         self.assertTrue(any("reviewer" in e for e in check_eligibility(case)))
 
 

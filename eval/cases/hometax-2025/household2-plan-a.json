@@ -558,8 +558,8 @@
     ]
   },
   "eligibility": {
-    "status": "draft",
-    "review": {"reviewer": null, "date": null, "scope": null},
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-19", "scope": "모든 줄이 공제 대상(홈택스 입력값). 사람이 PR #112에서 국세청 사례의 '공제 대상 아님' 줄과 함께 승인함"},
     "rows": [
       {"path": "/family/mother_in_law/medical", "deductible": true, "text": "홈택스 모의계산 입력값: 입력한 사람(AJin1068)이 공제 대상으로 넣은 금액이다. 문서 풀이가 아니라 입력표 근거. 72세 시어머니 의료비 → 의료비 65세 이상 칸(남편)"}
     ]

@@ -555,8 +555,8 @@
     ]
   },
   "eligibility": {
-    "status": "draft",
-    "review": {"reviewer": null, "date": null, "scope": null},
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-19", "scope": "모든 줄이 공제 대상(홈택스 입력값). 사람이 PR #112에서 국세청 사례의 '공제 대상 아님' 줄과 함께 승인함"},
     "rows": [
       {"path": "/family/children/0/education", "deductible": true, "text": "홈택스 모의계산 입력값: 입력한 사람(AJin1068)이 공제 대상으로 넣은 금액이다. 문서 풀이가 아니라 입력표 근거. 초등학생 방과후학교 수업료 → 교육비 초중고 칸"},
       {"path": "/family/children/1/education", "deductible": true, "text": "홈택스 모의계산 입력값: 입력한 사람(AJin1068)이 공제 대상으로 넣은 금액이다. 문서 풀이가 아니라 입력표 근거. 취학 전 어린이집 보육료 → 교육비 취학전 칸"},

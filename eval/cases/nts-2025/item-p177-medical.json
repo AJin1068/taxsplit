@@ -46,8 +46,8 @@
     ]
   },
   "eligibility": {
-    "status": "draft",
-    "review": {"reviewer": null, "date": null, "scope": null},
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-19", "scope": "사람이 '공제 대상 아님'으로 적은 줄(인쇄 218쪽 보약·고등학생 학원비·회사 지원 대학원비, 인쇄 185쪽 초등학생 학원비·처남 대학원비)을 원문과 대조해 승인함. 공제 대상 줄은 기획이 각 사례 풀이 숫자로 대조함"},
     "rows": [
       {"path": "/expenses/0", "deductible": true, "page": 177, "text": "나. 본인･65세 이상자･장애인의 공제대상의료비 = 300만원 + 100만원 + 50만원 = 450만원"},
       {"path": "/expenses/1", "deductible": true, "page": 177, "text": "나. 본인･65세 이상자･장애인의 공제대상의료비 = 300만원 + 100만원 + 50만원 = 450만원"},
