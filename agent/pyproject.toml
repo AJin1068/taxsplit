@@ -10,9 +10,12 @@ authors = [
 ]
 requires-python = ">=3.14"
 dependencies = [
+    "alembic>=1.20.1",
     "anthropic>=2.8.0",
+    "asyncpg>=0.32.0",
     "fastapi>=0.143.0",
     "pydantic-settings>=2.16.1",
+    "sqlalchemy[asyncio]>=2",
     "uvicorn>=0.54.0",
 ]
 
@@ -22,6 +25,7 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "aiosqlite>=0.22.1",
     "httpx2>=2.13.1",
     "pytest>=9.1.1",
     "ruff>=0.17.0",

@@ -62,3 +62,20 @@ def test_api_key_hidden_in_repr(clean_llm_env, monkeypatch):
     s = Settings(_env_file=None)
     assert "sk-ant-secret" not in repr(s)
     assert s.anthropic_api_key.get_secret_value() == "sk-ant-secret"
+
+
+def test_storage_defaults_to_memory(monkeypatch):
+    # 테스트·CI가 DB 없이 돌도록 기본은 메모리
+    monkeypatch.delenv("STORAGE", raising=False)
+    assert Settings(_env_file=None).storage == "memory"
+
+
+def test_storage_postgres_from_env(monkeypatch):
+    monkeypatch.setenv("STORAGE", "postgres")
+    assert Settings(_env_file=None).storage == "postgres"
+
+
+def test_storage_rejects_unknown(monkeypatch):
+    monkeypatch.setenv("STORAGE", "redis")
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None)

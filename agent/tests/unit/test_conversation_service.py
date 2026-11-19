@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 
 from taxsplit.domain.models import ConversationNotFound
@@ -11,20 +13,23 @@ def service() -> ConversationService:
 
 
 def test_create_assigns_id(service: ConversationService) -> None:
-    conversation = service.create("hello")
+    conversation = asyncio.run(service.create("hello"))
 
     assert conversation.id == 1
     assert conversation.title == "hello"
 
 
 def test_get_returns_created(service: ConversationService) -> None:
-    created = service.create("hello")
+    async def go():
+        created = await service.create("hello")
+        return created, await service.get(1)
 
-    assert service.get(1) == created
+    created, fetched = asyncio.run(go())
+    assert fetched == created
 
 
 def test_get_missing_raises(service: ConversationService) -> None:
     with pytest.raises(ConversationNotFound) as exc_info:
-        service.get(999)
+        asyncio.run(service.get(999))
 
     assert exc_info.value.conversation_id == 999

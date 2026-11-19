@@ -10,11 +10,11 @@ class ConversationService:
     def __init__(self, repo: ConversationRepository) -> None:
         self._repo = repo
 
-    def create(self, title: str) -> Conversation:
-        return self._repo.save(Conversation(title=title, created_at=datetime.now(UTC)))
+    async def create(self, title: str) -> Conversation:
+        return await self._repo.save(Conversation(title=title, created_at=datetime.now(UTC)))
 
-    def get(self, conversation_id: int) -> Conversation:
-        conversation = self._repo.get(conversation_id)
+    async def get(self, conversation_id: int) -> Conversation:
+        conversation = await self._repo.get(conversation_id)
         if conversation is None:
             raise ConversationNotFound(conversation_id)
         return conversation
