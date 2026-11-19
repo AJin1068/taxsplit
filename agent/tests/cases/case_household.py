@@ -1,6 +1,8 @@
 """홈택스 사례 → 배분 비교 입력(가구 + 배분안). 테스트 쪽에만 둔다(처리 코드는 사례를 읽지 않는다).
 
 사례 하나 = 가구 하나의 배분안 하나. 지출은 사례에서 그 사람이 홈택스에 넣은 쪽을 낸 사람으로 본다.
+문서에 없는 값(부부 성별·출생연도, 자녀 소득)은 테스트가 채우지 않고 사례 파일의 보충 입력에서 읽는다
+(case_inputs.engine_inputs, Issue #14 정해진 결정 2026-11-18).
 """
 
 from dataclasses import dataclass
@@ -8,6 +10,7 @@ from functools import cache
 
 from cases.case_compare import load_cases
 from cases.case_convert_items import hometax_card
+from cases.case_inputs import engine_inputs
 from taxsplit.allocation import (
     CardSpend,
     Earner,
@@ -21,10 +24,7 @@ from taxsplit.allocation import (
 from taxsplit.engine import Dependent
 from taxsplit.rules.loader import load_rules
 
-# 사례에 본인 출생연도가 없을 때 쓰는 값(경로우대 70세 미만이면 결정세액에 영향 없음)
-_ANY_BIRTH_YEAR = 1985
 _LEVELS = {"preschool": "preschool", "elementary_to_high": "school"}
-_SEX = {"husband": "male", "wife": "female"}
 
 
 @dataclass(frozen=True)
@@ -39,11 +39,16 @@ class CasePlan:
     result: PlanResult
 
 
-def _family(case: dict) -> dict[str, tuple[dict, Member]]:
-    family = case["inputs"]["family"]
+def _family(inputs: dict) -> dict[str, tuple[dict, Member]]:
+    family = inputs["family"]
     out = {}
     for row in family.get("children", []):
-        dep = Dependent(name=row["name"], relation="child", birth_year=2025 - row["age"])
+        dep = Dependent(
+            name=row["name"],
+            relation="child",
+            birth_year=2025 - row["age"],
+            income_amount=row["income"],
+        )
         out[row["name"]] = (row, Member(dependent=dep))
     if "mother_in_law" in family:
         row = family["mother_in_law"]
@@ -51,7 +56,7 @@ def _family(case: dict) -> dict[str, tuple[dict, Member]]:
             name="시어머니",
             relation="lineal_ascendant",
             birth_year=2025 - row["age"],
-            income_amount=row.get("income", 0),
+            income_amount=row["income"],
         )
         out["시어머니"] = (row, Member(dependent=dep, family_of="husband"))
     return out
@@ -59,11 +64,12 @@ def _family(case: dict) -> dict[str, tuple[dict, Member]]:
 
 def household_of(case: dict) -> tuple[Household, dict[str, str]]:
     """사례 → (가구, 배분안). 배분안은 allocation의 "기본공제" 줄에서 읽는다."""
-    family = _family(case)
+    inputs = engine_inputs(case)
+    family = _family(inputs)
     medical, education, cards = [], [], []
     earners = {}
     for who in ("husband", "wife"):
-        me = case["inputs"][who]
+        me = inputs[who]
         for amount in me.get("medical", {}).values():
             name = next(n for n, (r, _) in family.items() if r.get("medical") == amount)
             medical.append(MedicalSpend(payer=who, for_whom=name, amount=amount))
@@ -82,8 +88,8 @@ def household_of(case: dict) -> tuple[Household, dict[str, str]]:
             cards.append(CardSpend(user=who, credit=c.credit, cash_debit=c.cash_debit))
         earners[who] = Earner(
             gross_salary=me["gross_salary"],
-            sex=_SEX[who],
-            birth_year=_ANY_BIRTH_YEAR,
+            sex=me["sex"],
+            birth_year=me["birth_year"],
             national_pension=me["national_pension"],
             health_insurance=me["health_insurance"],
             employment_insurance=me["employment_insurance"],

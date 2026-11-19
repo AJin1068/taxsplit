@@ -131,6 +131,14 @@ class Dropped(_Frozen):
     reason: str
 
 
+class AllocWarning(_Frozen):
+    """중복공제·공제 안 됨·범위 밖 경고, 문서가 정하지 않은 해석 표시."""
+
+    code: str
+    message: str
+    rule_ids: tuple[str, ...]
+
+
 class PlanResult(_Frozen):
     """배분안 하나의 계산 결과."""
 
@@ -143,6 +151,10 @@ class PlanResult(_Frozen):
     dropped: tuple[Dropped, ...]
     # 이 안에서 쓴 규칙 ID 전부(엔진 단계 + 배분 규칙)
     rule_ids: tuple[str, ...]
+    # 아무도 기본공제 받지 않는 가족의 카드를 넣은 쪽(두 쪽을 계산해 합계가 작은 쪽, Issue #15)
+    card_sides: dict[str, Who] = Field(default_factory=dict)
+    # 이 안의 결과 설명에 붙일 표시(문서가 정하지 않은 해석 등)
+    notes: tuple[AllocWarning, ...] = ()
 
 
 class CommonPlan(_Frozen):
@@ -153,14 +165,6 @@ class CommonPlan(_Frozen):
     plan: PlanResult
     # 흔한 방식 합계 − 최적안 합계. 기납부세액은 배분과 상관없어 이 차이가 곧 환급액 차이다
     saving: int
-
-
-class AllocWarning(_Frozen):
-    """중복공제·공제 안 됨·범위 밖 경고."""
-
-    code: str
-    message: str
-    rule_ids: tuple[str, ...]
 
 
 class AllocationResult(_Frozen):

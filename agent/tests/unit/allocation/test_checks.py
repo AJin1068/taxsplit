@@ -1,8 +1,16 @@
-"""중복공제 검사: "잡을 것" 5종은 각각 잡히고, "잡으면 안 되는 것" 3종은 경고 없이 지나간다."""
+"""중복공제 검사: "잡을 것" 5종은 각각 잡히고, "잡으면 안 되는 것" 3종은 경고 없이 지나간다.
+
+PR 6 [기획 확인]으로 5번에 교육비가, "잡으면 안 되는 것"에 아무도 기본공제 못 받는 가족이 더해졌다.
+"""
 
 import pytest
 
-from allocation.households import CARD_NEAR_THRESHOLD, SIMILAR_WITH_KIDS, WIDE_GAP_PARENTS
+from allocation.households import (
+    CARD_NEAR_THRESHOLD,
+    NOBODY_CLAIMS,
+    SIMILAR_WITH_KIDS,
+    WIDE_GAP_PARENTS,
+)
 from taxsplit.allocation import Claim, check_claims, compare_allocations
 
 
@@ -52,6 +60,13 @@ CATCH = {
         "medical_not_claimant",
         "2025.medical.couple_rule",
     ),
+    # PR 6 [기획 확인] 2번: 교육비도 의료비와 같다(p389·p181)
+    "기본공제 안 받은 쪽이 낸 부양가족 교육비": (
+        SIMILAR_WITH_KIDS,
+        (C("wife", "basic", "큰아이"), C("husband", "education", "큰아이", 600_000)),
+        "education_not_claimant",
+        "2025.education.couple_rule",
+    ),
 }
 
 # 종류 이름 → (가구, 신청 목록)
@@ -79,6 +94,14 @@ PASS = {
     "소득 있는 배우자 의료비를 낸 사람이 공제": (
         SIMILAR_WITH_KIDS,
         (C("husband", "medical", "wife", 3_000_000), C("wife", "medical", "wife", 500_000)),
+    ),
+    # PR 6 [기획 확인] 1번: 아무도 기본공제 받을 수 없는 가족의 의료비·교육비는 낸 사람이 공제
+    "아무도 기본공제 못 받는 가족의 지출을 낸 사람이 공제": (
+        NOBODY_CLAIMS,
+        (
+            C("husband", "medical", "어머니", 5_000_000),
+            C("husband", "education", "대학생", 8_000_000),
+        ),
     ),
 }
 
