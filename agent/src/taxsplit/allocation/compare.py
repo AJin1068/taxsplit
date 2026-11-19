@@ -3,6 +3,8 @@
 금액은 모두 엔진이 낸다. 이 모듈은 엔진을 부르고 합계를 비교하기만 한다(ADR-0003).
 """
 
+from itertools import product
+
 from taxsplit.allocation.assign import to_workers
 from taxsplit.allocation.candidates import (
     all_assignments,
@@ -13,20 +15,44 @@ from taxsplit.allocation.candidates import (
 )
 from taxsplit.allocation.checks import Claim, check_claims, scope_warnings
 from taxsplit.allocation.models import (
+    WHO,
     AllocationResult,
+    AllocWarning,
     Assignment,
     CommonPlan,
     Household,
     PlanResult,
+    Who,
 )
+from taxsplit.allocation.unclaimed import CARD_FAMILY, CARD_NOTE, unclaimed_card_users
 from taxsplit.engine import Rulebook, compute_tax
 from taxsplit.rules.loader import Rule
 
+_NAMES = {"husband": "남편", "wife": "아내"}
+
 
 def evaluate(household: Household, plan: Assignment, rules: dict[str, Rule]) -> PlanResult:
-    """배분안 하나: 부부 각자 엔진을 한 번씩 부르고 결정세액을 더한다."""
+    """배분안 하나: 부부 각자 엔진을 한 번씩 부르고 결정세액을 더한다.
+
+    아무도 기본공제 받지 않는 가족의 카드 사용액은 문서가 누구에게 넣을지 정하지 않는다
+    (인쇄 134쪽 "포함할 수 있음"). 사람 결정(2026-11-19, Issue #15)대로 남편 쪽·아내 쪽을
+    모두 계산해 부부 결정세액 합이 작은 쪽을 고른다. 같으면 남편 쪽(입력의 첫 사람).
+    """
+    users = unclaimed_card_users(household, plan, Rulebook(rules))
+    options = [dict(zip(users, pick, strict=True)) for pick in product(WHO, repeat=len(users))]
+    # min은 같은 값이면 앞의 것을 돌려준다(product의 첫 줄 = 모두 남편 쪽)
+    return min((_evaluate(household, plan, sides, rules) for sides in options), key=_total)
+
+
+def _total(p: PlanResult) -> int:
+    return p.total
+
+
+def _evaluate(
+    household: Household, plan: Assignment, card_sides: dict[str, Who], rules: dict[str, Rule]
+) -> PlanResult:
     book = Rulebook(rules)
-    workers, dropped = to_workers(household, plan, book)
+    workers, dropped = to_workers(household, plan, book, card_sides)
     husband = compute_tax(workers["husband"], rules)
     wife = compute_tax(workers["wife"], rules)
     ids = {i for r in (husband, wife) for stage in r.rules_used.values() for i in stage}
@@ -40,6 +66,24 @@ def evaluate(household: Household, plan: Assignment, rules: dict[str, Rule]) -> 
         wife=wife,
         dropped=tuple(dropped),
         rule_ids=tuple(sorted(ids)),
+        card_sides=dict(card_sides),
+        notes=tuple(_card_note(household, name, who, book) for name, who in card_sides.items()),
+    )
+
+
+def _card_note(household: Household, name: str, who: Who, book: Rulebook) -> AllocWarning:
+    amount = sum(
+        sum(c.model_dump(exclude={"user", "payer"}).values())
+        for c in household.cards
+        if c.user == name
+    )
+    msg = (
+        f"{name} 카드 사용액 {amount:,}원: 부부 누구도 기본공제 받지 않는 가족이라"
+        f" 남편 쪽·아내 쪽을 모두 계산해 부부 결정세액 합이 작은 {_NAMES[who]} 쪽에 넣음."
+        f" {CARD_NOTE}"
+    )
+    return AllocWarning(
+        code="card_unclaimed_family", message=msg, rule_ids=(book.full_id(CARD_FAMILY),)
     )
 
 
@@ -56,8 +100,9 @@ def compare_allocations(
     cands = candidates(household, book)
     plans = tuple(evaluate(household, a, rules) for a in all_assignments(cands))
 
-    # "총급여가 큰 쪽"이 같을 때 쓰는 과세표준: 부양가족 없이 각자 계산한 값
-    alone = evaluate(household, {}, rules)
+    # "총급여가 큰 쪽"이 같을 때 쓰는 과세표준: 부양가족 없이 각자 계산한 값.
+    # 가족 지출은 빼야 한다(아무도 기본공제 받지 않는 가족 지출도 이제 공제되므로)
+    alone = evaluate(_without_family(household), {}, rules)
     taxable = {"husband": alone.husband.taxable_income, "wife": alone.wife.taxable_income}
     larger, equal = larger_earner(household, taxable)
 
@@ -81,7 +126,7 @@ def compare_allocations(
             saving=b_plan.total - best.total,
         ),
     )
-    warnings = scope_warnings(household, book)
+    warnings = scope_warnings(household, book) + best.notes
     if claims:
         warnings += check_claims(household, claims, rules)
     return AllocationResult(
@@ -99,3 +144,15 @@ def compare_allocations(
 
 def _find(plans: tuple[PlanResult, ...], assignment: Assignment) -> PlanResult:
     return next(p for p in plans if p.assignment == assignment)
+
+
+def _without_family(household: Household) -> Household:
+    """부양가족과 가족 지출을 뺀 가구(부부 본인·배우자 지출만 남김)."""
+    return household.model_copy(
+        update={
+            "members": (),
+            "medical": tuple(s for s in household.medical if s.for_whom in WHO),
+            "education": tuple(e for e in household.education if e.for_whom in WHO),
+            "cards": tuple(c for c in household.cards if c.user in WHO),
+        }
+    )

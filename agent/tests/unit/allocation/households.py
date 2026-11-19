@@ -102,3 +102,17 @@ HOUSEHOLDS = {
     "4 카드 문턱 근처": CARD_NEAR_THRESHOLD,
     "5 부양가족 없음": NO_DEPENDENTS,
 }
+
+# 아무도 기본공제 받을 수 없는 가족(5가구 표 밖, PR 6 [기획 확인] 1번의 가구 예시와 같은 모양).
+# 22세 대학생 자녀(나이요건 20세 초과, 소득 없음)와 57세 어머니(나이요건 60세 미만, 소득 없음)의
+# 등록금·의료비를 남편이 냄
+NOBODY_CLAIMS = Household(
+    husband=earner(60_000_000, "male", 1975),
+    wife=earner(40_000_000, "female", 1977),
+    members=(child("대학생", 2003), parent("어머니", 1968, "husband")),
+    medical=(MedicalSpend(payer="husband", for_whom="어머니", amount=5_000_000),),
+    education=(
+        EducationSpend(payer="husband", for_whom="대학생", level="university", amount=8_000_000),
+    ),
+    cards=own_cards(20_000_000, 14_000_000),
+)

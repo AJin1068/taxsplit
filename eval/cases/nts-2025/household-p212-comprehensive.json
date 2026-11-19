@@ -129,6 +129,35 @@
     {"stage": "determined_tax", "value": 240232, "page": 219, "booklet_text": "4,182,750원 － (660,000 + 950,000 + 360,000 + 1,972,518)원 = 240,232원"},
     {"stage": "refund_or_payment", "value": -759768, "page": 219, "booklet_text": "240,232원(결정세액) - 1,000,000원(기납부세액) = △ 759,768원 (음수 = 환급)"}
   ],
+  "supplement": {
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-18", "scope": "사람은 문서에서 알아낸 값(implied_by_source) 중 인쇄 100쪽 소득 0원, 177쪽 배우자 65세 미만, 212쪽 자녀 소득 0원을 원문과 대조함. 문서에 없어 골라 넣은 값(not_in_source)은 결과에 영향 없는 값이라 개별 대조 안 함"},
+    "values": [
+      {"path": "/worker/sex", "value": "male", "kind": "not_in_source", "reason": "문서에 근로자 성별이 없다.", "effect": "근로소득금액 52,380,000원이 부녀자공제 소득 기준 3천만원(규칙 2025.dependent.additional.woman income_limit)을 넘어 여성이어도 결과가 같다."},
+      {"path": "/family/1/income", "value": 0, "kind": "implied_by_source", "reason": "첫째 소득이 문서에 없다. 책자 풀이가 자녀 3명을 기본공제에 넣었으므로 소득요건 충족으로 보고 0원으로 넣었다.", "effect": "소득요건 안이면 결과가 같다."},
+      {"path": "/family/2/income", "value": 0, "kind": "implied_by_source", "reason": "둘째 소득이 문서에 없다. 같은 이유로 0원.", "effect": "소득요건 안이면 결과가 같다."},
+      {"path": "/family/3/income", "value": 0, "kind": "implied_by_source", "reason": "셋째 소득이 문서에 없다. 같은 이유로 0원.", "effect": "소득요건 안이면 결과가 같다."}
+    ]
+  },
+  "eligibility": {
+    "status": "confirmed",
+    "review": {"reviewer": "AJin1068", "date": "2026-11-19", "scope": "사람이 '공제 대상 아님' 3줄(인쇄 218쪽 보약·고등학생 학원비·회사 지원 대학원비)을 승인함. 공제 대상 줄은 기획이 사례 풀이 숫자로 대조함"},
+    "rows": [
+      {"path": "/expenses/5", "deductible": true, "page": 218, "text": "의료비 표 수술 열 합계 250만원, ② 2,538,000원 = 2,500,000원 + 2,000,000원 – 1,962,000원"},
+      {"path": "/expenses/6", "deductible": false, "filtered_by": "input", "page": 218, "text": "※ 건강증진을 위한 보약구입비는 공제대상 아님"},
+      {"path": "/expenses/7", "deductible": true, "page": 218, "text": "＊ 입원치료비 130만원, 난임시술비 100만원"},
+      {"path": "/expenses/8", "deductible": true, "page": 218, "text": "④ 난임시술비 세액공제 대상금액：1,000,000원"},
+      {"path": "/expenses/9", "deductible": true, "page": 218, "text": "산후조리원 비용 한도 200만원, ② 2,538,000원 = 2,500,000원 + 2,000,000원 – 1,962,000원 (한도는 엔진 규칙)"},
+      {"path": "/expenses/10", "deductible": true, "page": 218, "text": "시력교정용안경 55만원 → 50만원한도 (한도는 엔진 규칙)"},
+      {"path": "/expenses/11", "deductible": true, "page": 218, "text": "수업료 국세청 자료 250만원 공제대상"},
+      {"path": "/expenses/12", "deductible": true, "page": 218, "text": "교복구입비 기타 자료 35만원 공제대상"},
+      {"path": "/expenses/13", "deductible": false, "filtered_by": "input", "page": 218, "text": "학원비 - 120만원 공제대상 아님"},
+      {"path": "/expenses/14", "deductible": true, "page": 218, "text": "체험학습비 기타 자료 50만원 공제대상(30만원) (한도는 엔진 규칙)"},
+      {"path": "/expenses/15", "deductible": true, "page": 218, "text": "수능응시료 국세청 자료 20만원 공제대상"},
+      {"path": "/expenses/16", "deductible": true, "page": 218, "text": "이태희(취학전아동) 체육시설수강료 기타 자료 120만원 공제대상"},
+      {"path": "/expenses/17", "deductible": false, "filtered_by": "input", "page": 218, "text": "이강모 대학원 수강료(비과세학자금) - 300만원 공제대상 아님"}
+    ]
+  },
   "notes": [
     "부부 중 근로소득자는 본인 한 명이다(배우자는 사업소득금액 1,000만원으로 기본공제 제외). 맞벌이 근로자 부부 사례가 아니므로 배분 정답이 아니다.",
     "5그룹 밖 공제(연금보험료, 건강보험료 등, 주택자금, 연금계좌, 보험료 세액공제, 기부금)도 결정세액에 들어가므로 함께 옮겼다. 5그룹 밖 항목은 other_groups_in_case로 표시.",

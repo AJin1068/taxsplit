@@ -26,10 +26,13 @@ parse_field() {
     END { exit found ? 0 : 1 }'
 }
 
-# 작업 목록 PR $1이 이미 merge됐는가 (merge된 PR 제목이 "PR <번호>:"로 시작)
+# 작업 목록 PR $1이 이미 끝났는가: 제목이 "PR <번호>:"인 Issue가 닫혀 있고, 같은 번호의 열린 Issue가 없다.
+# PR 제목은 사람·Claude마다 흔들릴 수 있어(11/18 묶음 1) 기획이 정한 Issue 제목으로 본다.
+# PR이 merge되면 PR 설명의 "Closes #<Issue>"로 Issue가 닫힌다.
 pred_merged() {
-  "$GOAL_GH" pr list --state merged --limit 300 --json title \
-    --jq "[.[] | select(.title | startswith(\"PR $1:\"))] | length > 0" 2>/dev/null | grep -q true
+  local q="[.[] | select(.title | startswith(\"PR $1:\"))] | length"
+  [[ $("$GOAL_GH" issue list --state closed --limit 300 --json title --jq "$q" 2>/dev/null) =~ ^[1-9] ]] \
+    && [[ $("$GOAL_GH" issue list --state open --limit 300 --json title --jq "$q" 2>/dev/null) == 0 ]]
 }
 
 # PR 하나의 정보 JSON: {pr, issue, preds, folders, skip}. skip이 null이 아니면 시작하지 않는다.

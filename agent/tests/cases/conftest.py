@@ -19,8 +19,10 @@ def pytest_terminal_summary(terminalreporter):
         compared = [r for r in det if r.kind == "compare"]
         tr.write_line(f"| {source} | {sum(r.ok for r in compared)} | {len(compared)} |")
     tr.write_line("")
-    tr.write_line("| 출처 | 그룹 | 일치 | 비교 | 범위 밖 | 입력으로 씀 | 제외 | 연결 안 됨 |")
-    tr.write_line("| --- | --- | --- | --- | --- | --- | --- | --- |")
+    # 입력 부족 = 사례 파일의 보충 입력·공제 대상 여부가 아직 confirmed가 아니라 돌리지 못한 단계
+    head = "| 출처 | 그룹 | 일치 | 비교 | 범위 밖 | 입력으로 씀 | 제외 | 입력 부족 | 연결 안 됨 |"
+    tr.write_line(head)
+    tr.write_line("|" + " --- |" * 9)
     for source in ("국세청 사례", "홈택스"):
         for group in GROUP_ORDER:
             mine = [r for r in rows if r.source == source and r.group == group]
@@ -30,7 +32,7 @@ def pytest_terminal_summary(terminalreporter):
             ok = sum(r.ok for r in mine)
             tr.write_line(
                 f"| {source} | {group} | {ok} | {c['compare']} | {c['out_of_scope']} "
-                f"| {c['input']} | {c['excluded']} | {c['unknown']} |"
+                f"| {c['input']} | {c['excluded']} | {c['missing_input']} | {c['unknown']} |"
             )
     bad = [r for r in rows if r.kind == "compare" and not r.ok]
     # 1원 미만 차이 = 끝수 의심. 엔진 값은 원 단위 정수라 생기면 사례 쪽 소수를 의심한다

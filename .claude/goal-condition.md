@@ -4,7 +4,7 @@
 1. `gh issue view {{ISSUE}} --json title,body,labels,comments`로 Issue 본문·코멘트·`[계획]` 코멘트를 읽는다. 계획대로만 구현한다.
 2. 지금 HEAD는 `{{BASE}}`다. 여기서 CLAUDE.md 규칙대로 `<종류>/pr{{PR}}-<짧은 설명>` 브랜치를 만든다.
 3. 구현하고 `agent/`에서 `uv run pytest`, `uv run ruff check .`, `uv run ruff format --check .`를 돌린다. 커밋하고 push한다.
-4. `gh pr create --base {{BASE}}`로 PR을 연다. 설명은 `.github/pull_request_template.md`를 채우고 `Closes #{{ISSUE}}`를 쓴다. Issue에 `needs-verify`가 있으면 `--label needs-verify`를 붙인다.
+4. `gh pr create --base {{BASE}} --title "<Issue 제목 그대로>"`로 PR을 연다. PR 제목은 닫는 Issue의 제목과 똑같이 쓴다(예: Issue `PR 4: 계산 엔진 ①` → PR `PR 4: 계산 엔진 ①`). `feat: …` 같은 커밋 메시지 모양은 커밋에만 쓴다. 설명은 `.github/pull_request_template.md`를 채우고 `Closes #{{ISSUE}}`를 쓴다. Issue에 `needs-verify`가 있으면 `--label needs-verify`를 붙인다.
 
 끝나는 조건 (셋 중 하나가 대화에 보이면 끝):
 (가) 승인된 `[계획]`대로 구현했고, 마지막 커밋 뒤에 돌린 세 명령이 모두 통과한 출력이 보이고, PR을 열어 PR 주소가 보인다.

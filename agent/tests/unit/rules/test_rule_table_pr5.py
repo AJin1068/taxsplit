@@ -30,6 +30,19 @@ def test_pr5_new_rules_have_page_and_statute(rules, rule_id, page, statute):
     assert page in rule.pages
 
 
+@pytest.mark.parametrize(
+    ("rule_id", "pages"),
+    [
+        # PR 5 [기획 확인] 1번: 교육비 한도 표(p180) + 사례 풀이(p185)
+        ("2025.education.graduate_self_only", ("p180", "p185")),
+        # PR 5 [기획 확인] 2번: 의료비 공제대상 표(p173)가 나이 경계의 근거
+        ("2025.medical.limit.others", ("p169", "p173")),
+    ],
+)
+def test_pages_confirmed_by_planning(rules, rule_id, pages):
+    assert rules[rule_id].pages == pages
+
+
 def test_medical_threshold_order(rules):
     # ㉣ 그 외 부양가족 → ㉢ 본인 등 → ㉡ 미숙아 → ㉠ 난임 (Issue #14 정해진 결정)
     order = rules["2025.medical.threshold_order"].value["order"]

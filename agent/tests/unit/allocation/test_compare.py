@@ -96,11 +96,18 @@ def test_medical_paid_by_non_claimant_is_not_deducted(rules):
     assert q.wife.medical.amount > 0 and not q.dropped
 
 
-def test_child_credit_and_education_follow_basic_claimant(rules):
+def test_child_credit_follows_claimant_and_education_needs_claimant_payer(rules):
     p = evaluate(SIMILAR_WITH_KIDS, {"큰아이": "wife", "작은아이": "wife"}, rules)
-    # 큰아이(10세) 자녀세액공제와 교육비는 기본공제 받은 아내 쪽에 붙는다(남편이 냈어도)
+    # 큰아이(10세) 자녀세액공제는 기본공제 받은 아내 쪽에 붙는다
     assert p.wife.child_credit.age8plus_count == 1 and p.husband.child_credit.total == 0
-    assert p.wife.education.base_children == 600_000 and p.husband.education.amount == 0
+    # 교육비는 기본공제 받은 쪽이 낸 것만 공제(PR 6 [기획 확인] 2번, p389·p181).
+    # 남편이 낸 큰아이 교육비는 아내가 기본공제 받으면 아무도 공제받지 못한다
+    assert p.wife.education.amount == 0 and p.husband.education.amount == 0
+    assert [(d.kind, d.payer, d.rule_id) for d in p.dropped] == [
+        ("education", "husband", "2025.education.couple_rule")
+    ]
+    q = evaluate(SIMILAR_WITH_KIDS, {"큰아이": "husband", "작은아이": "wife"}, rules)
+    assert q.husband.education.base_children == 600_000 and not q.dropped
 
 
 def test_cards_follow_user_not_payer(rules):

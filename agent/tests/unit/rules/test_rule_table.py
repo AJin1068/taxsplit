@@ -51,6 +51,12 @@ EXPECTED_IDS = {
     # PR 5: 의료비 문턱 빼는 순서(p173), 대학원은 본인만(p185)
     "2025.medical.threshold_order",
     "2025.education.graduate_self_only",
+    # PR 6 [기획 확인](Issue #15 정해진 결정 2026-11-19): 아무도 기본공제 받지 않는 가족의 지출,
+    # 교육비 맞벌이 규칙
+    "2025.medical.no_claimant_payer",
+    "2025.education.couple_rule",
+    "2025.education.no_claimant_payer",
+    "2025.card.no_claimant_family",
 }
 
 # PR 3d로 들어온 규칙이 엔진(PR 4~6)에 넘겨야 할 value 키
@@ -68,6 +74,11 @@ NEW_RULE_KEYS = {
     "2025.base.pension_insurance_deduction": {"payer", "excess_over"},
     "2025.base.insurance_premium_deduction": {"payer", "items"},
     "2025.base.rounding": {"unit", "mode"},
+    # PR 6 [기획 확인]
+    "2025.medical.no_claimant_payer": {"claimant", "checks_age", "checks_income"},
+    "2025.education.couple_rule": {"eligible_payer"},
+    "2025.education.no_claimant_payer": {"claimant", "relations", "checks_age", "checks_income"},
+    "2025.card.no_claimant_family": {"relations", "checks_age", "checks_income"},
 }
 
 
