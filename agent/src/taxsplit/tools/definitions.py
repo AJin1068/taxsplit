@@ -13,6 +13,7 @@ from taxsplit.gaps.models import GapRequest
 CHECK_ELIGIBILITY = "check_eligibility"
 COMPARE_ALLOCATIONS = "compare_allocations"
 # 간소화에 안 나오는 공제 찾기(PR 24). 앞 두 도구와 달리 입력이 가족 목록(+가구)이다
+# TODO(사람 확인): docs/assumptions.md A-062
 FIND_MISSING_DEDUCTIONS = "find_missing_deductions"
 TOOL_NAMES: tuple[str, ...] = (CHECK_ELIGIBILITY, COMPARE_ALLOCATIONS, FIND_MISSING_DEDUCTIONS)
 

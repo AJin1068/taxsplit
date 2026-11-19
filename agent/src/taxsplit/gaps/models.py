@@ -36,6 +36,7 @@ class FamilyMember(_Frozen):
     # 다른 형제가 이 부모님을 공제받나. 모르면 null
     claimed_by_sibling: bool | None = None
     # 간소화 명단에 "소득 기준 초과" 표시가 있나(인쇄 26쪽)
+    # TODO(사람 확인): docs/assumptions.md A-060, A-064
     listed_over_income: bool = False
     # 장애인이거나 암·희귀질환처럼 계속 치료받나
     disabled_or_severe: bool = False

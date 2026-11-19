@@ -44,9 +44,9 @@ SOURCE_PAGES = ("378", "379", "380", "381")
 
 def consent_message(person: str, *, adult_child: bool = False) -> str:
     """동의 안내 한 통. 단계는 한 줄에 하나씩(큰 글씨로 읽기 쉽게) 나눈다."""
-    who = f"{person}님" if not person.endswith("님") else person
+    # 부르는 말은 사용자가 쓴 이름 그대로("어머니", "엄마")
     lines = [
-        f"{who}, 연말정산 자료 제공 동의를 부탁드려요.",
+        f"{person}, 연말정산 자료 제공 동의를 부탁드려요.",
         "동의해 주시면 병원비·카드 사용액 같은 자료를 연말정산에 쓸 수 있어요.",
     ]
     if adult_child:

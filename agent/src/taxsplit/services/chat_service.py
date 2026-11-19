@@ -102,6 +102,7 @@ class ChatService:
         """대화가 없으면 여기서 바로 ConversationNotFound(스트리밍 시작 전 404).
 
         질문 카드 답(answer)이 있으면 사용자 글 끝에 한 줄로 붙여 저장한다(대화 기록에 남게).
+        가정: docs/assumptions.md A-067
         """
         conversation = await self._get(conversation_id)
         if answer is not None:

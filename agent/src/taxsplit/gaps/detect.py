@@ -59,6 +59,7 @@ def needs_consent(m: FamilyMember, c: Ctx) -> bool:
 
     19세 미만 자녀는 동의 없이 조회된다(인쇄 378쪽). 형제자매·손주·위탁아동은 같이 살 때만,
     다른 형제가 공제받는 부모님·소득 초과 표시가 붙은 가족은 공제 대상으로 보지 않는다.
+    TODO(사람 확인): docs/assumptions.md A-065
     """
     if not F.is_adult(m, c.year) or c.docs.has_rows(m.name):
         return False
@@ -104,6 +105,7 @@ def _dependent_card(q: GapQuestion, c: Ctx) -> list[GapCard]:
 
 
 def _payer(q: GapQuestion, c: Ctx) -> list[GapCard]:
+    # TODO(사람 확인): docs/assumptions.md A-066
     if c.household is None or c.rules is None or c.answered(q.id):
         return []
     rules = c.rules

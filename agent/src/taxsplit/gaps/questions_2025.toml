@@ -76,6 +76,7 @@ todo = "{person} 님의 올해 소득을 정확히 알려 주세요."
 question = "{person} 님 올해 소득이 정확히 얼마예요?"
 pages = ["26"]
 
+# TODO(사람 확인): docs/assumptions.md A-059
 [[question]]
 no = 7
 id = "gap.died_this_year"
