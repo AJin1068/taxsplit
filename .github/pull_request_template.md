@@ -9,6 +9,19 @@ Closes #
 
 # 사람이 볼 것
 
+## PR 무게
+
+<!--
+무거움 / 가벼움 중 하나. 기준은 CLAUDE.md "PR 무게"((가)~(라)). 하나라도 걸리면 무거움.
+판정은 `cd agent && uv run python tests/cases/rule_coverage.py --json > /tmp/cov.json` 뒤
+`uv run python ../.github/scripts/pr_weight.py --pr <PR 번호> --coverage /tmp/cov.json`으로 낸다.
+검증 Action이 main의 같은 스크립트로 다시 판정해 [검증] 첫 줄에 적고, 무거우면 human-review 라벨을 붙인다.
+
+- **무게**: 무거움 / 가벼움
+- **걸린 기준**: (가) eval/ 고침 · (나) needs-verify · (다) 사람이 답할 열린 항목 · (라) 사례가 안 지나가는 규칙을 바꿈. 없으면 "없음"
+- **바뀐 규칙**: 규칙 ID — 지나가는 바깥 정답 사례 수. 없으면 "없음"
+-->
+
 ## 한 줄로
 
 <!-- 이 PR이 서비스에서 무엇을 가능하게 하는지, 코드 이름 없이 한 문장. 예: "계산기가 맞벌이 부부 중 누가 부양가족 추가공제를 받을 수 있는지 규칙을 알게 됐다." -->
