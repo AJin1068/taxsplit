@@ -60,6 +60,8 @@ def request_params(request: LLMRequest) -> dict[str, Any]:
             {"name": t.name, "description": t.description, "input_schema": t.input_schema}
             for t in request.tools
         ]
+    if request.tool_choice is not None:
+        params["tool_choice"] = {"type": "tool", "name": request.tool_choice}
     return params
 
 

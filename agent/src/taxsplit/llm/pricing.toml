@@ -49,3 +49,13 @@ input = "0.50"
 cache_write = "0.625"
 cache_read = "0.05"
 output = "2.50"
+
+# OpenAI: 평가 하네스 GPT 채점(--judge)용. 캐시 쓰기 요금이 따로 없어 cache_write = input으로 둔다.
+# 272K 토큰을 넘는 긴 입력 단가는 따로 있지만 채점 입력은 짧아 넣지 않았다.
+[openai."gpt-6.2-sol"]
+input = "2"
+cache_write = "2"
+cache_read = "0.10"
+output = "10"
+source = "https://developers.openai.com/api/docs/pricing"
+checked = 2026-11-19
