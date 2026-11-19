@@ -29,14 +29,18 @@ check() { # <경우> <확인한 것> <명령...>
   if "$@" >/dev/null 2>&1; then ok=$((ok + 1)); echo "| $c | $w | ✅ |"
   else bad=$((bad + 1)); echo "| $c | $w | ❌ |"; fi
 }
-# Issue 하나를 가짜 gh에 넣는다: <Issue 번호> <PR> <선행 PR> <폴더> [라벨들] [계획 있음 yes|no]
+# Issue 하나를 가짜 gh에 넣는다: <Issue 번호> <PR> <선행 PR> <폴더> [라벨들] [계획]
+# 계획: yes(정할 것 칸 없는 예전 계획) | none(정할 것: - 없음) | left(정할 것 남음) | no(계획 없음)
 add_issue() {
   local labels=${5:-ready,plan-ok} plan=${6:-yes} body
   body=$'## 선행 PR\n\n- '"$3"$'\n\n## 손대는 폴더\n\n- `'"$4"$'`\n'
   jq --argjson n "$1" --arg t "PR $2: 시험" --arg b "$body" --arg l "$labels" --arg p "$plan" \
-    '. + [{number: $n, title: $t, body: $b,
+    '{yes: "[계획] 승인된 계획",
+      none: "[계획] PR\n\n## 정할 것\n\n- 없음\n\n## 개발이 정한 것\n\n- 이름",
+      left: "[계획] PR\n\n## 정할 것\n\n- 정답 값을 바꿀까?\n\n## 개발이 정한 것\n\n- 없음"} as $plans
+    | . + [{number: $n, title: $t, body: $b,
       labels: ($l | split(",") | map(select(. != "") | {name: .})),
-      comments: (if $p == "yes" then [{body: "[계획] 승인된 계획"}] else [] end)}]' \
+      comments: (if $p == "no" then [] else [{body: $plans[$p]}] end)}]' \
     "$FAKE_DIR/issues.json" >"$FAKE_DIR/i.tmp" && mv "$FAKE_DIR/i.tmp" "$FAKE_DIR/issues.json"
 }
 # 새 시나리오: 가짜 상태를 비우고 결과 폴더를 새로 잡는다
@@ -76,14 +80,20 @@ bash "$RUNNER" 8 9 >/dev/null 2>&1
 check "blocked" "PR 8 blocked, PR 9 호출 0번" eq "$(res 8 .status) $(calls 9)" "blocked 0"
 check "blocked" "질문 파일이 결과 폴더로 옮겨지고 summary에 질문이 나옴" grep -q "가짜 질문" "$GOAL_RUNS_DIR/summary.md"
 
-# 4) ready·plan-ok·[계획]이 없으면 시작 안 함
+# 4) 시작 조건: ready·[계획]이 있고, "정할 것: - 없음"이거나 plan-ok가 있어야 시작
 scenario d
-add_issue 110 10 없음 agent/d1/ ready; add_issue 111 11 없음 agent/d2/ plan-ok
-add_issue 112 12 없음 agent/d3/ ready,plan-ok no; mode 10 pass; mode 11 pass; mode 12 pass
-bash "$RUNNER" 10 11 12 >/dev/null 2>&1
-check "시작 조건" "plan-ok 없음 → 시작 안 함 (호출 0번)" eq "$(res 10 .reason) $(calls 10)" "시작 안 함: plan-ok 라벨 없음 0"
-check "시작 조건" "ready 없음 → 시작 안 함 (호출 0번)" eq "$(res 11 .reason) $(calls 11)" "시작 안 함: ready 라벨 없음 0"
-check "시작 조건" "[계획] 코멘트 없음 → 시작 안 함" eq "$(res 12 .reason)" "시작 안 함: [계획] 코멘트 없음"
+add_issue 110 10 없음 agent/d1/ ready none; add_issue 111 11 없음 agent/d2/ ready left
+add_issue 112 12 없음 agent/d3/ ready,plan-ok left; add_issue 113 13 없음 agent/d4/ plan-ok none
+add_issue 114 14 없음 agent/d5/ ready,plan-ok no; add_issue 115 15 없음 agent/d6/ ready yes
+for n in 10 11 12 13 14 15; do mode $n pass; done
+bash "$RUNNER" 10 11 12 13 14 15 >/dev/null 2>&1
+check "시작 조건" "정할 것 없음 + plan-ok 없음 → 시작 (passed)" eq "$(res 10 .status)" passed
+check "시작 조건" "정할 것 있음 + plan-ok 없음 → 시작 안 함 (호출 0번)" \
+  eq "$(res 11 .reason) $(calls 11)" "시작 안 함: 정할 것 남음 0"
+check "시작 조건" "정할 것 있음 + plan-ok 있음 → 시작 (passed)" eq "$(res 12 .status)" passed
+check "시작 조건" "ready 없음 → 시작 안 함 (호출 0번)" eq "$(res 13 .reason) $(calls 13)" "시작 안 함: ready 라벨 없음 0"
+check "시작 조건" "[계획] 코멘트 없음 → 시작 안 함" eq "$(res 14 .reason)" "시작 안 함: [계획] 코멘트 없음"
+check "시작 조건" "정할 것 칸 없는 예전 계획 + plan-ok 없음 → 시작 안 함" eq "$(res 15 .reason)" "시작 안 함: 정할 것 남음"
 
 # 5) 쌓기: 앞 PR이 merge 전이면 뒤 PR의 base는 앞 브랜치
 scenario e
