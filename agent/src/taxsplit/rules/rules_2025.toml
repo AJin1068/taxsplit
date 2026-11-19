@@ -400,6 +400,75 @@ claimant = "payer"
 checks_age = false
 checks_income = false
 
+[[rule]]
+id = "2025.medical.excluded_spending"
+year = 2025
+group = "medical"
+summary = "의료비 공제 대상이 아닌 지출과 빼고 계산하는 금액. 엔진은 공제 대상 지출만 받으므로 이 목록은 입력 단계(PDF 추출·도구)가 읽음. 경계가 애매한 항목(예: 복부 지방흡입, p177 '사실판단 할 사항')은 개별 판단"
+# 근거: p176 공제 대상 아닌 의료비, p177 실손의료보험금·예규 문장, p44 간병비 등 요약, p218 사례(보약).
+# 원문에 없는 항목은 넣지 않는다(Issue #111 정해진 결정)
+statute = "소득세법 시행령 제118조의5 제1항"
+pages = ["p44", "p176", "p177", "p218"]
+status = "sourced"
+[rule.value]
+used_by = "input_stage"
+
+[[rule.items]]
+name = "미용·성형수술 비용"
+kind = "exclude"
+pages = ["p176"]
+
+[[rule.items]]
+name = "건강증진을 위한 의약품(보약 등)"
+kind = "exclude"
+pages = ["p176", "p218"]
+
+[[rule.items]]
+name = "건강기능식품"
+kind = "exclude"
+pages = ["p176"]
+
+[[rule.items]]
+name = "진단서 발급비"
+kind = "exclude"
+pages = ["p176"]
+
+[[rule.items]]
+name = "외국 의료기관(의료법 제3조 밖)에 낸 비용"
+kind = "exclude"
+pages = ["p176"]
+
+[[rule.items]]
+name = "간병비"
+kind = "exclude"
+pages = ["p44"]
+
+[[rule.items]]
+name = "실손의료보험금으로 보전받은 금액"
+kind = "subtract"
+pages = ["p177", "p44"]
+
+[[rule.items]]
+name = "사내근로복지기금에서 받은 의료비 지원"
+kind = "subtract"
+pages = ["p176", "p44"]
+
+[[rule.items]]
+name = "국민건강보험공단 본인부담금상한제 사후환급금"
+kind = "subtract"
+pages = ["p176", "p44"]
+
+[[rule.items]]
+name = "공단 출산 전 진료비 지원금으로 낸 의료비"
+kind = "subtract"
+pages = ["p176"]
+
+[[rule.items]]
+name = "실제 부양하지 않는 직계존속, 생계를 같이하지 않는 형제자매를 위한 의료비"
+kind = "condition"
+pages = ["p176"]
+note = "실제로 부양하거나 생계를 같이할 때만 대상"
+
 # ── 교육비 ─────────────────────────────────────────────────────
 
 [[rule]]
@@ -474,7 +543,7 @@ summary = "맞벌이 부부: 부양가족 교육비는 그 가족을 기본공�
 # 근거: p389 부록 4 표의 의료비·교육비 "배우자 외 부양가족" 칸이 한 칸으로 합쳐져
 # "부부 중 부양가족을 기본공제 받는 근로자가 부양가족을 위해 지출한 금액 공제". p181 예규 원천-361.
 # PR 6 [기획 확인] 2번, Issue #15 정해진 결정(2026-11-19)
-statute = "원천-361"
+statute = "원천-361 (2009.04.24.)"
 pages = ["p181", "p389"]
 status = "sourced"
 [rule.value]
@@ -496,6 +565,40 @@ claimant = "payer"
 relations = ["spouse", "child", "sibling"]
 checks_age = false
 checks_income = true
+
+[[rule]]
+id = "2025.education.excluded_spending"
+year = 2025
+group = "education"
+summary = "교육비 공제 대상이 아닌 지출과 빼고 계산하는 금액. 엔진은 공제 대상 지출만 받으므로 이 목록은 입력 단계(PDF 추출·도구)가 읽음"
+# 근거: p44 요약, p180~p181 비과세 학자금·학자금 대출, p185·p218 사례(학원비), p186 학자금 대출
+statute = "소득세법 시행령 제118조의6 제2항·제10항"
+pages = ["p44", "p180", "p181", "p185", "p186", "p218"]
+status = "sourced"
+[rule.value]
+used_by = "input_stage"
+
+[[rule.items]]
+name = "초·중·고등학생 학원비"
+kind = "exclude"
+pages = ["p44", "p185", "p218"]
+note = "초등학교 입학연도 1~2월분은 대상"
+
+[[rule.items]]
+name = "본인 외 대학원 교육비"
+kind = "exclude"
+pages = ["p44", "p180"]
+see = "2025.education.graduate_self_only"
+
+[[rule.items]]
+name = "비과세 학자금·장학금(사내근로복지기금, 재학 중인 학교, 직장, 국외근로공무원 자녀, 각종 단체)"
+kind = "subtract"
+pages = ["p180", "p181"]
+
+[[rule.items]]
+name = "직계비속 등이 학자금 대출을 받아 낸 교육비"
+kind = "exclude"
+pages = ["p181", "p186"]
 
 # ── 신용카드 등 ────────────────────────────────────────────────
 
@@ -621,3 +724,86 @@ status = "sourced"
 relations = ["spouse", "lineal_ascendant", "child"]
 checks_age = false
 checks_income = true
+
+[[rule]]
+id = "2025.card.excluded_spending"
+year = 2025
+group = "card"
+summary = "카드 등 사용금액에 넣지 않는 지출. 엔진은 공제 대상 지출만 받으므로 이 목록은 입력 단계(PDF 추출·도구)가 읽음. 의료비는 빼지 않는다(카드 공제와 의료비 공제를 둘 다 받음, p137)"
+# 근거: p135 신용카드 등 사용금액에 포함되지 않는 것 표, p137 의료비 중복 공제
+statute = "조세특례제한법 제126조의2 제4항, 같은 법 시행령 제121조의2 제6항"
+pages = ["p135", "p137"]
+status = "sourced"
+[rule.value]
+used_by = "input_stage"
+# 카드로 낸 의료비는 카드 사용금액에서 빼지 않는다(p137)
+includes_medical = true
+
+[[rule.items]]
+name = "사업 관련 비용, 비정상적 사용액"
+kind = "exclude"
+pages = ["p135"]
+
+[[rule.items]]
+name = "자동차 구입비, 자동차 리스료"
+kind = "exclude"
+pages = ["p135"]
+note = "중고차는 '중고차 구입비' 항목"
+
+[[rule.items]]
+name = "중고차 구입비"
+kind = "condition"
+pages = ["p135"]
+note = "구입액의 10%만 카드 사용금액에 포함"
+
+[[rule.items]]
+name = "국민건강·장기요양·고용보험료, 연금보험료, 각종 보험료·공제료"
+kind = "exclude"
+pages = ["p135"]
+
+[[rule.items]]
+name = "학교(대학원 포함)·어린이집 수업료·입학금·보육비용 등 공납금"
+kind = "exclude"
+pages = ["p135"]
+note = "어린이집 입소료는 포함"
+
+[[rule.items]]
+name = "국세·지방세, 전기·수도·가스·전화·인터넷, 아파트관리비, TV 시청료, 도로통행료"
+kind = "exclude"
+pages = ["p135"]
+
+[[rule.items]]
+name = "상품권 등 유가증권"
+kind = "exclude"
+pages = ["p135"]
+
+[[rule.items]]
+name = "취득세·등록면허세가 붙는 재산(주택 등)"
+kind = "exclude"
+pages = ["p135"]
+
+[[rule.items]]
+name = "국가·지자체에 내는 사용료·수수료"
+kind = "exclude"
+pages = ["p135"]
+note = "의료기관·보건소에 낸 것은 카드 사용금액에 포함"
+
+[[rule.items]]
+name = "금융·보험 수수료, 가상자산 거래 수수료"
+kind = "exclude"
+pages = ["p135"]
+
+[[rule.items]]
+name = "세액공제 받은 정치자금·고향사랑기부금, 기부금단체에 카드로 낸 기부금"
+kind = "exclude"
+pages = ["p135"]
+
+[[rule.items]]
+name = "월세 세액공제 받은 월세"
+kind = "exclude"
+pages = ["p135"]
+
+[[rule.items]]
+name = "면세점·선박·항공기 면세물품"
+kind = "exclude"
+pages = ["p135"]
