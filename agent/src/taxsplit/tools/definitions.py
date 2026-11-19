@@ -8,10 +8,13 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict
 
 from taxsplit.allocation.models import Household
+from taxsplit.gaps.models import GapRequest
 
 CHECK_ELIGIBILITY = "check_eligibility"
 COMPARE_ALLOCATIONS = "compare_allocations"
-TOOL_NAMES: tuple[str, ...] = (CHECK_ELIGIBILITY, COMPARE_ALLOCATIONS)
+# 간소화에 안 나오는 공제 찾기(PR 24). 앞 두 도구와 달리 입력이 가족 목록(+가구)이다
+FIND_MISSING_DEDUCTIONS = "find_missing_deductions"
+TOOL_NAMES: tuple[str, ...] = (CHECK_ELIGIBILITY, COMPARE_ALLOCATIONS, FIND_MISSING_DEDUCTIONS)
 
 # 두 도구 설명에 같이 붙는 입력 규칙. 소득 칸 기본값(0원)으로 "소득 없음"이 되는 것을 막는다
 _INPUT_RULES = (
@@ -32,7 +35,17 @@ _DESCRIPTIONS = {
         "같은 가족 구성으로 check_eligibility가 성공한 뒤에만 실행된다. "
         "답에 쓰는 금액은 이 결과에 있는 값만 쓴다. " + _INPUT_RULES
     ),
+    FIND_MISSING_DEDUCTIONS: (
+        "간소화 자료에 안 나와 놓치기 쉬운 공제를 찾아 알림 카드 목록을 돌려준다. "
+        "family에는 사용자가 답한 가족(부모님·자녀·같이 사는 가족, 태어난 해)과 "
+        "이미 물은 질문 ID를 넣는다. 간소화 추출 결과는 서버가 넣으니 보내지 않는다. "
+        "사용자가 금액 칸을 고르면 picks에 "
+        "선택지 금액 그대로 넣고, household도 넣으면 놓칠 금액(estimate)을 계산 엔진으로 낸다. "
+        "household를 넣을 때는 같은 입력 규칙을 따른다. " + _INPUT_RULES
+    ),
 }
+
+_SCHEMAS = {FIND_MISSING_DEDUCTIONS: GapRequest}
 
 
 class ToolDefinition(BaseModel):
@@ -49,9 +62,13 @@ def household_schema() -> dict[str, Any]:
 
 
 def tool_definitions() -> tuple[ToolDefinition, ...]:
-    """도구 2개 정의. 순서는 부르는 순서(요건 확인 → 배분 비교)와 같다."""
-    schema = household_schema()
+    """도구 3개 정의. 앞 두 개는 부르는 순서(요건 확인 → 배분 비교)와 같다."""
+    household = household_schema()
     return tuple(
-        ToolDefinition(name=n, description=_DESCRIPTIONS[n], input_schema=schema)
+        ToolDefinition(
+            name=n,
+            description=_DESCRIPTIONS[n],
+            input_schema=_SCHEMAS[n].model_json_schema() if n in _SCHEMAS else household,
+        )
         for n in TOOL_NAMES
     )

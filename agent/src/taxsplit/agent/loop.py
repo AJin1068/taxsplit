@@ -32,7 +32,7 @@ from taxsplit.llm.base import (
 )
 from taxsplit.llm.pricing import cost_usd
 from taxsplit.rules.loader import Rule
-from taxsplit.tools.definitions import COMPARE_ALLOCATIONS
+from taxsplit.tools.definitions import COMPARE_ALLOCATIONS, FIND_MISSING_DEDUCTIONS
 from taxsplit.tools.guard import ToolCallGuard
 from taxsplit.tools.policy import ToolPolicy
 from taxsplit.tools.records import InMemoryToolCallRepository, ToolCallRecord
@@ -101,10 +101,13 @@ class AgentTurn:
             state.conversation_id,
             turn=state.turn,
             checked=state.checked,
+            documents=state.documents,
         )
         self.outcome = TurnOutcome()
         # 이번 턴에 성공한 배분 비교(마지막 것)
         self._compare: dict[str, Any] | None = None
+        # 이번 턴에 성공한 빈 곳 찾기(마지막 것). 카드는 gaps 이벤트로 화면에 보낸다
+        self._gaps: dict[str, Any] | None = None
 
     def _request(self, messages: list[Message]) -> LLMRequest:
         return LLMRequest(
@@ -149,6 +152,8 @@ class AgentTurn:
                         self._state.absorb(g.record)
                         if g.status == ToolStatus.OK and use.name == COMPARE_ALLOCATIONS:
                             self._compare = g.result
+                        if g.status == ToolStatus.OK and use.name == FIND_MISSING_DEDUCTIONS:
+                            self._gaps = g.result
                         yield Event(
                             "status", {"stage": "tool", "tool": use.name, "status": g.status.value}
                         )
@@ -178,8 +183,10 @@ class AgentTurn:
 
         for chunk in text_chunks(out.text or ""):
             yield Event("delta", {"text": chunk})
-        # 배분 결과·근거는 센서를 통과한 정상 답일 때만 보낸다
+        # 빈 곳 카드·배분 결과·근거는 센서를 통과한 정상 답일 때만 보낸다
         # TODO(사람 확인): docs/assumptions.md A-034
+        if out.ended == "answered" and self._gaps is not None:
+            yield Event("gaps", {"cards": self._gaps["cards"]})
         if out.ended == "answered" and self._compare is not None:
             async for event in self._allocation_events():
                 yield event

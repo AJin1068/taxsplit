@@ -1,18 +1,26 @@
 """도구 호출 검사기: AI가 보낸 호출 하나를 실행 전에 검사하고, 실행하거나 거절한다.
 
 검사 순서: 없는 도구 → 턴 최대 호출 수 → 인자 → 순서(요건 확인 먼저) → 실행.
+빈 곳 찾기(find_missing_deductions)는 입력 모양이 달라 인자 검사만 따로 하고 순서 규칙은 없다.
 호출마다 기록 1건을 저장소에 넣는다. 대화 하나에 검사기 하나를 쓴다(PR 10이 루프와 잇는다).
 """
 
 import json
 import time
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
 
 from taxsplit.rules.loader import Rule
-from taxsplit.tools.definitions import CHECK_ELIGIBILITY, COMPARE_ALLOCATIONS, TOOL_NAMES
+from taxsplit.tools.definitions import (
+    CHECK_ELIGIBILITY,
+    COMPARE_ALLOCATIONS,
+    FIND_MISSING_DEDUCTIONS,
+    TOOL_NAMES,
+)
+from taxsplit.tools.gap_args import validate_gap_request
+from taxsplit.tools.gap_handler import run_find_missing
 from taxsplit.tools.handlers import HANDLERS
 from taxsplit.tools.policy import ToolPolicy
 from taxsplit.tools.records import ToolCallRecord, ToolCallRepository
@@ -46,6 +54,7 @@ class ToolCallGuard:
         *,
         turn: int = 1,
         checked: Iterable[str] = (),
+        documents: Sequence[dict[str, Any]] = (),
     ) -> None:
         # turn·checked: 서버가 대화 상태를 저장소에서 다시 만들 때 넘긴다(PR 10). 검사 규칙은 같다
         self._rules = rules
@@ -58,6 +67,8 @@ class ToolCallGuard:
         self._invalid: dict[str, int] = {}
         # 요건 확인이 성공한 가족 지문. 턴이 바뀌어도 대화 안에서는 유지한다
         self._checked: set[str] = set(checked)
+        # 대화에 올린 간소화 추출 결과(빈 곳 찾기에 서버가 넣는다)
+        self._documents = list(documents)
 
     @property
     def turn(self) -> int:
@@ -92,7 +103,7 @@ class ToolCallGuard:
     def _decide(
         self, tool: str, args: Any
     ) -> tuple[ToolStatus, str, bool, list[ArgError], dict[str, Any] | None]:
-        if tool not in HANDLERS:
+        if tool not in TOOL_NAMES:
             msg = f"없는 도구 {tool!r}. 쓸 수 있는 도구: {', '.join(TOOL_NAMES)}"
             return ToolStatus.UNKNOWN_TOOL, msg, False, [], None
         limit = self._policy.max_calls_per_turn
@@ -102,6 +113,8 @@ class ToolCallGuard:
                 "지금까지 받은 결과로 답하거나, 확인이 필요하다고 답하세요."
             )
             return ToolStatus.STEP_LIMIT, msg, True, [], None
+        if tool == FIND_MISSING_DEDUCTIONS:
+            return self._find_missing(args)
 
         household, errors = validate_household(args)
         if household is None:
@@ -124,6 +137,20 @@ class ToolCallGuard:
             return ToolStatus.ERROR, msg, False, [], None
         if tool == CHECK_ELIGIBILITY:
             self._checked.add(fingerprint)
+        return ToolStatus.OK, json.dumps(result, ensure_ascii=False), False, [], result
+
+    def _find_missing(
+        self, args: Any
+    ) -> tuple[ToolStatus, str, bool, list[ArgError], dict[str, Any] | None]:
+        req, errors = validate_gap_request(args)
+        if req is None:
+            return self._invalid_args(FIND_MISSING_DEDUCTIONS, errors)
+        self._invalid[FIND_MISSING_DEDUCTIONS] = 0
+        try:
+            result = run_find_missing(req, self._rules, self._documents)
+        except Exception as e:  # 실행 중 예외는 모두 error로 기록하고 AI에게 알린다
+            msg = f"도구 실행 중 오류: {type(e).__name__}: {e}. 금액을 짐작해 답하지 마세요."
+            return ToolStatus.ERROR, msg, False, [], None
         return ToolStatus.OK, json.dumps(result, ensure_ascii=False), False, [], result
 
     def _invalid_args(

@@ -1,0 +1,255 @@
+# 간소화에 안 나와서 놓치기 쉬운 공제 21가지(Issue #126 표를 그대로 옮김).
+#
+# 근거는 모두 국세청 「2025년 원천징수의무자를 위한 연말정산 신고안내」 인쇄 쪽이다(PDF 쪽 = 인쇄 쪽 + 18).
+# 종류: 가 = 간소화가 아예 안 줌 / 나 = 조건이 맞아야 보임 / 다 = 금액은 보이지만 공제를 가르는 사실이 안 보임
+# ID는 규칙표 ID가 아니라 gap. 이름이다. 세법 숫자(한도·공제율)는 여기 적지 않는다(규칙표에 있음).
+# 글 안의 {person}은 카드의 가족 이름으로 바뀐다.
+
+tax_year = 2025
+source_doc = "2025년 원천징수의무자를 위한 연말정산 신고안내"
+
+[[question]]
+no = 1
+id = "gap.parent_living_apart"
+kind = "다"
+when = "늘 (첫 질문)"
+title = "따로 사는 부모님"
+why = "따로 사셔도 실제로 부양하는 부모님은 공제 대상이 될 수 있어요."
+todo = "부모님이 계시면 태어난 해와 올해 소득을 알려 주세요."
+question = "용돈이나 병원비를 챙겨 드리는 부모님이 계세요?"
+options = ["우리 부모님", "배우자 부모님", "둘 다", "없음"]
+pages = ["97", "41"]
+
+[[question]]
+no = 2
+id = "gap.adult_no_consent"
+kind = "나"
+when = "공제 대상 성인 가족인데 그 사람 지출이 0줄"
+title = "자료 제공 동의가 안 된 가족"
+why = "{person} 자료가 간소화에 한 줄도 안 보여요. 자료 제공 동의가 안 된 것 같아요."
+todo = "아래 안내를 {person}께 보내 동의를 받아 주세요. 동의하시면 1월에 저절로 나와요."
+question = "{person}께서 병원 자주 다니셨나요?"
+pages = ["378", "379", "380", "369"]
+
+[[question]]
+no = 3
+id = "gap.child_turned_adult"
+kind = "나"
+when = "2006.12.31. 이전 출생 자녀(코드가 계산)"
+title = "성년이 된 자녀"
+why = "19세가 넘은 자녀는 자녀가 직접 동의해야 간소화 자료가 보여요."
+todo = "{person}에게 아래 안내를 보내 직접 동의하게 해 주세요."
+pages = ["368"]
+
+[[question]]
+no = 4
+id = "gap.parent_claimed_by_sibling"
+kind = "다"
+when = "부모님이 있다고 답함"
+title = "다른 형제가 공제받는 부모님"
+why = "한 부모님은 형제 중 한 사람만 공제받을 수 있어요."
+todo = "다른 형제분이 공제받는지 확인해 주세요."
+question = "다른 형제분이 {person}을(를) 공제받고 계세요?"
+options = ["예", "아니요", "모름"]
+pages = ["41"]
+
+[[question]]
+no = 5
+id = "gap.severe_illness"
+kind = "가"
+when = "늘 (가족 질문 뒤)"
+title = "중증질환자 가족"
+why = "암·희귀질환처럼 계속 치료받는 분은 장애인 공제를 받을 수 있는데, 간소화에는 안 나와요."
+todo = "해당하면 병원에서 장애인증명서를 받아 회사에 내 주세요."
+question = "가족 중에 암·희귀질환처럼 계속 치료받는 분이 계세요?"
+options = ["예", "아니요"]
+pages = ["10", "98", "375"]
+
+[[question]]
+no = 6
+id = "gap.over_income_family"
+kind = "나"
+when = "명단에 소득 초과 표시가 있음"
+title = "소득 기준을 넘는 가족"
+why = "간소화가 {person} 님을 소득 기준을 넘는 사람으로 표시하고 자료를 빼고 보여 줬어요."
+todo = "{person} 님의 올해 소득을 정확히 알려 주세요."
+question = "{person} 님 올해 소득이 정확히 얼마예요?"
+pages = ["26"]
+
+[[question]]
+no = 7
+id = "gap.died_this_year"
+kind = "다"
+when = "늘 (가족 질문 뒤)"
+title = "올해 돌아가신 가족"
+why = "올해 돌아가신 가족도 올해 공제를 받을 수 있어요."
+todo = "해당하면 돌아가신 날을 알려 주세요. 영수증을 병원에서 직접 받아야 할 수 있어요."
+question = "올해 돌아가신 가족이 계세요?"
+options = ["예", "아니요"]
+pages = ["99", "26"]
+
+[[question]]
+no = 8
+id = "gap.other_household_family"
+kind = "다"
+when = "늘 (첫 질문)"
+title = "형제자매·손주·위탁아동"
+why = "같이 살며 돌보는 형제자매·손주·위탁아동도 공제 대상이 될 수 있어요."
+todo = "같이 사는 가족이 있으면 태어난 해와 올해 소득을 알려 주세요."
+question = "부모님·아이 말고 같이 살며 돌보는 가족이 있어요?"
+options = ["형제자매", "손주", "위탁아동", "없음"]
+pages = ["10", "96", "97"]
+
+[[question]]
+no = 9
+id = "gap.infertility"
+kind = "가"
+when = "의료비가 있는 부부"
+title = "난임시술비"
+why = "난임시술비는 일반 의료비와 따로 계산되는데, 간소화에서 구분되지 않을 수 있어요."
+todo = "해당하면 병원에서 난임시술비 영수증을 받아 주세요."
+question = "올해 난임 시술 받으셨어요?"
+options = ["예", "아니요"]
+pages = ["375", "10"]
+
+[[question]]
+no = 10
+id = "gap.glasses"
+kind = "나"
+when = "늘 (한 번만)"
+title = "안경·콘택트렌즈"
+why = "안경점이 자료를 안 냈으면 간소화에 안 보여요."
+todo = "해당하면 안경점에서 영수증을 받아 주세요."
+question = "올해 안경이나 렌즈 맞추신 가족이 있어요?"
+options = ["예", "아니요"]
+pages = ["375", "169", "174"]
+
+[[question]]
+no = 11
+id = "gap.school_uniform"
+kind = "나"
+when = "중고생 자녀가 있고 교복 지출 없음"
+title = "교복"
+why = "교복 판매점이 자료를 안 냈으면 간소화에 안 보여요."
+todo = "해당하면 교복 판매점에서 영수증을 받아 주세요."
+question = "올해 {person} 교복 사셨어요?"
+options = ["예", "아니요"]
+pages = ["375", "169"]
+
+[[question]]
+no = 12
+id = "gap.field_trip"
+kind = "가"
+when = "초중고 자녀가 있음"
+title = "현장체험학습비"
+why = "수학여행·체험학습비는 간소화에 안 나올 수 있어요."
+todo = "해당하면 학교에서 납입 증명서를 받아 주세요."
+question = "{person} 수학여행이나 체험학습비 내셨어요?"
+options = ["예", "아니요"]
+pages = ["178"]
+
+[[question]]
+no = 13
+id = "gap.preschool_academy"
+kind = "가/나"
+when = "취학 전 자녀가 있음"
+title = "취학 전 아이 학원·체육시설비"
+why = "취학 전 아이의 학원·체육시설비는 간소화에 안 나올 수 있어요."
+todo = "간소화에 안 보이면 학원에서 교육비 납입 증명서를 받아 주세요."
+question = "{person} 학원이나 체육시설 다니는 거 있어요? 간소화에 보이세요?"
+options = ["다니고 간소화에 보여요", "다니는데 안 보여요", "안 다녀요"]
+pages = ["29", "375", "137"]
+
+[[question]]
+no = 14
+id = "gap.overseas_education"
+kind = "가"
+when = "자녀가 있음"
+title = "국외 교육비"
+why = "해외 학교 교육비는 간소화에 안 나와요."
+todo = "해당하면 학교 납입 영수증을 준비해 주세요."
+question = "해외 학교에 다니는 자녀가 있어요?"
+options = ["예", "아니요"]
+pages = ["179", "183"]
+
+[[question]]
+no = 15
+id = "gap.payer_of_medical_education"
+kind = "다"
+when = "누가 냈는지가 결과를 바꿀 때만(계산 엔진으로 확인)"
+title = "의료비·교육비 낸 사람"
+why = "{person} 님 병원비를 누가 냈는지에 따라 돌려받는 돈이 달라져요."
+todo = "실제로 낸 사람을 알려 주세요."
+question = "{person} 님 병원비는 누가 내셨어요?"
+options = ["남편", "아내"]
+pages = ["389", "177", "181"]
+
+[[question]]
+no = 16
+id = "gap.dependent_card_usage"
+kind = "나"
+when = "자료 제공 동의가 안 된 가족과 같이(형제자매 제외)"
+title = "부양가족 카드 사용액"
+why = "{person} 님이 동의하면 그분 카드 사용액도 간소화에 함께 보여요."
+todo = "동의 안내를 보낼 때 카드 사용액도 같이 보인다고 알려 주세요."
+pages = ["42", "134", "389"]
+
+[[question]]
+no = 17
+id = "gap.missing_clinic"
+kind = "나"
+when = "의료비가 있음"
+title = "조회 안 되는 병원·약국"
+why = "병원·약국이 자료를 안 내면 간소화에 안 보여요."
+todo = "1월 15일부터 1월 17일 오후 8시까지 '조회되지 않는 의료비 신고센터'에 신고해 주세요. 1월 20일 이후에도 안 보이면 병원에서 영수증을 직접 받아 주세요."
+question = "자주 가는 병원·약국 중에 간소화에 안 보이는 곳이 있어요?"
+options = ["예", "아니요"]
+pages = ["29", "368", "369"]
+
+[[question]]
+no = 18
+id = "gap.insurance_reimbursement"
+kind = "다"
+when = "의료비가 있고 실손보험금 줄이 없음"
+title = "실손보험금 받은 의료비"
+why = "실손보험으로 돌려받은 병원비는 의료비에서 빼야 해요."
+todo = "돌려받은 금액이 있으면 알려 주세요."
+question = "이 병원비 중 실손보험으로 돌려받은 게 있어요?"
+options = ["예", "아니요"]
+pages = ["375"]
+
+[[question]]
+no = 19
+id = "gap.medical_device_special_ed"
+kind = "나"
+when = "장애인·중증질환 가족이 있음"
+title = "보청기·의료기기, 장애인 특수교육비"
+why = "보청기·의료기기와 재활교육비는 간소화에 안 나올 수 있어요."
+todo = "해당하면 구입처·교육기관에서 영수증을 받아 주세요."
+question = "{person} 님 보청기나 의료기기, 재활교육비 낸 게 있어요?"
+options = ["예", "아니요"]
+pages = ["375", "174", "175", "180"]
+
+[[question]]
+no = 20
+id = "gap.birth_order"
+kind = "다"
+when = "올해 태어난 아이가 있음"
+title = "올해 출산·입양 순서"
+why = "올해 태어난 아이가 몇째인지에 따라 공제가 달라져요."
+todo = "몇째인지 알려 주세요."
+question = "올해 태어난 {person}는 몇째예요?"
+options = ["첫째", "둘째", "셋째 이상"]
+pages = ["164"]
+
+[[question]]
+no = 21
+id = "gap.job_change"
+kind = "다"
+when = "늘 (한 번만)"
+title = "올해 이직·쉰 기간"
+why = "이직하거나 쉰 기간이 있으면 그 기간 지출은 공제가 달라질 수 있어요."
+todo = "해당하면 회사를 옮긴 달이나 쉰 기간을 알려 주세요."
+question = "올해 이직하거나 쉰 기간이 있어요?"
+options = ["예", "아니요"]
+pages = ["133", "134", "135", "136"]

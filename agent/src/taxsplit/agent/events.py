@@ -1,6 +1,7 @@
 """채팅 API가 SSE로 보내는 이벤트. 이름·순서는 PR 11(평가)·PR 14a(화면)와의 약속이다(Issue #19).
 
-순서: status(0번 이상) → delta(1번 이상) → allocation(0~1) → evidence(0~1) → done(늘 마지막 1번)
+순서: status(0번 이상) → delta(1번 이상) → gaps(0~1) → allocation(0~1) → evidence(0~1)
+→ done(늘 마지막 1번). gaps는 PR 24가 더했다(기존 이벤트 모양은 그대로).
 AI 호출이 실패하면: status… → error → done(ended="error")
 """
 
@@ -8,7 +9,7 @@ import json
 from dataclasses import dataclass
 from typing import Any, Literal
 
-type EventName = Literal["status", "delta", "allocation", "evidence", "error", "done"]
+type EventName = Literal["status", "delta", "gaps", "allocation", "evidence", "error", "done"]
 # answered: 정상 / guard_stop: 검사기 멈춤 신호·한 턴 AI 호출 수 초과
 # sensor_stop: 센서 두 번 실패 / error: AI 호출 실패
 type Ended = Literal["answered", "guard_stop", "sensor_stop", "error"]

@@ -35,7 +35,7 @@ async def send_message(
 ) -> StreamingResponse:
     """답을 SSE(text/event-stream)로 보낸다. 이벤트 모양은 agent/events.py."""
     # 없는 대화면 스트리밍을 시작하기 전에 404가 난다
-    events = await service.start_turn(conversation_id, body.content)
+    events = await service.start_turn(conversation_id, body.content, body.answer)
 
     async def body_stream():
         async for event in events:

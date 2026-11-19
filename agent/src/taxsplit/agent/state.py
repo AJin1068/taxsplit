@@ -10,7 +10,11 @@ from taxsplit.agent.money import extract_amounts, ints_in
 from taxsplit.agent.sensors import SensorContext
 from taxsplit.allocation.models import Household
 from taxsplit.domain.models import Conversation, Message
-from taxsplit.tools.definitions import CHECK_ELIGIBILITY, COMPARE_ALLOCATIONS
+from taxsplit.tools.definitions import (
+    CHECK_ELIGIBILITY,
+    COMPARE_ALLOCATIONS,
+    FIND_MISSING_DEDUCTIONS,
+)
 from taxsplit.tools.records import ToolCallRecord
 from taxsplit.tools.status import ToolStatus
 from taxsplit.tools.validation import family_fingerprint, validate_household
@@ -37,6 +41,10 @@ class ConversationState:
     def absorb(self, record: ToolCallRecord) -> None:
         """성공한 도구 호출 하나를 상태에 반영한다(지난 턴 기록, 이번 턴 새 기록 모두)."""
         if record.status != ToolStatus.OK:
+            return
+        if record.tool == FIND_MISSING_DEDUCTIONS:
+            # 빈 곳 카드의 금액(선택지·놓칠 금액)은 답에 옮겨 써도 된다. 가구 정보는 바꾸지 않는다
+            self.sensor.allowed |= ints_in(record.args) | ints_in(record.result)
             return
         household, _ = validate_household(record.args)
         if household is None:  # 성공한 호출이면 인자가 늘 맞지만, 저장된 값이 바뀐 경우를 막는다
