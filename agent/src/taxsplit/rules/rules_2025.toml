@@ -416,9 +416,10 @@ id = "2025.education.graduate_self_only"
 year = 2025
 group = "education"
 summary = "대학원 교육비는 근로자 본인 것만 공제한다(부양가족의 대학원 교육비는 대상 아님)"
-# 근거: p185 교육비 사례 풀이에서 대학원생 처남 교육비를 대상에서 뺌. p178 쪽 대조는 기획 확인 대기(Issue #14 [계획] 정할 것 1)
+# 근거: p180 교육비 한도 표("대학원생 ⇒ 공제대상 아님", 본인은 대학원 포함 전액),
+# p185 사례 풀이(대학원생 처남 교육비 제외). PR 5 [기획 확인] 1번
 statute = "소법 §59의4 ③"
-pages = ["p185"]
+pages = ["p180", "p185"]
 status = "sourced"
 [rule.value]
 levels = ["graduate"]
