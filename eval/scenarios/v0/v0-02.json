@@ -1,0 +1,240 @@
+{
+  "id": "v0-02",
+  "version": "v0",
+  "status": "draft",
+  "review": {
+    "reviewer": null,
+    "date": null
+  },
+  "title": "같이 사는 부모의 올해 소득이 기준을 넘는 가구",
+  "groups": [
+    "dependent",
+    "medical"
+  ],
+  "spouse_names": {
+    "husband": "문태호",
+    "wife": "장유나"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 75000000,
+      "sex": "male",
+      "birth_year": 1984,
+      "national_pension": 3375000,
+      "health_insurance": 2658000,
+      "employment_insurance": 675000,
+      "long_term_care_insurance": 344000
+    },
+    "wife": {
+      "gross_salary": 52000000,
+      "sex": "female",
+      "birth_year": 1986,
+      "national_pension": 2340000,
+      "health_insurance": 1843000,
+      "employment_insurance": 468000,
+      "long_term_care_insurance": 238000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "최영자",
+          "relation": "lineal_ascendant",
+          "birth_year": 1958,
+          "income_amount": 2500000
+        },
+        "family_of": "husband"
+      }
+    ],
+    "medical": [
+      {
+        "payer": "husband",
+        "for_whom": "최영자",
+        "amount": 4000000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 19000000
+      },
+      {
+        "user": "wife",
+        "credit": 14000000,
+        "cash_debit": 2000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "문태호",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "문태호",
+          "person_birth": "1984",
+          "amount": 3375000,
+          "source_text": "문태호 국민연금보험료 3,375,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "문태호",
+          "person_birth": "1984",
+          "amount": 2658000,
+          "source_text": "문태호 건강보험료 2,658,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "문태호",
+          "person_birth": "1984",
+          "amount": 675000,
+          "source_text": "문태호 고용보험료 675,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "문태호",
+          "person_birth": "1984",
+          "amount": 344000,
+          "source_text": "문태호 노인장기요양보험료 344,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "최영자",
+          "person_birth": "1958",
+          "amount": 4000000,
+          "source_text": "최영자 의료비 4,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "문태호",
+          "person_birth": "1984",
+          "amount": 19000000,
+          "source_text": "문태호 신용카드 19,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "장유나",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "장유나",
+          "person_birth": "1986",
+          "amount": 2340000,
+          "source_text": "장유나 국민연금보험료 2,340,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "장유나",
+          "person_birth": "1986",
+          "amount": 1843000,
+          "source_text": "장유나 건강보험료 1,843,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "장유나",
+          "person_birth": "1986",
+          "amount": 468000,
+          "source_text": "장유나 고용보험료 468,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "장유나",
+          "person_birth": "1986",
+          "amount": 238000,
+          "source_text": "장유나 노인장기요양보험료 238,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "장유나",
+          "person_birth": "1986",
+          "amount": 14000000,
+          "source_text": "장유나 신용카드 14,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "직불카드·현금영수증",
+          "person_name": "장유나",
+          "person_birth": "1986",
+          "amount": 2000000,
+          "source_text": "장유나 직불카드·현금영수증 2,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "남편은 7,500만 원, 저는 5,200만 원 벌어요. 시어머니를 모시고 사는데 병원비가 많이 나왔어요. 자료 올렸으니 어떻게 나누는 게 좋은지 알려 주세요.",
+  "persona": "아내. 짧게 답함.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 장유나 1986년생, 남편 문태호 1984년생. 자녀 없음."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "시어머니 최영자 1958년생, 우리와 같이 산다. 장애 없음."
+    },
+    {
+      "id": "f3",
+      "kind": "must_ask",
+      "text": "시어머니는 올해 상가 임대로 소득금액이 250만 원 있다."
+    },
+    {
+      "id": "f4",
+      "kind": "background",
+      "text": "시어머니 병원비 400만 원은 남편이 냈다."
+    }
+  ],
+  "gold": {
+    "plan_count": 1,
+    "best_assignments": [
+      {}
+    ],
+    "best_total": 9132670,
+    "plans": [
+      {
+        "assignment": {},
+        "total": 9132670
+      }
+    ],
+    "headline_saving": 0,
+    "members": [
+      {
+        "name": "최영자",
+        "relation": "lineal_ascendant",
+        "birth_year": 1958
+      }
+    ],
+    "engine": {
+      "commit": "0102841",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

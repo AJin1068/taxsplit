@@ -1,0 +1,263 @@
+{
+  "id": "v0-07",
+  "version": "v0",
+  "status": "draft",
+  "review": {
+    "reviewer": null,
+    "date": null
+  },
+  "title": "70세가 넘은 양가 부모를 한 분씩 부양하는 가구",
+  "groups": [
+    "dependent",
+    "card"
+  ],
+  "spouse_names": {
+    "husband": "남궁민",
+    "wife": "배수진"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 90000000,
+      "sex": "male",
+      "birth_year": 1978,
+      "national_pension": 4050000,
+      "health_insurance": 3190000,
+      "employment_insurance": 810000,
+      "long_term_care_insurance": 413000
+    },
+    "wife": {
+      "gross_salary": 38000000,
+      "sex": "female",
+      "birth_year": 1980,
+      "national_pension": 1710000,
+      "health_insurance": 1347000,
+      "employment_insurance": 342000,
+      "long_term_care_insurance": 174000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "남궁철",
+          "relation": "lineal_ascendant",
+          "birth_year": 1951
+        },
+        "family_of": "husband"
+      },
+      {
+        "dependent": {
+          "name": "배말순",
+          "relation": "lineal_ascendant",
+          "birth_year": 1953
+        },
+        "family_of": "wife"
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 24000000
+      },
+      {
+        "user": "wife",
+        "credit": 9000000,
+        "cash_debit": 3000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "남궁민",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "남궁민",
+          "person_birth": "1978",
+          "amount": 4050000,
+          "source_text": "남궁민 국민연금보험료 4,050,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "남궁민",
+          "person_birth": "1978",
+          "amount": 3190000,
+          "source_text": "남궁민 건강보험료 3,190,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "남궁민",
+          "person_birth": "1978",
+          "amount": 810000,
+          "source_text": "남궁민 고용보험료 810,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "남궁민",
+          "person_birth": "1978",
+          "amount": 413000,
+          "source_text": "남궁민 노인장기요양보험료 413,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "남궁민",
+          "person_birth": "1978",
+          "amount": 24000000,
+          "source_text": "남궁민 신용카드 24,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "배수진",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "배수진",
+          "person_birth": "1980",
+          "amount": 1710000,
+          "source_text": "배수진 국민연금보험료 1,710,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "배수진",
+          "person_birth": "1980",
+          "amount": 1347000,
+          "source_text": "배수진 건강보험료 1,347,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "배수진",
+          "person_birth": "1980",
+          "amount": 342000,
+          "source_text": "배수진 고용보험료 342,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "배수진",
+          "person_birth": "1980",
+          "amount": 174000,
+          "source_text": "배수진 노인장기요양보험료 174,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "배수진",
+          "person_birth": "1980",
+          "amount": 9000000,
+          "source_text": "배수진 신용카드 9,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "직불카드·현금영수증",
+          "person_name": "배수진",
+          "person_birth": "1980",
+          "amount": 3000000,
+          "source_text": "배수진 직불카드·현금영수증 3,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "저는 9,000만 원, 아내는 3,800만 원이에요. 저희 아버지와 장모님을 모시고 살아요. 누구 앞으로 넣을까요?",
+  "persona": "남편. 짧게 답함.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 남편 남궁민 1978년생, 아내 배수진 1980년생. 자녀 없음."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "아버지 남궁철 1951년생, 장모님 배말순 1953년생. 둘 다 같이 살고 장애 없음."
+    },
+    {
+      "id": "f3",
+      "kind": "must_ask",
+      "text": "아버지는 올해 소득이 전혀 없다."
+    },
+    {
+      "id": "f4",
+      "kind": "must_ask",
+      "text": "장모님도 올해 소득이 전혀 없다."
+    }
+  ],
+  "gold": {
+    "plan_count": 4,
+    "best_assignments": [
+      {
+        "남궁철": "husband",
+        "배말순": "husband"
+      }
+    ],
+    "best_total": 9423930,
+    "plans": [
+      {
+        "assignment": {
+          "남궁철": "husband",
+          "배말순": "husband"
+        },
+        "total": 9423930
+      },
+      {
+        "assignment": {
+          "남궁철": "husband",
+          "배말순": "wife"
+        },
+        "total": 9648930
+      },
+      {
+        "assignment": {
+          "남궁철": "wife",
+          "배말순": "husband"
+        },
+        "total": 9648930
+      },
+      {
+        "assignment": {
+          "남궁철": "wife",
+          "배말순": "wife"
+        },
+        "total": 9969453
+      }
+    ],
+    "headline_saving": 0,
+    "members": [
+      {
+        "name": "남궁철",
+        "relation": "lineal_ascendant",
+        "birth_year": 1951
+      },
+      {
+        "name": "배말순",
+        "relation": "lineal_ascendant",
+        "birth_year": 1953
+      }
+    ],
+    "engine": {
+      "commit": "0102841",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

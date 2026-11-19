@@ -1,0 +1,259 @@
+{
+  "id": "v0-10",
+  "version": "v0",
+  "status": "draft",
+  "review": {
+    "reviewer": null,
+    "date": null
+  },
+  "title": "금액을 대충 말하는 사용자",
+  "groups": [
+    "dependent",
+    "child",
+    "card"
+  ],
+  "spouse_names": {
+    "husband": "황진우",
+    "wife": "조아라"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 86000000,
+      "sex": "male",
+      "birth_year": 1983,
+      "national_pension": 3870000,
+      "health_insurance": 3049000,
+      "employment_insurance": 774000,
+      "long_term_care_insurance": 395000
+    },
+    "wife": {
+      "gross_salary": 34000000,
+      "sex": "female",
+      "birth_year": 1985,
+      "national_pension": 1530000,
+      "health_insurance": 1205000,
+      "employment_insurance": 306000,
+      "long_term_care_insurance": 156000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "황금례",
+          "relation": "lineal_ascendant",
+          "birth_year": 1957,
+          "income_amount": 900000
+        },
+        "family_of": "husband"
+      },
+      {
+        "dependent": {
+          "name": "황민재",
+          "relation": "child",
+          "birth_year": 2017
+        }
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 22000000
+      },
+      {
+        "user": "wife",
+        "credit": 10000000,
+        "cash_debit": 5000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "황진우",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "황진우",
+          "person_birth": "1983",
+          "amount": 3870000,
+          "source_text": "황진우 국민연금보험료 3,870,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "황진우",
+          "person_birth": "1983",
+          "amount": 3049000,
+          "source_text": "황진우 건강보험료 3,049,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "황진우",
+          "person_birth": "1983",
+          "amount": 774000,
+          "source_text": "황진우 고용보험료 774,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "황진우",
+          "person_birth": "1983",
+          "amount": 395000,
+          "source_text": "황진우 노인장기요양보험료 395,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "황진우",
+          "person_birth": "1983",
+          "amount": 22000000,
+          "source_text": "황진우 신용카드 22,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "조아라",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "조아라",
+          "person_birth": "1985",
+          "amount": 1530000,
+          "source_text": "조아라 국민연금보험료 1,530,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "조아라",
+          "person_birth": "1985",
+          "amount": 1205000,
+          "source_text": "조아라 건강보험료 1,205,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "조아라",
+          "person_birth": "1985",
+          "amount": 306000,
+          "source_text": "조아라 고용보험료 306,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "조아라",
+          "person_birth": "1985",
+          "amount": 156000,
+          "source_text": "조아라 노인장기요양보험료 156,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "조아라",
+          "person_birth": "1985",
+          "amount": 10000000,
+          "source_text": "조아라 신용카드 10,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "직불카드·현금영수증",
+          "person_name": "조아라",
+          "person_birth": "1985",
+          "amount": 5000000,
+          "source_text": "조아라 직불카드·현금영수증 5,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "연봉은 제가 한 9천 좀 안 되고 아내가 3천 좀 넘어요. 어머니랑 초등학생 아들 하나 있어요.",
+  "persona": "남편. 금액을 처음에는 대충 말한다(예: '한 100만 원 좀 넘을걸요?'). 정확한 금액을 다시 물으면 정확히 말한다.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 남편 황진우 1983년생(총급여 정확히 8,600만 원), 아내 조아라 1985년생(총급여 정확히 3,400만 원)."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "어머니 황금례 1957년생, 같이 살고 장애 없음. 아들 황민재 2017년생, 소득 없음."
+    },
+    {
+      "id": "f3",
+      "kind": "must_ask",
+      "text": "어머니는 올해 이자·연금 소득금액이 정확히 90만 원이다(처음 물으면 '한 100만 원 좀 넘을걸요?'라고 대충 답함)."
+    }
+  ],
+  "gold": {
+    "plan_count": 4,
+    "best_assignments": [
+      {
+        "황금례": "husband",
+        "황민재": "husband"
+      }
+    ],
+    "best_total": 8281020,
+    "plans": [
+      {
+        "assignment": {
+          "황금례": "husband",
+          "황민재": "husband"
+        },
+        "total": 8281020
+      },
+      {
+        "assignment": {
+          "황금례": "husband",
+          "황민재": "wife"
+        },
+        "total": 8522293
+      },
+      {
+        "assignment": {
+          "황금례": "wife",
+          "황민재": "husband"
+        },
+        "total": 8522293
+      },
+      {
+        "assignment": {
+          "황금례": "wife",
+          "황민재": "wife"
+        },
+        "total": 8781043
+      }
+    ],
+    "headline_saving": 0,
+    "members": [
+      {
+        "name": "황금례",
+        "relation": "lineal_ascendant",
+        "birth_year": 1957
+      },
+      {
+        "name": "황민재",
+        "relation": "child",
+        "birth_year": 2017
+      }
+    ],
+    "engine": {
+      "commit": "0102841",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

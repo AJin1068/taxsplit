@@ -1,0 +1,218 @@
+{
+  "id": "v0-08",
+  "version": "v0",
+  "status": "draft",
+  "review": {
+    "reviewer": null,
+    "date": null
+  },
+  "title": "부양가족 없는 맞벌이",
+  "groups": [
+    "card",
+    "medical"
+  ],
+  "spouse_names": {
+    "husband": "송재원",
+    "wife": "류다은"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 55000000,
+      "sex": "male",
+      "birth_year": 1992,
+      "national_pension": 2475000,
+      "health_insurance": 1949000,
+      "employment_insurance": 495000,
+      "long_term_care_insurance": 252000
+    },
+    "wife": {
+      "gross_salary": 53000000,
+      "sex": "female",
+      "birth_year": 1993,
+      "national_pension": 2385000,
+      "health_insurance": 1879000,
+      "employment_insurance": 477000,
+      "long_term_care_insurance": 243000
+    },
+    "medical": [
+      {
+        "payer": "husband",
+        "for_whom": "husband",
+        "amount": 2500000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 15000000,
+        "transit": 800000
+      },
+      {
+        "user": "wife",
+        "credit": 18000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "송재원",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "송재원",
+          "person_birth": "1992",
+          "amount": 2475000,
+          "source_text": "송재원 국민연금보험료 2,475,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "송재원",
+          "person_birth": "1992",
+          "amount": 1949000,
+          "source_text": "송재원 건강보험료 1,949,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "송재원",
+          "person_birth": "1992",
+          "amount": 495000,
+          "source_text": "송재원 고용보험료 495,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "송재원",
+          "person_birth": "1992",
+          "amount": 252000,
+          "source_text": "송재원 노인장기요양보험료 252,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "송재원",
+          "person_birth": "1992",
+          "amount": 2500000,
+          "source_text": "송재원 의료비 2,500,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "송재원",
+          "person_birth": "1992",
+          "amount": 15000000,
+          "source_text": "송재원 신용카드 15,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "대중교통",
+          "person_name": "송재원",
+          "person_birth": "1992",
+          "amount": 800000,
+          "source_text": "송재원 대중교통 800,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "류다은",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "류다은",
+          "person_birth": "1993",
+          "amount": 2385000,
+          "source_text": "류다은 국민연금보험료 2,385,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "류다은",
+          "person_birth": "1993",
+          "amount": 1879000,
+          "source_text": "류다은 건강보험료 1,879,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "류다은",
+          "person_birth": "1993",
+          "amount": 477000,
+          "source_text": "류다은 고용보험료 477,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "류다은",
+          "person_birth": "1993",
+          "amount": 243000,
+          "source_text": "류다은 노인장기요양보험료 243,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "류다은",
+          "person_birth": "1993",
+          "amount": 18000000,
+          "source_text": "류다은 신용카드 18,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "결혼한 지 2년 됐고 아이는 없어요. 남편 5,500만, 저 5,300만이에요. 남편이 올해 수술을 받았어요. 자료 올렸어요.",
+  "persona": "아내. 친절하게 답함.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 류다은 1993년생, 남편 송재원 1992년생."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "부양가족은 없다. 양가 부모님은 따로 사시고 각자 소득이 있다."
+    },
+    {
+      "id": "f3",
+      "kind": "background",
+      "text": "남편 수술비 250만 원은 남편이 냈다."
+    }
+  ],
+  "gold": {
+    "plan_count": 1,
+    "best_assignments": [
+      {}
+    ],
+    "best_total": 6341250,
+    "plans": [
+      {
+        "assignment": {},
+        "total": 6341250
+      }
+    ],
+    "headline_saving": 0,
+    "members": [],
+    "engine": {
+      "commit": "0102841",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

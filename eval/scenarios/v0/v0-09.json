@@ -1,0 +1,288 @@
+{
+  "id": "v0-09",
+  "version": "v0",
+  "status": "draft",
+  "review": {
+    "reviewer": null,
+    "date": null
+  },
+  "title": "부모가 근로소득만 조금 있는 가구",
+  "groups": [
+    "dependent",
+    "education"
+  ],
+  "spouse_names": {
+    "husband": "오성민",
+    "wife": "심은정"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 66000000,
+      "sex": "male",
+      "birth_year": 1979,
+      "national_pension": 2970000,
+      "health_insurance": 2339000,
+      "employment_insurance": 594000,
+      "long_term_care_insurance": 303000
+    },
+    "wife": {
+      "gross_salary": 61000000,
+      "sex": "female",
+      "birth_year": 1981,
+      "national_pension": 2745000,
+      "health_insurance": 2162000,
+      "employment_insurance": 549000,
+      "long_term_care_insurance": 280000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "심옥자",
+          "relation": "lineal_ascendant",
+          "birth_year": 1962,
+          "wage_only_gross": 4500000
+        },
+        "family_of": "wife"
+      },
+      {
+        "dependent": {
+          "name": "오지환",
+          "relation": "child",
+          "birth_year": 2010
+        }
+      }
+    ],
+    "education": [
+      {
+        "payer": "wife",
+        "for_whom": "오지환",
+        "amount": 800000
+      },
+      {
+        "payer": "wife",
+        "for_whom": "오지환",
+        "item": "uniform",
+        "amount": 500000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 20000000
+      },
+      {
+        "user": "wife",
+        "credit": 17000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "오성민",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "오성민",
+          "person_birth": "1979",
+          "amount": 2970000,
+          "source_text": "오성민 국민연금보험료 2,970,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "오성민",
+          "person_birth": "1979",
+          "amount": 2339000,
+          "source_text": "오성민 건강보험료 2,339,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "오성민",
+          "person_birth": "1979",
+          "amount": 594000,
+          "source_text": "오성민 고용보험료 594,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "오성민",
+          "person_birth": "1979",
+          "amount": 303000,
+          "source_text": "오성민 노인장기요양보험료 303,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "오성민",
+          "person_birth": "1979",
+          "amount": 20000000,
+          "source_text": "오성민 신용카드 20,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "심은정",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "심은정",
+          "person_birth": "1981",
+          "amount": 2745000,
+          "source_text": "심은정 국민연금보험료 2,745,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "심은정",
+          "person_birth": "1981",
+          "amount": 2162000,
+          "source_text": "심은정 건강보험료 2,162,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "심은정",
+          "person_birth": "1981",
+          "amount": 549000,
+          "source_text": "심은정 고용보험료 549,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "심은정",
+          "person_birth": "1981",
+          "amount": 280000,
+          "source_text": "심은정 노인장기요양보험료 280,000",
+          "mark": "none"
+        },
+        {
+          "group": "education",
+          "kind": "초중고",
+          "person_name": "오지환",
+          "person_birth": "2010",
+          "amount": 800000,
+          "source_text": "오지환 초중고 800,000",
+          "mark": "none"
+        },
+        {
+          "group": "education",
+          "kind": "초중고",
+          "person_name": "오지환",
+          "person_birth": "2010",
+          "amount": 500000,
+          "source_text": "오지환 초중고 500,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "심은정",
+          "person_birth": "1981",
+          "amount": 17000000,
+          "source_text": "심은정 신용카드 17,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "남편 6,600만, 저 6,100만이에요. 중학생 아들이 있고 친정엄마가 같이 사세요. 엄마는 마트에서 일하세요.",
+  "persona": "아내. 묻는 것만 답함.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 심은정 1981년생, 남편 오성민 1979년생."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "아들 오지환 2010년생, 소득 없음. 친정엄마 심옥자 1962년생, 같이 살고 장애 없음."
+    },
+    {
+      "id": "f3",
+      "kind": "must_ask",
+      "text": "엄마는 올해 마트 근로소득만 있고 총급여는 450만 원이다. 다른 소득은 없다."
+    },
+    {
+      "id": "f4",
+      "kind": "background",
+      "text": "아들 학교 돈 80만 원과 교복 50만 원은 내가 냈다."
+    }
+  ],
+  "gold": {
+    "plan_count": 4,
+    "best_assignments": [
+      {
+        "심옥자": "husband",
+        "오지환": "wife"
+      },
+      {
+        "심옥자": "wife",
+        "오지환": "wife"
+      }
+    ],
+    "best_total": 8078075,
+    "plans": [
+      {
+        "assignment": {
+          "심옥자": "husband",
+          "오지환": "wife"
+        },
+        "total": 8078075
+      },
+      {
+        "assignment": {
+          "심옥자": "wife",
+          "오지환": "wife"
+        },
+        "total": 8078075
+      },
+      {
+        "assignment": {
+          "심옥자": "husband",
+          "오지환": "husband"
+        },
+        "total": 8273075
+      },
+      {
+        "assignment": {
+          "심옥자": "wife",
+          "오지환": "husband"
+        },
+        "total": 8273075
+      }
+    ],
+    "headline_saving": 195000,
+    "members": [
+      {
+        "name": "심옥자",
+        "relation": "lineal_ascendant",
+        "birth_year": 1962
+      },
+      {
+        "name": "오지환",
+        "relation": "child",
+        "birth_year": 2010
+      }
+    ],
+    "engine": {
+      "commit": "0102841",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

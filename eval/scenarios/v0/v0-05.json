@@ -1,0 +1,240 @@
+{
+  "id": "v0-05",
+  "version": "v0",
+  "status": "draft",
+  "review": {
+    "reviewer": null,
+    "date": null
+  },
+  "title": "장애가 있는 형제를 부양하는 가구",
+  "groups": [
+    "dependent",
+    "medical"
+  ],
+  "spouse_names": {
+    "husband": "강현우",
+    "wife": "서지민"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 58000000,
+      "sex": "male",
+      "birth_year": 1982,
+      "national_pension": 2610000,
+      "health_insurance": 2056000,
+      "employment_insurance": 522000,
+      "long_term_care_insurance": 266000
+    },
+    "wife": {
+      "gross_salary": 54000000,
+      "sex": "female",
+      "birth_year": 1984,
+      "national_pension": 2430000,
+      "health_insurance": 1914000,
+      "employment_insurance": 486000,
+      "long_term_care_insurance": 248000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "강도윤",
+          "relation": "sibling",
+          "birth_year": 1985,
+          "disabled": true
+        },
+        "family_of": "husband"
+      }
+    ],
+    "medical": [
+      {
+        "payer": "husband",
+        "for_whom": "강도윤",
+        "amount": 3000000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 16000000
+      },
+      {
+        "user": "wife",
+        "credit": 15000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "강현우",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "강현우",
+          "person_birth": "1982",
+          "amount": 2610000,
+          "source_text": "강현우 국민연금보험료 2,610,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "강현우",
+          "person_birth": "1982",
+          "amount": 2056000,
+          "source_text": "강현우 건강보험료 2,056,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "강현우",
+          "person_birth": "1982",
+          "amount": 522000,
+          "source_text": "강현우 고용보험료 522,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "강현우",
+          "person_birth": "1982",
+          "amount": 266000,
+          "source_text": "강현우 노인장기요양보험료 266,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "강도윤",
+          "person_birth": "1985",
+          "amount": 3000000,
+          "source_text": "강도윤 의료비 3,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "강현우",
+          "person_birth": "1982",
+          "amount": 16000000,
+          "source_text": "강현우 신용카드 16,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "서지민",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "서지민",
+          "person_birth": "1984",
+          "amount": 2430000,
+          "source_text": "서지민 국민연금보험료 2,430,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "서지민",
+          "person_birth": "1984",
+          "amount": 1914000,
+          "source_text": "서지민 건강보험료 1,914,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "서지민",
+          "person_birth": "1984",
+          "amount": 486000,
+          "source_text": "서지민 고용보험료 486,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "서지민",
+          "person_birth": "1984",
+          "amount": 248000,
+          "source_text": "서지민 노인장기요양보험료 248,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "서지민",
+          "person_birth": "1984",
+          "amount": 15000000,
+          "source_text": "서지민 신용카드 15,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "저는 5,800만 원, 아내는 5,400만 원이에요. 동생이 저희랑 같이 사는데 동생 병원비도 공제되나요?",
+  "persona": "남편. 묻는 것만 답함.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 남편 강현우 1982년생, 아내 서지민 1984년생. 자녀 없음."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "남동생 강도윤 1985년생, 우리와 같이 산다. 소득 없음."
+    },
+    {
+      "id": "f3",
+      "kind": "must_ask",
+      "text": "남동생은 장애인 등록이 되어 있다(장애인복지법상 장애인)."
+    },
+    {
+      "id": "f4",
+      "kind": "background",
+      "text": "동생 병원비 300만 원은 내가 냈다."
+    }
+  ],
+  "gold": {
+    "plan_count": 2,
+    "best_assignments": [
+      {
+        "강도윤": "husband"
+      }
+    ],
+    "best_total": 6383700,
+    "plans": [
+      {
+        "assignment": {
+          "강도윤": "husband"
+        },
+        "total": 6383700
+      },
+      {
+        "assignment": {
+          "강도윤": "wife"
+        },
+        "total": 6572700
+      }
+    ],
+    "headline_saving": 0,
+    "members": [
+      {
+        "name": "강도윤",
+        "relation": "sibling",
+        "birth_year": 1985
+      }
+    ],
+    "engine": {
+      "commit": "0102841",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}
