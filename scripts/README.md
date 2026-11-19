@@ -61,3 +61,16 @@ bash scripts/goal/test-scripts.sh  # 셸 함정: 변수 바로 뒤 한글 (맥�
 ```
 
 출처: Remote Control https://code.claude.com/docs/en/remote-control , 모바일 https://code.claude.com/docs/en/mobile , `/goal` https://code.claude.com/docs/en/goal , 비대화 실행 https://code.claude.com/docs/en/headless
+
+## PR 무게 판정 (사람이 꼼꼼히 볼 PR 고르기)
+
+goal 연속 실행과 별개입니다. 기준은 `CLAUDE.md` "PR 무게"에 있고, 판정 스크립트는 감시 검사가 지키는 `.github/scripts/pr_weight.py`에 둡니다(PR이 자기 무게를 고쳐 쓰지 못하게, 검증 Action은 `main` 것을 씁니다).
+
+```bash
+cd agent
+uv run python tests/cases/rule_coverage.py                    # 규칙 ID마다 지나간 바깥 정답 사례 수(표)
+uv run python tests/cases/rule_coverage.py --json > /tmp/cov.json
+uv run python ../.github/scripts/pr_weight.py --pr <PR 번호> --coverage /tmp/cov.json   # 무게 판정(JSON)
+```
+
+`tomllib`이 필요해서 파이썬 3.11 이상으로 돌립니다(맥 기본 `python3`가 아니라 `uv run python`).

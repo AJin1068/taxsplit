@@ -44,7 +44,7 @@ jobs:
       - name: 검증 장치를 main에서 가져오기
         run: |
           mkdir -p .verify-out
-          for pair in ".claude/commands/verify-pr.md:instructions.md" ".github/scripts/post_verify.py:post_verify.py"; do
+          for pair in ".claude/commands/verify-pr.md:instructions.md" ".github/scripts/post_verify.py:post_verify.py" ".github/scripts/pr_weight.py:pr_weight.py"; do
             src="${pair%%:*}"; dst=".verify-out/${pair##*:}"
             if git show "origin/main:$src" > "$dst" 2>/dev/null; then
               echo "main의 $src 사용"
@@ -67,6 +67,16 @@ jobs:
           done
           tail -n 40 "$out"
 
+      # PR 무게(사람이 꼼꼼히 볼 PR인지)를 기계로 판정한다. 기준은 CLAUDE.md "PR 무게".
+      # 규칙 커버리지는 PR 브랜치의 사례로 세고, 판정 스크립트는 main 것을 쓴다.
+      # 커버리지를 못 세면(테스트 깨짐) 빈 파일 → 바뀐 규칙은 모두 0건으로 보고 무겁게 판정된다.
+      - name: PR 무게 판정
+        run: |
+          (cd agent && uv run python tests/cases/rule_coverage.py --json > ../.verify-out/coverage.json) \
+            || { echo "::warning::규칙 커버리지 계산 실패"; : > .verify-out/coverage.json; }
+          python3 .verify-out/pr_weight.py --pr "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --coverage .verify-out/coverage.json --out .verify-out/weight.json
+
       - name: Claude로 검증
         uses: anthropics/claude-code-action@v1.0.276
         with:
@@ -78,6 +88,7 @@ jobs:
             - 기준 커밋: ${{ env.HEAD_SHA }}
             - needs-verify 라벨: ${{ env.NEEDS_VERIFY }}
             - 테스트·ruff 결과는 `.verify-out/checks.txt`에 이미 있다. 다시 돌리지 말고 이 파일을 근거로 쓴다.
+            - PR 무게 기계 판정은 `.verify-out/weight.json`에 있다. 무게를 다시 판정하지 말고 이 파일을 근거로 쓴다.
             - 지금은 GitHub Action 안이다. 결과는 `.verify-out/comment.md`와 `.verify-out/followups.json`에 쓰고 끝낸다. 직접 코멘트를 달지 않는다.
           claude_args: >-
             --max-turns 80
