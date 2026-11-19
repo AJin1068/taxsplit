@@ -2,9 +2,10 @@ name: verify
 
 # 모든 PR을 새 문맥의 Claude가 검증하고 [검증] 코멘트 하나를 남긴다 (ADR-0008).
 # 할 일과 형식은 .claude/commands/verify-pr.md 한 곳에 있다.
+# PR 설명만 바뀌면(edited, 새 커밋 없음) Claude 없이 무게·human-review 라벨만 다시 맞춘다(reweigh job).
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, labeled]
+    types: [opened, synchronize, reopened, ready_for_review, labeled, edited]
 
 # 최소 권한: 코드 push·merge·승인은 할 수 없다.
 permissions:
@@ -14,15 +15,16 @@ permissions:
 
 # 같은 PR에 커밋이 연달아 오면 앞의 검증은 취소하고 마지막 것만 남긴다.
 # needs-verify가 아닌 라벨 이벤트는 어차피 건너뛰므로 다른 묶음에 넣는다(돌던 검증을 취소하지 않게).
+# 설명 수정(edited)도 따로 묶는다. 설명을 고쳐도 돌던 전체 검증은 취소되지 않는다.
 concurrency:
-  group: verify-${{ github.event.pull_request.number }}-${{ (github.event.action == 'labeled' && github.event.label.name != 'needs-verify') && 'skip' || 'run' }}
+  group: verify-${{ github.event.pull_request.number }}-${{ github.event.action == 'edited' && 'edited' || ((github.event.action == 'labeled' && github.event.label.name != 'needs-verify') && 'skip' || 'run') }}
   cancel-in-progress: true
 
 jobs:
   verify:
     name: verify ([검증] 코멘트)
-    # 라벨 이벤트는 needs-verify가 붙었을 때만 다시 돈다.
-    if: github.event.action != 'labeled' || github.event.label.name == 'needs-verify'
+    # 라벨 이벤트는 needs-verify가 붙었을 때만 다시 돈다. 설명 수정(edited)은 아래 reweigh job이 맡는다.
+    if: github.event.action != 'edited' && (github.event.action != 'labeled' || github.event.label.name == 'needs-verify')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -44,7 +46,7 @@ jobs:
       - name: 검증 장치를 main에서 가져오기
         run: |
           mkdir -p .verify-out
-          for pair in ".claude/commands/verify-pr.md:instructions.md" ".github/scripts/post_verify.py:post_verify.py" ".github/scripts/pr_weight.py:pr_weight.py"; do
+          for pair in ".claude/commands/verify-pr.md:instructions.md" ".github/scripts/post_verify.py:post_verify.py" ".github/scripts/pr_weight.py:pr_weight.py" ".github/scripts/reweigh.py:reweigh.py"; do
             src="${pair%%:*}"; dst=".verify-out/${pair##*:}"
             if git show "origin/main:$src" > "$dst" 2>/dev/null; then
               echo "main의 $src 사용"
@@ -101,3 +103,46 @@ jobs:
       # 올리는 일은 모델이 아니라 이 단계가 한다. 같은 PR에는 코멘트가 늘 하나만 남는다.
       - name: '[검증] 코멘트 올리기'
         run: python3 .verify-out/post_verify.py --pr "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --dir .verify-out
+
+  # PR 설명만 바뀌었을 때(✅·➡️ 달기, 무게 칸 고치기): Claude 없이 무게만 다시 재고
+  # [검증] 첫 줄 무게·"PR 무게" 칸·human-review 라벨을 맞춘다. 제목만 바뀐 경우는 돌지 않는다.
+  reweigh:
+    name: reweigh (설명만 바뀐 PR의 무게 다시 재기)
+    if: github.event.action == 'edited' && github.event.changes.body != null
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v6
+
+      # 판정·올리기 스크립트는 전체 검증과 같이 main 것을 쓴다(main에 없을 때만 PR 것).
+      - name: 판정 스크립트를 main에서 가져오기
+        run: |
+          mkdir -p .verify-out
+          for f in post_verify.py pr_weight.py reweigh.py; do
+            if git show "origin/main:.github/scripts/$f" > ".verify-out/$f" 2>/dev/null; then
+              echo "main의 $f 사용"
+            else
+              cp ".github/scripts/$f" ".verify-out/$f"; echo "::warning::main에 $f 가 없어 PR 브랜치 것을 사용"
+            fi
+          done
+
+      # 전체 검증의 "PR 무게 판정" 단계와 같은 방법. 판정이 실패하면 무겁게 본다.
+      - name: PR 무게 다시 판정
+        run: |
+          (cd agent && uv run python tests/cases/rule_coverage.py --json > ../.verify-out/coverage.json) \
+            || { echo "::warning::규칙 커버리지 계산 실패"; : > .verify-out/coverage.json; }
+          python3 .verify-out/pr_weight.py --pr "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --coverage .verify-out/coverage.json --out .verify-out/weight.json \
+            || { echo "::warning::PR 무게 판정 실패, 무거움으로 본다"
+                 echo '{"weight": "무거움", "criteria": ["판정 실패"], "reasons": ["판정 스크립트가 실패해 무겁게 본다(Action 기록 참고)"], "changed_rules": {}, "labels": []}' > .verify-out/weight.json; }
+
+      - name: '[검증] 무게·라벨 고치기'
+        run: python3 .verify-out/reweigh.py --pr "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --dir .verify-out
