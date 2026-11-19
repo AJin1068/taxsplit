@@ -74,8 +74,11 @@ jobs:
         run: |
           (cd agent && uv run python tests/cases/rule_coverage.py --json > ../.verify-out/coverage.json) \
             || { echo "::warning::규칙 커버리지 계산 실패"; : > .verify-out/coverage.json; }
+          # 판정 스크립트가 실패해도(gh 일시 오류 등) 검증은 계속한다. 모르면 무겁게 본다.
           python3 .verify-out/pr_weight.py --pr "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
-            --coverage .verify-out/coverage.json --out .verify-out/weight.json
+            --coverage .verify-out/coverage.json --out .verify-out/weight.json \
+            || { echo "::warning::PR 무게 판정 실패, 무거움으로 본다"
+                 echo '{"weight": "무거움", "criteria": ["판정 실패"], "reasons": ["판정 스크립트가 실패해 무겁게 본다(Action 기록 참고)"], "changed_rules": {}, "labels": []}' > .verify-out/weight.json; }
 
       - name: Claude로 검증
         uses: anthropics/claude-code-action@v1.0.276
