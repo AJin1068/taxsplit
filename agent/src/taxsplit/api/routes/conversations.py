@@ -17,7 +17,9 @@ async def create_conversation(
     body: CreateConversationRequest, service: ChatServiceDep
 ) -> ConversationResponse:
     # documents 검사에 떨어지면 InvalidDocuments → 422 (main.py)
-    conversation = await service.create(body.title, body.documents)
+    conversation = await service.create(
+        body.title, body.documents, self_role=body.self_role, child_count=body.child_count
+    )
     return ConversationResponse.model_validate(conversation)
 
 

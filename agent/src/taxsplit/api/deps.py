@@ -12,6 +12,7 @@ from taxsplit.db.repositories import (
     SqlMessageRepository,
 )
 from taxsplit.db.tool_call_repository import SqlToolCallRepository
+from taxsplit.extract import Extractor, LlmPdfExtractor, pdf_model
 from taxsplit.llm.call_log import InMemoryLlmCallRepository, LlmCallRepository
 from taxsplit.llm.factory import build_llm_client
 from taxsplit.llm.recording import RecordingLLMClient
@@ -34,6 +35,7 @@ from taxsplit.services.evidence_service import (
     default_method,
     embedder_for,
 )
+from taxsplit.services.extraction_service import ExtractionService
 
 
 @lru_cache
@@ -115,7 +117,19 @@ def get_chat_service(
     )
 
 
+def get_extractor() -> Extractor:
+    # PR 12 추출기(기본 Haiku). 테스트는 이 함수를 가짜 LLM 추출기로 바꿔 끼운다
+    return LlmPdfExtractor(get_llm_client(), model=pdf_model(get_settings()), rules=get_rules())
+
+
+def get_extraction_service(
+    extractor: Annotated[Extractor, Depends(get_extractor)],
+) -> ExtractionService:
+    return ExtractionService(extractor)
+
+
 SettingsDep = Annotated[Settings, Depends(get_settings)]
 ConversationServiceDep = Annotated[ConversationService, Depends(get_conversation_service)]
 LLMClientDep = Annotated[RecordingLLMClient, Depends(get_llm_client)]
 ChatServiceDep = Annotated[ChatService, Depends(get_chat_service)]
+ExtractionServiceDep = Annotated[ExtractionService, Depends(get_extraction_service)]

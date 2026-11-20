@@ -16,6 +16,7 @@ from taxsplit.domain.models import (
     ConversationNotFound,
     InvalidDocuments,
     Message,
+    SelfRole,
 )
 from taxsplit.extract.validate import check_doc
 from taxsplit.gaps.models import CardAnswer
@@ -79,10 +80,22 @@ class ChatService:
         # 도구 호출 운영값. 비우면 PR 9 정책 그대로
         self._policy = policy or ToolPolicy()
 
-    async def create(self, title: str, documents: list[Any] | None = None) -> Conversation:
+    async def create(
+        self,
+        title: str,
+        documents: list[Any] | None = None,
+        *,
+        self_role: SelfRole | None = None,
+        child_count: int | None = None,
+    ) -> Conversation:
         docs = check_documents(documents or [])
+        # 첫 화면 설정(FR-09·FR-10)은 고르지 않았으면 None으로 둔다
         conversation = Conversation(
-            title=title, created_at=datetime.now(UTC), documents=docs or None
+            title=title,
+            created_at=datetime.now(UTC),
+            documents=docs or None,
+            self_role=self_role,
+            child_count=child_count,
         )
         return await self._conversations.save(conversation)
 

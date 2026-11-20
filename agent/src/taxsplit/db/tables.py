@@ -66,6 +66,8 @@ conversations = Table(
     _ts("updated_at"),
     # 마이그레이션 0003: 대화를 만들 때 받은 간소화 PDF 추출 결과(0~2개)
     Column("documents", Json, nullable=True),
+    # 마이그레이션 0004: 첫 화면에서 고른 공제 대상 자녀 수(0~5, 고르지 않으면 빈 값)
+    Column("child_count", Integer, nullable=True),
 )
 
 messages = Table(

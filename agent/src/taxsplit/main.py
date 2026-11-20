@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
-from taxsplit.api.routes import conversations
+from taxsplit.api.routes import conversations, extractions
 from taxsplit.core.config import get_settings
 from taxsplit.domain.models import ConversationNotFound, InvalidDocuments
 
@@ -9,6 +9,7 @@ from taxsplit.domain.models import ConversationNotFound, InvalidDocuments
 def create_app() -> FastAPI:
     app = FastAPI()
     app.include_router(conversations.router)
+    app.include_router(extractions.router)
     get_settings()
 
     # 도메인 예외 → HTTP 응답 변환. Spring의 @ControllerAdvice 역할
@@ -18,7 +19,7 @@ def create_app() -> FastAPI:
 
     @app.exception_handler(InvalidDocuments)
     async def handle_invalid_documents(request: Request, exc: InvalidDocuments) -> JSONResponse:
-        # 추출 결과 검사 실패: 칸 경로가 붙은 한국어 이유 목록
+        # 추출 결과 검사 실패·잘못된 올린 파일(InvalidUpload): 칸 경로가 붙은 한국어 이유 목록
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, content={"detail": exc.errors}
         )
