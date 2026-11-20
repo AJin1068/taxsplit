@@ -52,6 +52,15 @@ def _pct(value: float | None) -> str:
     return "알 수 없음" if value is None else f"{value * 100:.1f}%"
 
 
+def _gap_line(o: dict[str, Any]) -> str:
+    """빈 곳 알림 한 줄. 정답이 있는 시나리오(v1~)와 카드 기록이 없으면 "알 수 없음"."""
+    alarms = o.get("gap_false_alarms")
+    return (
+        f"빈 곳 알림 적중률 {_pct(o.get('gap_hit_rate'))}, "
+        f"오알림 {'알 수 없음' if alarms is None else f'{alarms}개'}"
+    )
+
+
 def summary_lines(result: dict[str, Any]) -> list[str]:
     """사람이 터미널에서 보는 요약. 숫자는 summary 그대로 옮긴다."""
     o = result["summary"]["overall"]
@@ -63,6 +72,7 @@ def summary_lines(result: dict[str, Any]) -> list[str]:
         f"잘못된 인자 비율 {_pct(o['invalid_args_rate'])}",
         f"순서 위반 {o['order_violations']}회",
         f"대화당 비용 {'알 수 없음' if cost is None else f'${cost:.4f}'}",
+        _gap_line(o),
     ]
     for g, n in result["summary"]["by_group"].items():
         lines.append(f"  그룹 {g}: 일치율 {_pct(n['match_rate'])} (대화 {n['conversations']}개)")

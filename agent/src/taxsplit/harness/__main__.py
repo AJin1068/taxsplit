@@ -38,7 +38,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="python -m taxsplit.harness")
     sub = parser.add_subparsers(dest="command", required=True)
     run = sub.add_parser("run", help="시나리오로 에이전트를 돌리고 채점한다")
-    run.add_argument("--scenarios", type=Path, default=DEFAULT_SCENARIOS, help="시나리오 폴더")
+    run.add_argument(
+        "--scenarios",
+        type=Path,
+        action="append",
+        help="시나리오 폴더(여러 번 주면 한 결과로 묶음, 기본 eval/scenarios/v0)",
+    )
     run.add_argument("--repeat", type=int, default=3, help="시나리오마다 반복 수")
     run.add_argument("--only", action="append", help="이 id만 돌림(여러 번 줄 수 있음)")
     run.add_argument("--judge", action="store_true", help="GPT 채점(설명 일치)도 한다")
@@ -47,6 +52,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     run.add_argument("--max-cost-usd", type=float, default=10.0, help="누적 비용 상한(USD)")
     run.add_argument("--base-url", help="떠 있는 서버 주소. 없으면 같은 프로세스에 앱을 띄움")
     args = parser.parse_args(argv)
+    # append는 기본값 목록에 더해 버리므로 기본 폴더는 여기서 채운다
+    args.scenarios = args.scenarios or [DEFAULT_SCENARIOS]
     if args.repeat < 1:
         parser.error("--repeat는 1 이상이어야 합니다")
     return args

@@ -38,6 +38,8 @@ class Conversation:
     # 마지막 배분 비교 원본(allocation 이벤트)과 그때의 에이전트 답. GPT 채점이 쓴다
     allocation: dict[str, Any] | None = None
     answer_after_allocation: str | None = None
+    # 대화 동안 화면에 낸 빈 곳 알림 카드(gaps 이벤트). 실행 기록 gaps 칸(id, member)
+    gaps: list[dict[str, Any]] = field(default_factory=list)
     main_usd: Decimal | None = Decimal(0)
     sim_usd: Decimal | None = Decimal(0)
     error: str | None = None
@@ -67,12 +69,24 @@ class Conversation:
                 "judge_usd": None,
             },
             "judge": None,
+            "gaps": self.gaps,
             "error": self.error,
         }
 
 
 def _num(value: Decimal | None) -> float | None:
     return None if value is None else float(value)
+
+
+def gap_member(card: dict[str, Any]) -> dict[str, Any] | None:
+    """카드 주인(관계·태어난 해). 카드에 두 칸이 다 없으면(가구 전체 질문 등) None.
+
+    이름으로 가족을 짐작하지 않는다(같은 이름이 둘일 수 있다). 카드에 실린 두 칸만 쓴다.
+    """
+    relation, birth_year = card.get("relation"), card.get("birth_year")
+    if relation is None or birth_year is None:
+        return None
+    return {"relation": relation, "birth_year": birth_year}
 
 
 async def _send(client: httpx2.AsyncClient, cid: int, text: str, conv: Conversation) -> str:
@@ -87,6 +101,12 @@ async def _send(client: httpx2.AsyncClient, cid: int, text: str, conv: Conversat
     for event in parse_sse(res.text):
         if event.name == "delta":
             answer += event.data.get("text", "")
+        elif event.name == "gaps":
+            # 카드는 턴마다 새로 나온다. 화면에 낸 카드를 모두 모으되, 같은 카드는 한 번만 남긴다
+            for c in event.data.get("cards", []):
+                shown = {"id": c.get("id"), "member": gap_member(c)}
+                if shown not in conv.gaps:
+                    conv.gaps.append(shown)
         elif event.name == "allocation":
             allocation = event.data
         elif event.name == "error":

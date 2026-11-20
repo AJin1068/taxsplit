@@ -2,6 +2,9 @@
 
 순서: status(0번 이상) → delta(1번 이상) → gaps(0~1) → allocation(0~1) → evidence(0~1)
 → done(늘 마지막 1번). gaps는 PR 24가 더했다(기존 이벤트 모양은 그대로).
+gaps 데이터는 {"cards": [카드…]}이고 카드 칸은 gaps/models.py GapCard와 같다
+(id, kind, person, title, why, todo, source_pages, question, estimate, consent_message,
+relation, birth_year). relation·birth_year는 PR 11c가 더했다(평가 하네스가 카드 주인을 짝지음).
 AI 호출이 실패하면: status… → error → done(ended="error")
 """
 
