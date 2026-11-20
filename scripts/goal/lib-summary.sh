@@ -5,10 +5,11 @@ _HEAD="| PR | Issue | 상태 | 1 테스트 | 2 막힌 폴더 | 3 skip | 4 PR | 5
 _SEP="| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"
 
 # result.json 하나를 표 한 줄로. 검문 칸은 ✅/❌, 돌리지 않았으면 -.
+# 턴 칸: goal 한 회차가 --turns 한도를 넘었으면 "⚠️한도 넘음"을 붙인다(끊지는 않음).
 _row() {
   # 주의: jq의 // 는 false도 "값 없음"으로 보므로 쓰지 않는다 (❌가 -로 보이는 버그가 있었음).
   jq -r 'def m($k): .checks[$k] | if . == true then "✅" elif . == false then "❌" else "-" end;
-    "| \(.pr) | #\(.issue) | \(.status) | \(m("tests")) | \(m("paths")) | \(m("skips")) | \(m("pr")) | \(m("verify")) | \(m("folders")) | \(if .verify_verdict == "" then "-" else .verify_verdict end) | \(.minutes) | \(.turns) | \(if .retried then "예" else "아니오" end) | \(if .url == "" then "-" else .url end) | \(.reason | gsub("\\|"; "/") | gsub("\n"; " ")) |"' "$1"
+    "| \(.pr) | #\(.issue) | \(.status) | \(m("tests")) | \(m("paths")) | \(m("skips")) | \(m("pr")) | \(m("verify")) | \(m("folders")) | \(if .verify_verdict == "" then "-" else .verify_verdict end) | \(.minutes) | \(.turns)\(if .turns_over == true then " ⚠️한도 넘음" else "" end) | \(if .retried then "예" else "아니오" end) | \(if .url == "" then "-" else .url end) | \(.reason | gsub("\\|"; "/") | gsub("\n"; " ")) |"' "$1"
 }
 
 # $1: 실행 폴더, $2..: 이번 실행의 PR 번호들 (순서대로)

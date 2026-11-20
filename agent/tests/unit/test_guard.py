@@ -67,7 +67,15 @@ def test_eval_branch_still_needs_infra_ok(guard):
 
 @pytest.mark.parametrize(
     "path",
-    [".claude/settings.json", ".claude/commands/verify-pr.md", ".github/scripts/guard.py"],
+    [
+        ".claude/settings.json",
+        ".claude/commands/verify-pr.md",
+        ".github/scripts/guard.py",
+        # goal 연속 실행의 조건문 틀과 기계 검문 자체 (PR 1ab)
+        ".claude/goal-condition.md",
+        "scripts/goal/lib-checks.sh",
+        "scripts/goal/fakes/gh",
+    ],
 )
 def test_all_guarded_files(guard, path):
     assert rules(guard.check([path], "chore/x", set())) == {(path, "①")}
@@ -85,3 +93,17 @@ def test_rename_out_of_eval_is_caught(guard, monkeypatch):
     monkeypatch.setattr(guard, "gh_json", lambda *args: pages)
     files = guard.fetch_changed_files("o/r", 1)
     assert rules(guard.check(files, "feat/x", set())) == {("eval/cases/a.json", "②")}
+
+
+# PR 1ab: 감시 목록을 넓혀도 문서·코드·CLAUDE.md만 바꾼 PR은 infra-ok 없이 통과해야 한다
+@pytest.mark.parametrize(
+    "files",
+    [
+        ["CLAUDE.md"],
+        ["CLAUDE.md", "docs/assumptions.md", "agent/src/taxsplit/main.py"],
+        ["scripts/README.md"],
+        ["scripts/goalkeeper/x.sh", ".claude/goal-condition.md.bak"],
+    ],
+)
+def test_docs_agent_claude_md_pass(guard, files):
+    assert guard.check(files, "docs/x", set()) == []

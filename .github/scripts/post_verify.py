@@ -3,7 +3,9 @@
 하는 일 세 가지:
 1. `[검증]` 코멘트를 PR에 하나만 둔다. 숨은 표시가 붙은 코멘트가 있으면 고쳐 쓰고, 없으면 새로 단다.
 2. 다음 PR에서 할 일(followups.json)을 해당 "PR N" 열린 Issue에 코멘트로 남긴다.
-   그런 Issue가 없으면 `ready` 없이 새 Issue를 만든다.
+   그런 Issue가 없으면 `ready` 없이 새 Issue를 만든다. 새 Issue 제목은 `[할 일] PR N 뒤: …`이다.
+   `PR N:`으로 시작하면 goal의 선행 PR 판정(같은 번호의 열린 Issue가 있으면 안 끝남)과
+   "새 PR 번호는 비어 있을 때만 쓴다" 규칙에 걸리므로 `PR `으로 시작하지 않게 한다.
 3. PR 무게(weight.json, pr_weight.py가 만든 것)가 있으면 첫 줄에 무게를 붙이고
    무거우면 `human-review` 라벨을 붙인다(가벼우면 뗀다). 모델의 말이 아니라 이 파일을 따른다.
 
@@ -98,6 +100,14 @@ def find_issue_for(pr_label: str, open_issues: list[dict]) -> int | None:
     return None
 
 
+def followup_title(pr_label: str, title: str) -> str:
+    """새 할 일 Issue 제목. `PR `으로 시작하지 않아 작업(PR N:)으로 골라지지 않는다."""
+    title = title.strip()
+    # 모델이 제목을 "PR 5: …"처럼 써도 앞의 PR 번호를 떼어 내 작업 Issue로 보이지 않게 한다
+    title = re.sub(r"^PR\s*[0-9][0-9a-z]*\s*:\s*", "", title, flags=re.IGNORECASE) or title
+    return f"[할 일] PR {pr_label} 뒤: {title}" if pr_label else f"[할 일] {title}"
+
+
 def post_followups(repo: str, source_pr: int, items: list[dict], dry_run: bool) -> list[str]:
     """다음 PR에서 할 일을 Issue로 넘긴다. `ready` 라벨은 붙이지 않는다."""
     if not items:
@@ -117,8 +127,7 @@ def post_followups(repo: str, source_pr: int, items: list[dict], dry_run: bool) 
                    "--body-file", "-", stdin=body)  # fmt: skip
             log.append(f"Issue #{number}(PR {pr_label})에 코멘트")
             continue
-        title = item.get("title") or "검증에서 넘긴 할 일"
-        title = f"PR {pr_label}: {title}" if pr_label else title
+        title = followup_title(pr_label, item.get("title") or "검증에서 넘긴 할 일")
         if not dry_run:
             gh("issue", "create", "--repo", repo, "--title", title,
                "--body-file", "-", stdin=body)  # fmt: skip

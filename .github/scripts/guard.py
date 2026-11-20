@@ -4,8 +4,10 @@
 바뀐 파일 목록과 라벨은 GitHub API에서 받는다.
 
 규칙
-① 감시 대상 파일(`.github/**`, `.claude/commands/verify-pr.md`, `.claude/settings.json`)이
-   바뀌었는데 `infra-ok` 라벨이 없으면 실패한다. 사람이 diff를 보고 라벨을 붙이면 풀린다.
+① 감시 대상 파일(`.github/**`, `.claude/commands/verify-pr.md`, `.claude/settings.json`,
+   `.claude/goal-condition.md`, `scripts/goal/**`)이 바뀌었는데 `infra-ok` 라벨이 없으면 실패한다.
+   사람이 diff를 보고 라벨을 붙이면 풀린다. `scripts/goal/`은 goal 연속 실행의 기계 검문 자체다.
+   `CLAUDE.md`는 문서 PR이 자주 고치므로 넣지 않는다. 대신 검증 Action이 main의 CLAUDE.md로 검증한다.
 ② `eval/` 벽: `eval/` 변경(`eval/README.md` 제외)은 head 브랜치가 `eval/`로 시작할 때만 허용한다.
    이 규칙은 `infra-ok`로 풀리지 않는다.
 
@@ -21,8 +23,12 @@ import sys
 INFRA_OK = "infra-ok"
 
 # 규칙 ①: 앞부분이 같으면 감시 대상(폴더), 이름이 같으면 감시 대상(파일)
-GUARDED_PREFIXES = (".github/",)
-GUARDED_FILES = {".claude/commands/verify-pr.md", ".claude/settings.json"}
+GUARDED_PREFIXES = (".github/", "scripts/goal/")
+GUARDED_FILES = {
+    ".claude/commands/verify-pr.md",
+    ".claude/settings.json",
+    ".claude/goal-condition.md",  # goal 조건문 틀: 멈출 조건·턴 한도가 여기 있다
+}
 
 # 규칙 ②: eval/ 아래는 벽, 단 README는 누구나 고칠 수 있다
 EVAL_PREFIX = "eval/"
