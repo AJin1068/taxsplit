@@ -10,6 +10,21 @@ services:
       redis:
         condition: service_healthy
 
+  # LLM 게이트웨이 (PR 16). 에이전트는 LLM_BASE_URL=http://127.0.0.1:8081 로 이쪽을 거친다
+  gateway:
+    build: ./gateway
+    ports:
+      - "127.0.0.1:8081:8081"
+    # 필요한 값만 넘긴다(셸 또는 .env에서). 다른 비밀값(OpenAI 키, DB 비밀번호)은 넘기지 않는다
+    # .env가 없어도 뜬다 (/usage 확인용)
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GATEWAY_ANTHROPIC_BASE_URL: ${GATEWAY_ANTHROPIC_BASE_URL:-}
+      GATEWAY_CALL_LOG: /app/logs/calls.jsonl
+    # 호출별 비용 기록을 호스트의 gateway/logs/calls.jsonl 에 남긴다 (커밋 제외)
+    volumes:
+      - ./gateway/logs:/app/logs
+
   postgres:
     # pgvector 확장이 포함된 Postgres 17 (RAG 단계에서 사용)
     image: pgvector/pgvector:pg17

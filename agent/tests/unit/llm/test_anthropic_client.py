@@ -8,7 +8,7 @@ import httpx2
 import pytest
 
 from taxsplit.core.config import Settings
-from taxsplit.llm.anthropic_client import AnthropicLLMClient
+from taxsplit.llm.anthropic_client import CALL_KIND_HEADER, AnthropicLLMClient
 from taxsplit.llm.base import (
     CallKind,
     LLMError,
@@ -140,6 +140,30 @@ def test_base_url_is_used():
 
     [request] = server.requests
     assert str(request.url) == "http://gateway.local:8080/v1/messages"
+
+
+def test_gateway_base_url_gets_call_kind_header():
+    """LLM_BASE_URL(게이트웨이 주소)을 주면 그 주소로, 호출 종류 머리글을 붙여 부른다."""
+    gateway = Settings(_env_file=None, llm_base_url="http://127.0.0.1:8081").llm_base_url
+    sim = LLMRequest(
+        CallKind.SIM_USER, [Message("user", "x")], model="claude-haiku-5-5", max_tokens=10
+    )
+    client, server = make_client(ok_message, base_url=gateway)
+    asyncio.run(client.complete(REQUEST))
+    stream_client, stream_server = make_client(ok_stream, base_url=gateway)
+
+    async def drain():
+        async with aclosing(stream_client.stream(sim)) as events:
+            return [e async for e in events]
+
+    asyncio.run(drain())
+
+    for request, kind in [
+        (server.requests[0], "main_agent"),
+        (stream_server.requests[0], "sim_user"),
+    ]:
+        assert str(request.url) == "http://127.0.0.1:8081/v1/messages"
+        assert request.headers[CALL_KIND_HEADER] == kind
 
 
 def test_default_base_url_is_anthropic():

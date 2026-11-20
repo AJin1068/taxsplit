@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: taxsplit-gateway
+  codec:
+    # PDF 추출 요청은 PDF를 base64로 본문에 싣는다. 기본 256KB로는 잘린다
+    max-in-memory-size: 32MB
+
+gateway:
+  anthropic-base-url: ${GATEWAY_ANTHROPIC_BASE_URL:https://api.anthropic.com}
+  # 키는 환경변수로만 받는다. 로그·기록에 남기지 않는다 (NFR-04)
+  anthropic-api-key: ${ANTHROPIC_API_KEY:}
+  call-log: ${GATEWAY_CALL_LOG:logs/calls.jsonl}
