@@ -47,11 +47,14 @@ LLM_PROVIDER=anthropic uv run python -m taxsplit.harness run
 LLM_PROVIDER=anthropic uv run python -m taxsplit.harness run --only v0-02 --repeat 1
 # 기준 결과와 비교(떨어지면 끝 값 1)
 LLM_PROVIDER=anthropic uv run python -m taxsplit.harness run --baseline eval-runs/<기준>.json
+# v0과 v1을 한 번에 돌려 결과 파일·요약 하나로(PR 11c)
+LLM_PROVIDER=anthropic uv run python -m taxsplit.harness run \
+  --scenarios ../eval/scenarios/v0 --scenarios ../eval/scenarios/v1
 ```
 
 | 옵션 | 뜻 |
 | --- | --- |
-| `--scenarios <폴더>` | 시나리오 폴더(기본 `eval/scenarios/v0`). 레포 밖 홀드아웃 폴더도 읽는다 |
+| `--scenarios <폴더>` | 시나리오 폴더(기본 `eval/scenarios/v0`). 레포 밖 홀드아웃 폴더도 읽는다. 여러 번 주면 한 결과로 묶고, 시나리오 id가 겹치면 시작 전에 멈춘다 |
 | `--repeat N` | 시나리오마다 반복 수(기본 3) |
 | `--only <id>` | 그 시나리오만(여러 번 줄 수 있음) |
 | `--judge` | GPT 채점(최종 설명이 배분 결과와 맞나)도 한다. `OPENAI_API_KEY` 필요 |
@@ -62,4 +65,5 @@ LLM_PROVIDER=anthropic uv run python -m taxsplit.harness run --baseline eval-run
 
 - 가상 사용자 모델은 `LLM_MODEL_SIM_USER`(예: `claude-haiku-5-5`), 채점 모델은 `LLM_MODEL_JUDGE`(비면 `gpt-6.2-sol`).
 - 끝 값: 0 정상, 1 기준보다 떨어짐, 2 설정·시나리오 오류(파일 이름과 칸을 알려 줌).
+- 실행 기록에는 대화 중 화면에 낸 빈 곳 알림 카드가 `gaps`(카드 `id`, 주인 `member`: 관계·출생연도, 가구 전체 질문이면 `null`)로 남는다. 정답(`gaps_expected`)이 있는 시나리오(v1~)면 요약에 빈 곳 알림 적중률·오알림 수가 나온다.
 - pytest는 가짜 LLM으로 같은 명령을 끝까지 돌린다(`tests/harness/`, 돈이 들지 않음).

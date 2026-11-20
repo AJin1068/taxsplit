@@ -36,3 +36,11 @@ def test_prompt_has_persona_and_facts_but_not_kinds() -> None:
     assert SCENARIO["persona"] in prompt
     assert all(f["text"] in prompt for f in SCENARIO["facts"])
     assert "must_ask" not in prompt and "gold" not in SCENARIO
+
+
+def test_prompt_has_exact_value_and_no_made_up_story_rules() -> None:
+    # PR 11(#130) "다음에 할 것": 다시 물으면 사실의 값을 말하고, 없는 설명을 지어 붙이지 않는다
+    prompt = system_prompt(SCENARIO)
+    assert "정확한 값을 다시 물으면(말투와 상관없이)" in prompt
+    assert "적힌 값을 그대로 말한다" in prompt
+    assert "사실에 없는 설명(이유, 사정, 다른 가족 이야기, 날짜 등)을 지어 붙이지 않는다" in prompt

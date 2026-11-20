@@ -51,7 +51,7 @@ def _per(q: GapQuestion, c: Ctx, pick: Callable[[FamilyMember], bool]) -> list[G
     """조건에 맞는 가족마다 카드 하나."""
     if c.answered(q.id):
         return []
-    return [F.card(q, m.name) for m in c.members if pick(m)]
+    return [F.member_card(q, m) for m in c.members if pick(m)]
 
 
 def needs_consent(m: FamilyMember, c: Ctx) -> bool:
@@ -72,7 +72,7 @@ def _no_consent(q: GapQuestion, c: Ctx) -> list[GapCard]:
     out = []
     for m in c.members:
         if m.relation != "child" and needs_consent(m, c):
-            base = F.card(q, m.name, ask=False)
+            base = F.member_card(q, m, ask=False)
             out.append(
                 base.model_copy(
                     update={
@@ -87,7 +87,7 @@ def _no_consent(q: GapQuestion, c: Ctx) -> list[GapCard]:
 def _adult_child(q: GapQuestion, c: Ctx) -> list[GapCard]:
     # 날짜로 정해지는 것이라 묻지 않고 안내만 한다(인쇄 368쪽)
     return [
-        F.card(q, m.name, ask=False).model_copy(
+        F.member_card(q, m, ask=False).model_copy(
             update={"consent_message": consent_message(m.name, adult_child=True)}
         )
         for m in c.members
@@ -98,7 +98,7 @@ def _adult_child(q: GapQuestion, c: Ctx) -> list[GapCard]:
 def _dependent_card(q: GapQuestion, c: Ctx) -> list[GapCard]:
     # 동의 카드와 같이 나간다. 형제자매 카드 사용액은 공제되지 않아 뺀다(인쇄 42·134쪽)
     return [
-        F.card(q, m.name, ask=False)
+        F.member_card(q, m, ask=False)
         for m in c.members
         if needs_consent(m, c) and m.relation != "sibling"
     ]
@@ -110,7 +110,12 @@ def _payer(q: GapQuestion, c: Ctx) -> list[GapCard]:
         return []
     rules = c.rules
     household = c.household
-    return [F.card(q, m.name) for m in household.members if payer_matters(household, m.name, rules)]
+    # 가구(계산 엔진 모양)의 가족이라 관계는 엔진 말(lineal_ascendant…) 그대로 담는다
+    return [
+        F.card(q, m.name, relation=m.dependent.relation, birth_year=m.dependent.birth_year)
+        for m in household.members
+        if payer_matters(household, m.name, rules)
+    ]
 
 
 DETECTORS: dict[str, Detector] = {
@@ -118,7 +123,7 @@ DETECTORS: dict[str, Detector] = {
     "gap.adult_no_consent": _no_consent,
     "gap.child_turned_adult": _adult_child,
     "gap.parent_claimed_by_sibling": lambda q, c: [
-        F.card(q, m.name)
+        F.member_card(q, m)
         for m in c.members
         if m.relation == "parent" and m.claimed_by_sibling is None
     ],

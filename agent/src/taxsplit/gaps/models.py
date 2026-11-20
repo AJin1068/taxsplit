@@ -1,7 +1,8 @@
 """빈 곳 찾기의 입력(가족 목록)과 출력(알림 카드) 모델(Issue #126).
 
 카드 칸 이름은 SSE `gaps` 이벤트 약속이다: id, kind, person, title, why, todo,
-source_pages, question, estimate. 화면(PR 14b)이 이 모양 그대로 그린다.
+source_pages, question, estimate, consent_message, relation, birth_year. 화면(PR 14b)이 이 모양
+그대로 그린다. relation·birth_year는 PR 11c가 더했다(평가 하네스가 카드 주인을 짝짓는 데 쓴다).
 """
 
 from typing import Annotated, Literal
@@ -87,6 +88,11 @@ class GapCard(_Frozen):
     estimate: Estimate | None = None
     # 동의 안내 문구(카카오톡으로 그대로 보낼 글). 동의 카드에만 있다
     consent_message: str | None = None
+    # 카드 주인의 관계·태어난 해(빈 곳 찾기 도구가 받은 가족 정보 그대로). 가구 전체 질문이면 None.
+    # 가족 목록에서 온 카드는 FamilyRelation 말(parent…), 가구(household)에서 온 카드는
+    # 계산 엔진 말(lineal_ascendant…)이다. 이름이 같은 가족이 있어도 이 두 칸으로 구분한다
+    relation: str | None = None
+    birth_year: int | None = None
 
 
 class Pick(_Frozen):

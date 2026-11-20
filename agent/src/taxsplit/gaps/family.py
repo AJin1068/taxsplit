@@ -57,8 +57,15 @@ def fill(text: str, person: str | None) -> str:
     return text.replace("{person}", person or "가족")
 
 
-def card(q: GapQuestion, person: str | None = None, *, ask: bool = True) -> GapCard:
-    """질문 표 한 줄 → 카드. ask=False면 질문 없이 안내만."""
+def card(
+    q: GapQuestion,
+    person: str | None = None,
+    *,
+    ask: bool = True,
+    relation: str | None = None,
+    birth_year: int | None = None,
+) -> GapCard:
+    """질문 표 한 줄 → 카드. ask=False면 질문 없이 안내만. 가구 전체 질문은 person 없이 부른다."""
     question = None
     if ask and q.question:
         question = Question(
@@ -73,7 +80,14 @@ def card(q: GapQuestion, person: str | None = None, *, ask: bool = True) -> GapC
         todo=fill(q.todo, person),
         source_pages=q.pages,
         question=question,
+        relation=relation,
+        birth_year=birth_year,
     )
+
+
+def member_card(q: GapQuestion, m: FamilyMember, *, ask: bool = True) -> GapCard:
+    """가족 한 명의 카드. 카드 주인(관계·태어난 해)을 가족 정보에서 그대로 채운다."""
+    return card(q, m.name, ask=ask, relation=m.relation, birth_year=m.birth_year)
 
 
 def first_questions(year: int = YEAR) -> list[GapCard]:
@@ -86,5 +100,7 @@ def parent_follow_ups(members: tuple[FamilyMember, ...], year: int = YEAR) -> li
     """부모님이 있다고 하면 부모님마다 다른 형제 공제 여부를 묻는다(연세는 태어난 해로 받음)."""
     q = load_questions(year)[PARENT_FOLLOW_UP]
     return [
-        card(q, m.name) for m in members if m.relation == "parent" and m.claimed_by_sibling is None
+        member_card(q, m)
+        for m in members
+        if m.relation == "parent" and m.claimed_by_sibling is None
     ]

@@ -32,7 +32,8 @@ class HarnessDeps:
 
 @dataclass
 class RunOptions:
-    scenarios_dir: Path
+    # 시나리오 폴더. --scenarios를 여러 번 주면 여러 개(한 결과 파일·요약으로 묶는다)
+    scenarios_dirs: list[Path]
     repeat: int = 3
     max_cost_usd: float = 10.0
 
@@ -49,6 +50,10 @@ def _commit() -> str | None:
     except OSError, subprocess.CalledProcessError:
         return None
     return out.stdout.strip() or None
+
+
+def _folder(dirs: list[Path]) -> str | list[str]:
+    return str(dirs[0]) if len(dirs) == 1 else [str(d) for d in dirs]
 
 
 def _sum(values: list[float | None]) -> float | None:
@@ -98,7 +103,8 @@ async def run_all(
         "commit": _commit(),
         "models": deps.models,
         "scenarios": {
-            "folder": str(opts.scenarios_dir),
+            # 폴더가 하나면 경로 글 하나(예전 모양 그대로), 여러 개면 경로 목록
+            "folder": _folder(opts.scenarios_dirs),
             "versions": sorted({s["version"] for s in scenarios}),
             "ids": [s["id"] for s in scenarios],
         },
