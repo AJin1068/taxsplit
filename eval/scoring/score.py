@@ -14,6 +14,8 @@ GROUPS = ("dependent", "child", "medical", "education", "card")
 FACT_KINDS = ("must_ask", "may_assume", "background")
 ENDED = ("answered", "stopped", "error", "max_turns")
 WHO = ("husband", "wife")
+# 빈 곳 알림 카드의 가족 관계를 시나리오(계산 엔진) 말로 맞춘다. 빈 곳 찾기는 부모를 parent라 부른다
+GAP_RELATION = {"parent": "lineal_ascendant"}
 
 # 기준 수치 비교 (rules.md "기준 수치와 비교")
 DROP_MATCH = 0.10  # 배분안 일치율이 이만큼(10%p) 이상 떨어지면 떨어짐
@@ -62,11 +64,35 @@ def check_scenario(data: dict) -> list[str]:
         errs.append("documents: 부부 각자 1개, 모두 2개여야 합니다")
     if data["status"] == "confirmed" and not data.get("gold"):
         errs.append("gold: confirmed 시나리오에는 기준 정답이 있어야 합니다")
+    errs += _check_gaps_expected(data.get("gaps_expected"))
     gold = data.get("gold")
     if gold:
         for name in ("plan_count", "best_assignments", "best_total", "plans", "members"):
             if name not in gold:
                 errs.append(f"gold.{name}: 칸이 없습니다")
+    return errs
+
+
+def _check_gaps_expected(value) -> list[str]:
+    """빈 곳 알림 정답(선택 칸). 없으면 빈 곳 숫자를 내지 않는다(rules.md 7·8)."""
+    if value is None:
+        return []
+    errs = []
+    for side in ("show", "not_show"):
+        items = value.get(side) if isinstance(value, dict) else None
+        if not isinstance(items, list):
+            errs.append(f"gaps_expected.{side}: 목록이어야 합니다")
+            continue
+        for i, e in enumerate(items):
+            if not str(e.get("id", "")).startswith("gap."):
+                errs.append(f"gaps_expected.{side}[{i}].id: gap.으로 시작해야 합니다")
+            m = e.get("member")
+            if m is not None and not (
+                isinstance(m.get("relation"), str) and isinstance(m.get("birth_year"), int)
+            ):
+                errs.append(
+                    f"gaps_expected.{side}[{i}].member: null 또는 relation·birth_year여야 합니다"
+                )
     return errs
 
 
@@ -107,6 +133,35 @@ def _map_assignment(final: dict, gold: dict) -> dict | None:
     return mapped
 
 
+def _gap_member(m) -> tuple[str, int] | None:
+    if not m:
+        return None
+    return (GAP_RELATION.get(m["relation"], m["relation"]), m["birth_year"])
+
+
+def _gap_hits(expected: dict, item: dict) -> bool:
+    """정답 한 줄(id, member)에 이 카드가 맞나. member가 null인 정답은 그 id의 카드 아무거나."""
+    if item.get("id") != expected["id"]:
+        return False
+    want = _gap_member(expected.get("member"))
+    return want is None or _gap_member(item.get("member")) == want
+
+
+def score_gaps(scenario: dict, record: dict) -> dict | None:
+    """빈 곳 알림 적중·오알림(rules.md 7·8). 시나리오에 정답이 없거나 기록에 gaps가 없으면 None."""
+    expected = scenario.get("gaps_expected")
+    shown = record.get("gaps")
+    if expected is None or shown is None:
+        return None
+    hit = [e for e in expected["show"] if any(_gap_hits(e, c) for c in shown)]
+    false_alarm = [e for e in expected["not_show"] if any(_gap_hits(e, c) for c in shown)]
+    return {
+        "expected": [e["id"] for e in expected["show"]],
+        "hit": [e["id"] for e in hit],
+        "false_alarm": [e["id"] for e in false_alarm],
+    }
+
+
 def score_run(scenario: dict, record: dict) -> dict:
     """대화 하나(시나리오 × 반복 1번)의 점수."""
     gold = scenario["gold"]
@@ -141,6 +196,7 @@ def score_run(scenario: dict, record: dict) -> dict:
         "sim_user_usd": cost.get("sim_user_usd"),
         "judge_usd": cost.get("judge_usd"),
         "judge_consistent": (record.get("judge") or {}).get("consistent"),
+        "gaps": score_gaps(scenario, record),
     }
 
 
@@ -171,7 +227,39 @@ def _numbers(runs: list[dict]) -> dict:
         "order_violations": sum(r["order_violations"] for r in runs),
         "cost_per_conversation_usd": None if cost is None or n == 0 else cost / n,
         "explanation_consistent_rate": _ratio(sum(judged), len(judged)),
+        **_gap_numbers(runs),
     }
+
+
+def _gap_numbers(runs: list[dict]) -> dict:
+    """빈 곳 숫자. 채점할 수 있는 대화(gaps가 None이 아님)만 센다. 하나도 없으면 None."""
+    scored = [r["gaps"] for r in runs if r.get("gaps") is not None]
+    if not scored:
+        return {"gap_hit_rate": None, "gap_false_alarms": None}
+    return {
+        "gap_hit_rate": _ratio(
+            sum(len(g["hit"]) for g in scored), sum(len(g["expected"]) for g in scored)
+        ),
+        "gap_false_alarms": sum(len(g["false_alarm"]) for g in scored),
+    }
+
+
+def _by_gap(runs: list[dict]) -> dict:
+    """항목(gap.* ID)별 기대·적중·오알림 수. 평균 뒤에 망가진 항목이 숨지 않게 한다."""
+    out: dict[str, dict[str, int]] = {}
+    for r in runs:
+        g = r.get("gaps")
+        if g is None:
+            continue
+        for name, ids in (
+            ("expected", g["expected"]),
+            ("hit", g["hit"]),
+            ("false_alarm", g["false_alarm"]),
+        ):
+            for gid in ids:
+                row = out.setdefault(gid, {"expected": 0, "hit": 0, "false_alarm": 0})
+                row[name] += 1
+    return dict(sorted(out.items()))
 
 
 def summarize(scenarios: list[dict], records: list[dict]) -> dict:
@@ -203,6 +291,7 @@ def summarize(scenarios: list[dict], records: list[dict]) -> dict:
         "overall": _numbers(runs),
         "by_group": groups,
         "by_scenario": per_scenario,
+        "by_gap": _by_gap(runs),
         "runs": runs,
         "skipped_draft": sorted(set(skipped)),
         "other_cost": cost_other,

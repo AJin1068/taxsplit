@@ -1,0 +1,255 @@
+{
+  "id": "v1-03",
+  "version": "v1",
+  "status": "draft",
+  "title": "따로 사는 시아버지를 시누이가 이미 공제받고 있어 넣으면 중복",
+  "groups": [
+    "dependent"
+  ],
+  "spouse_names": {
+    "husband": "유상민",
+    "wife": "전소연"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 71000000,
+      "sex": "male",
+      "birth_year": 1980,
+      "national_pension": 3195000,
+      "health_insurance": 2517000,
+      "employment_insurance": 639000,
+      "long_term_care_insurance": 326000
+    },
+    "wife": {
+      "gross_salary": 56000000,
+      "sex": "female",
+      "birth_year": 1982,
+      "national_pension": 2520000,
+      "health_insurance": 1985000,
+      "employment_insurance": 504000,
+      "long_term_care_insurance": 257000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "유하린",
+          "relation": "child",
+          "birth_year": 2017
+        }
+      }
+    ],
+    "medical": [
+      {
+        "payer": "wife",
+        "for_whom": "유하린",
+        "amount": 400000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 19000000
+      },
+      {
+        "user": "wife",
+        "credit": 17000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "유상민",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "유상민",
+          "person_birth": "1980",
+          "amount": 3195000,
+          "source_text": "유상민 국민연금보험료 3,195,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "유상민",
+          "person_birth": "1980",
+          "amount": 2517000,
+          "source_text": "유상민 건강보험료 2,517,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "유상민",
+          "person_birth": "1980",
+          "amount": 639000,
+          "source_text": "유상민 고용보험료 639,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "유상민",
+          "person_birth": "1980",
+          "amount": 326000,
+          "source_text": "유상민 노인장기요양보험료 326,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "유상민",
+          "person_birth": "1980",
+          "amount": 19000000,
+          "source_text": "유상민 신용카드 19,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "전소연",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "전소연",
+          "person_birth": "1982",
+          "amount": 2520000,
+          "source_text": "전소연 국민연금보험료 2,520,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "전소연",
+          "person_birth": "1982",
+          "amount": 1985000,
+          "source_text": "전소연 건강보험료 1,985,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "전소연",
+          "person_birth": "1982",
+          "amount": 504000,
+          "source_text": "전소연 고용보험료 504,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "전소연",
+          "person_birth": "1982",
+          "amount": 257000,
+          "source_text": "전소연 노인장기요양보험료 257,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "유하린",
+          "person_birth": "2017",
+          "amount": 400000,
+          "source_text": "유하린 의료비 400,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "전소연",
+          "person_birth": "1982",
+          "amount": 17000000,
+          "source_text": "전소연 신용카드 17,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "남편 7,100만 원, 저 5,600만 원이에요. 딸 하나 있고 자료 올렸어요. 어떻게 나눌까요?",
+  "persona": "아내. 묻는 것에 답하고, 시아버지께 용돈 드리는 것도 공제가 되는지 궁금해함.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 전소연 1982년생, 남편 유상민 1980년생. 딸 유하린 2017년생, 소득 없음, 장애 없음."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "남편 아버지 유병철(1949년생)은 따로 사시고, 남편이 가끔 용돈을 드린다. 시아버지는 소득이 없다."
+    },
+    {
+      "id": "f3",
+      "kind": "must_ask",
+      "text": "남편 누나가 시아버지를 기본공제 받고 있고, 생활비도 누나가 주로 댄다."
+    }
+  ],
+  "gaps_expected": {
+    "show": [
+      {
+        "id": "gap.parent_living_apart",
+        "member": null
+      },
+      {
+        "id": "gap.parent_claimed_by_sibling",
+        "member": {
+          "relation": "lineal_ascendant",
+          "birth_year": 1949
+        }
+      }
+    ],
+    "not_show": [
+      {
+        "id": "gap.adult_no_consent",
+        "member": {
+          "relation": "lineal_ascendant",
+          "birth_year": 1949
+        }
+      }
+    ]
+  },
+  "gold": {
+    "plan_count": 2,
+    "best_assignments": [
+      {
+        "유하린": "husband"
+      },
+      {
+        "유하린": "wife"
+      }
+    ],
+    "best_total": 8680425,
+    "plans": [
+      {
+        "assignment": {
+          "유하린": "husband"
+        },
+        "total": 8680425
+      },
+      {
+        "assignment": {
+          "유하린": "wife"
+        },
+        "total": 8680425
+      }
+    ],
+    "headline_saving": 0,
+    "members": [
+      {
+        "name": "유하린",
+        "relation": "child",
+        "birth_year": 2017
+      }
+    ],
+    "engine": {
+      "commit": "4e816b1",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

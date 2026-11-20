@@ -1,0 +1,264 @@
+{
+  "id": "v1-01",
+  "version": "v1",
+  "status": "draft",
+  "title": "따로 사는 시어머니를 부양하는데 자료 제공 동의를 안 해서 간소화에 한 줄도 없음",
+  "groups": [
+    "dependent",
+    "card"
+  ],
+  "spouse_names": {
+    "husband": "권준석",
+    "wife": "노희정"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 68000000,
+      "sex": "male",
+      "birth_year": 1983,
+      "national_pension": 3060000,
+      "health_insurance": 2411000,
+      "employment_insurance": 612000,
+      "long_term_care_insurance": 312000
+    },
+    "wife": {
+      "gross_salary": 49000000,
+      "sex": "female",
+      "birth_year": 1985,
+      "national_pension": 2205000,
+      "health_insurance": 1737000,
+      "employment_insurance": 441000,
+      "long_term_care_insurance": 225000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "권말분",
+          "relation": "lineal_ascendant",
+          "birth_year": 1955
+        },
+        "family_of": "husband"
+      }
+    ],
+    "medical": [
+      {
+        "payer": "husband",
+        "for_whom": "husband",
+        "amount": 800000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 21000000
+      },
+      {
+        "user": "wife",
+        "credit": 15000000,
+        "cash_debit": 1500000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "권준석",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "권준석",
+          "person_birth": "1983",
+          "amount": 3060000,
+          "source_text": "권준석 국민연금보험료 3,060,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "권준석",
+          "person_birth": "1983",
+          "amount": 2411000,
+          "source_text": "권준석 건강보험료 2,411,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "권준석",
+          "person_birth": "1983",
+          "amount": 612000,
+          "source_text": "권준석 고용보험료 612,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "권준석",
+          "person_birth": "1983",
+          "amount": 312000,
+          "source_text": "권준석 노인장기요양보험료 312,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "권준석",
+          "person_birth": "1983",
+          "amount": 800000,
+          "source_text": "권준석 의료비 800,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "권준석",
+          "person_birth": "1983",
+          "amount": 21000000,
+          "source_text": "권준석 신용카드 21,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "노희정",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "노희정",
+          "person_birth": "1985",
+          "amount": 2205000,
+          "source_text": "노희정 국민연금보험료 2,205,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "노희정",
+          "person_birth": "1985",
+          "amount": 1737000,
+          "source_text": "노희정 건강보험료 1,737,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "노희정",
+          "person_birth": "1985",
+          "amount": 441000,
+          "source_text": "노희정 고용보험료 441,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "노희정",
+          "person_birth": "1985",
+          "amount": 225000,
+          "source_text": "노희정 노인장기요양보험료 225,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "노희정",
+          "person_birth": "1985",
+          "amount": 15000000,
+          "source_text": "노희정 신용카드 15,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "직불카드·현금영수증",
+          "person_name": "노희정",
+          "person_birth": "1985",
+          "amount": 1500000,
+          "source_text": "노희정 직불카드·현금영수증 1,500,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "남편은 6,800만 원, 저는 4,900만 원 벌어요. 둘 다 간소화 자료 올렸어요. 어떻게 나누면 좋은지 봐 주세요.",
+  "persona": "아내. 묻는 것에만 짧게 답하고, 시어머니 이야기는 먼저 꺼내지 않음(공제가 되는 줄 모름).",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 노희정 1985년생, 남편 권준석 1983년생. 자녀 없음."
+    },
+    {
+      "id": "f2",
+      "kind": "must_ask",
+      "text": "남편 어머니 권말분(1955년생)은 시골에 따로 사시고, 남편이 매달 생활비 50만 원을 보내 드린다. 시어머니는 소득이 없고 장애도 없다."
+    },
+    {
+      "id": "f3",
+      "kind": "background",
+      "text": "시어머니는 홈택스 자료 제공 동의를 한 적이 없다. 병원은 거의 안 다니셔서 병원비는 얼마인지 모른다."
+    },
+    {
+      "id": "f4",
+      "kind": "background",
+      "text": "남편은 외아들이라 시어머니를 공제받는 다른 형제가 없다."
+    }
+  ],
+  "gaps_expected": {
+    "show": [
+      {
+        "id": "gap.parent_living_apart",
+        "member": null
+      },
+      {
+        "id": "gap.adult_no_consent",
+        "member": {
+          "relation": "lineal_ascendant",
+          "birth_year": 1955
+        }
+      }
+    ],
+    "not_show": []
+  },
+  "gold": {
+    "plan_count": 2,
+    "best_assignments": [
+      {
+        "권말분": "husband"
+      },
+      {
+        "권말분": "wife"
+      }
+    ],
+    "best_total": 7212675,
+    "plans": [
+      {
+        "assignment": {
+          "권말분": "husband"
+        },
+        "total": 7212675
+      },
+      {
+        "assignment": {
+          "권말분": "wife"
+        },
+        "total": 7212675
+      }
+    ],
+    "headline_saving": 0,
+    "members": [
+      {
+        "name": "권말분",
+        "relation": "lineal_ascendant",
+        "birth_year": 1955
+      }
+    ],
+    "engine": {
+      "commit": "4e816b1",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

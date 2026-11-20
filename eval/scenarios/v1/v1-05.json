@@ -1,0 +1,313 @@
+{
+  "id": "v1-05",
+  "version": "v1",
+  "status": "draft",
+  "title": "같이 사는 친정어머니도 자료 제공에 동의해 빈 곳이 없는 가구(쓸데없는 알림을 내지 않는지)",
+  "groups": [
+    "dependent",
+    "child",
+    "medical",
+    "card"
+  ],
+  "spouse_names": {
+    "husband": "탁재민",
+    "wife": "변미숙"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 80000000,
+      "sex": "male",
+      "birth_year": 1979,
+      "national_pension": 3600000,
+      "health_insurance": 2836000,
+      "employment_insurance": 720000,
+      "long_term_care_insurance": 367000
+    },
+    "wife": {
+      "gross_salary": 45000000,
+      "sex": "female",
+      "birth_year": 1981,
+      "national_pension": 2025000,
+      "health_insurance": 1595000,
+      "employment_insurance": 405000,
+      "long_term_care_insurance": 207000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "변순례",
+          "relation": "lineal_ascendant",
+          "birth_year": 1952
+        },
+        "family_of": "wife"
+      },
+      {
+        "dependent": {
+          "name": "탁유나",
+          "relation": "child",
+          "birth_year": 2015
+        }
+      }
+    ],
+    "medical": [
+      {
+        "payer": "wife",
+        "for_whom": "변순례",
+        "amount": 2000000
+      },
+      {
+        "payer": "husband",
+        "for_whom": "탁유나",
+        "amount": 200000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 24000000
+      },
+      {
+        "user": "wife",
+        "credit": 13000000
+      },
+      {
+        "user": "변순례",
+        "credit": 3000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "탁재민",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "탁재민",
+          "person_birth": "1979",
+          "amount": 3600000,
+          "source_text": "탁재민 국민연금보험료 3,600,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "탁재민",
+          "person_birth": "1979",
+          "amount": 2836000,
+          "source_text": "탁재민 건강보험료 2,836,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "탁재민",
+          "person_birth": "1979",
+          "amount": 720000,
+          "source_text": "탁재민 고용보험료 720,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "탁재민",
+          "person_birth": "1979",
+          "amount": 367000,
+          "source_text": "탁재민 노인장기요양보험료 367,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "탁유나",
+          "person_birth": "2015",
+          "amount": 200000,
+          "source_text": "탁유나 의료비 200,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "탁재민",
+          "person_birth": "1979",
+          "amount": 24000000,
+          "source_text": "탁재민 신용카드 24,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "변미숙",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "변미숙",
+          "person_birth": "1981",
+          "amount": 2025000,
+          "source_text": "변미숙 국민연금보험료 2,025,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "변미숙",
+          "person_birth": "1981",
+          "amount": 1595000,
+          "source_text": "변미숙 건강보험료 1,595,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "변미숙",
+          "person_birth": "1981",
+          "amount": 405000,
+          "source_text": "변미숙 고용보험료 405,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "변미숙",
+          "person_birth": "1981",
+          "amount": 207000,
+          "source_text": "변미숙 노인장기요양보험료 207,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "변순례",
+          "person_birth": "1952",
+          "amount": 2000000,
+          "source_text": "변순례 의료비 2,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "변미숙",
+          "person_birth": "1981",
+          "amount": 13000000,
+          "source_text": "변미숙 신용카드 13,000,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "변순례",
+          "person_birth": "1952",
+          "amount": 3000000,
+          "source_text": "변순례 신용카드 3,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "남편 8,000만 원, 저 4,500만 원이에요. 친정엄마 모시고 살고 딸 하나 있어요. 엄마도 자료 동의해 주셔서 다 올렸어요.",
+  "persona": "아내. 꼼꼼하게 답함.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 변미숙 1981년생, 남편 탁재민 1979년생. 딸 탁유나 2015년생 초등학생, 소득·장애 없음."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "친정어머니 변순례 1952년생, 우리와 같이 산다. 소득 없음, 장애 없음. 홈택스 자료 제공 동의를 해 주셨다. 다른 형제는 어머니를 공제받지 않는다."
+    },
+    {
+      "id": "f3",
+      "kind": "background",
+      "text": "어머니 병원비 200만 원은 내가(아내) 냈다. 어머니 카드는 어머니가 쓰신 것이다."
+    }
+  ],
+  "gaps_expected": {
+    "show": [],
+    "not_show": [
+      {
+        "id": "gap.adult_no_consent",
+        "member": null
+      },
+      {
+        "id": "gap.child_turned_adult",
+        "member": null
+      },
+      {
+        "id": "gap.preschool_academy",
+        "member": null
+      },
+      {
+        "id": "gap.school_uniform",
+        "member": null
+      },
+      {
+        "id": "gap.over_income_family",
+        "member": null
+      }
+    ]
+  },
+  "gold": {
+    "plan_count": 4,
+    "best_assignments": [
+      {
+        "변순례": "husband",
+        "탁유나": "husband"
+      }
+    ],
+    "best_total": 8143305,
+    "plans": [
+      {
+        "assignment": {
+          "변순례": "husband",
+          "탁유나": "husband"
+        },
+        "total": 8143305
+      },
+      {
+        "assignment": {
+          "변순례": "husband",
+          "탁유나": "wife"
+        },
+        "total": 8278305
+      },
+      {
+        "assignment": {
+          "변순례": "wife",
+          "탁유나": "husband"
+        },
+        "total": 8311305
+      },
+      {
+        "assignment": {
+          "변순례": "wife",
+          "탁유나": "wife"
+        },
+        "total": 8446305
+      }
+    ],
+    "headline_saving": 0,
+    "members": [
+      {
+        "name": "변순례",
+        "relation": "lineal_ascendant",
+        "birth_year": 1952
+      },
+      {
+        "name": "탁유나",
+        "relation": "child",
+        "birth_year": 2015
+      }
+    ],
+    "engine": {
+      "commit": "4e816b1",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}
