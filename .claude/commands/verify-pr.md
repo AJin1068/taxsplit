@@ -34,7 +34,7 @@ argument-hint: "<GitHub PR 번호> (예: 61)"
 6. **점수 재측정**: PR에 `needs-verify` 라벨이 있을 때만 한다. 평가 하네스(PR 11)가 레포에 없으면 "점수 재측정: 아직 장치 없음(PR 11 이후)"이라고만 적는다. 있으면 PR 설명에 적힌 점수를 같은 명령으로 다시 재고 차이를 적는다. 라벨이 없으면 이 줄을 아예 넣지 않는다.
 7. **다음 PR에서 할 일**(이 PR 범위 밖인데 고쳐야 할 것)은 코멘트에 넣지 않고 `followups.json`에 적는다(아래 "남기는 법").
 8. **PR 무게**: 무게는 판정 스크립트(`.github/scripts/pr_weight.py`, main 것)가 정한다. 기준은 `CLAUDE.md` "PR 무게". GitHub Action에서는 앞 단계가 `.verify-out/weight.json`에 이미 썼다. IDE에서는 `cd agent && uv run python tests/cases/rule_coverage.py --json > ../.verify-out/coverage.json` 뒤 `uv run python ../.github/scripts/pr_weight.py --pr <번호> --coverage ../.verify-out/coverage.json --out ../.verify-out/weight.json`으로 만든다. 모델은 무게를 다시 판정하지 않는다. PR 설명 "PR 무게" 칸에 개발 세션이 적은 무게가 기계 판정과 다르거나 칸이 비었으면 "사람 확인 필요"에 적는다. 무게와 이유는 올리기 스크립트가 첫 줄 끝과 `### PR 무게 (기계 판정)` 칸에 넣으므로 코멘트에 따로 쓰지 않는다.
-9. **검증 장치 변경**: PR이 `.github/workflows/verify.yml`, `.claude/commands/verify-pr.md`, `.github/scripts/post_verify.py`, `.github/scripts/pr_weight.py` 중 하나라도 바꾸면 이 검증 자체가 바뀐 장치로 돌았을 수 있다. 첫 줄 맨 앞에 "검증 장치 변경, 사람 확인 필요"를 넣는다. 올리는 스크립트도 이 경고를 따로 확인해 붙인다.
+9. **검증 장치 변경**: PR이 `.github/workflows/verify.yml`, `.claude/commands/verify-pr.md`, `.github/scripts/post_verify.py`, `.github/scripts/pr_weight.py`, `.github/scripts/reweigh.py` 중 하나라도 바꾸면 이 검증 자체가 바뀐 장치로 돌았을 수 있다. 첫 줄 맨 앞에 "검증 장치 변경, 사람 확인 필요"를 넣는다. 올리는 스크립트도 이 경고를 따로 확인해 붙인다.
 
 ## `[검증]` 코멘트 형식
 
@@ -69,7 +69,7 @@ argument-hint: "<GitHub PR 번호> (예: 61)"
 [{"pr": "5", "title": "Issue가 없을 때만 쓸 짧은 제목", "body": "무엇을 왜 고칠지, 근거 파일:줄"}]
 ```
 
-`pr`는 할 일이 걸리는 작업 목록 번호(제목의 "PR N"의 N)다. 해당 번호의 열린 Issue가 있으면 거기 코멘트로 달리고, 없으면 `ready` 라벨 없이 새 Issue가 된다.
+`pr`는 할 일이 걸리는 작업 목록 번호(제목의 "PR N"의 N)다. 해당 번호의 열린 Issue(제목이 `PR <N>:`로 시작)가 있으면 거기 코멘트로 달리고, 없으면 `ready` 라벨 없이 제목 `[할 일] PR <N> 뒤: <title>`인 새 Issue가 된다. 새 Issue 제목은 `PR `으로 시작하지 않는다(작업 Issue로 골라지거나 goal이 선행 PR을 안 끝난 것으로 보지 않게). `title`에 "PR N:"을 붙이지 않는다.
 
 - **GitHub Action**: 파일만 쓰고 끝낸다. 다음 단계가 올린다.
 - **IDE (`/verify-pr`)**: 8번대로 `weight.json`을 만들고 파일을 쓴 뒤 `python3 .github/scripts/post_verify.py --pr <PR 번호>`로 올린다. 먼저 `--dry-run`으로 무엇을 올릴지(무게 줄과 `human-review` 라벨 처리 포함) 보여 주고, 사람이 괜찮다고 하면 올린다.

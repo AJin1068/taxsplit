@@ -24,10 +24,10 @@ start_blocker() {
 # Issue 하나: 시작 조건 → 쌓을 base로 옮기기 → goal(최대 2번) → 검문 → result.json
 # $1: PR 번호, $2: 앞 Issue 브랜치(없으면 ""), $3: 앞 Issue의 GitHub PR 번호
 run_issue() {
-  local pr=$1 prev_branch=$2 prev_pr=$3 why state started notes="" attempt cond chars log
+  local pr=$1 prev_branch=$2 prev_pr=$3 why state started notes="" attempt cond chars log turns
   local result="$RUN_DIR/pr$pr.result.json" blocked_local=".goal-runs/pr$pr.blocked.md"
   R_PR=$pr; R_STATUS=failed; R_CHECKS=""; R_REASON=""; R_MINUTES=0
-  R_TURNS=0; R_RETRIED=false; R_URL=""; R_BRANCH=""; R_BASE=""; R_VERDICT=""
+  R_TURNS=0; R_TURNS_OVER=false; R_RETRIED=false; R_URL=""; R_BRANCH=""; R_BASE=""; R_VERDICT=""
   PR_NUMBER=""; PR_URL=""; VERIFY_VERDICT=""
   R_ISSUE=$(jq -r --arg pr "$pr" '.[] | select(.pr == $pr) | .issue' "$ISSUES_JSON")
   local folders
@@ -69,7 +69,10 @@ run_issue() {
     if (( attempt == 1 )); then status_set "$pr" "goal 실행 중"
     else status_set "$pr" "재시도 (goal 2회차 실행 중)"; fi
     run_goal "$cond" "$log" "$LIMIT_SEC"
-    R_TURNS=$(( R_TURNS + $(read_turns "$log") ))
+    # 턴 한도는 goal 한 회차 기준(조건문 (다)). 넘었는지만 남기고 끊지는 않는다.
+    turns=$(read_turns "$log")
+    R_TURNS=$(( R_TURNS + turns ))
+    (( turns > TURNS )) && R_TURNS_OVER=true
     if [[ -f $blocked_local ]]; then
       cp "$blocked_local" "$RUN_DIR/pr$pr.blocked.md"
       R_STATUS=blocked; R_REASON="결정이 필요해 멈춤 (질문: pr$pr.blocked.md)"; break
@@ -130,7 +133,7 @@ fill_crashed_lanes() {
       f="$dir/pr$pr.result.json"
       if [[ -f $f ]]; then prev=$(jq -r .status "$f"); continue; fi
       [[ $prev == passed || $prev == crashed ]] || break
-      R_PR=$pr; R_CHECKS=""; R_MINUTES=0; R_TURNS=0; R_RETRIED=false
+      R_PR=$pr; R_CHECKS=""; R_MINUTES=0; R_TURNS=0; R_TURNS_OVER=false; R_RETRIED=false
       R_URL=""; R_BRANCH=""; R_BASE=""; R_VERDICT=""
       R_ISSUE=$(jq -r --arg pr "$pr" '.[] | select(.pr == $pr) | .issue' "$dir/issues.json" 2>/dev/null)
       [[ $R_ISSUE =~ ^[0-9]+$ ]] || R_ISSUE=0

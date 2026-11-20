@@ -82,6 +82,17 @@ jobs:
             || { echo "::warning::PR 무게 판정 실패, 무거움으로 본다"
                  echo '{"weight": "무거움", "criteria": ["판정 실패"], "reasons": ["판정 스크립트가 실패해 무겁게 본다(Action 기록 참고)"], "changed_rules": {}, "labels": []}' > .verify-out/weight.json; }
 
+      # Claude Code는 작업 폴더의 CLAUDE.md를 저절로 읽는다. PR이 CLAUDE.md의 "벽"을 고쳐도
+      # 검증하는 Claude는 고치기 전(main) 규칙으로 보게 덮어쓴다. main에 없으면 PR 것을 그대로 둔다.
+      # reweigh job은 Claude를 부르지 않으므로 이 단계가 없다.
+      - name: CLAUDE.md를 main 것으로 덮어쓰기
+        run: |
+          if git show origin/main:CLAUDE.md > .verify-out/CLAUDE.main.md 2>/dev/null; then
+            cp .verify-out/CLAUDE.main.md CLAUDE.md; echo "main의 CLAUDE.md 사용"
+          else
+            echo "::warning::main에 CLAUDE.md가 없어 PR 브랜치 것을 사용"
+          fi
+
       - name: Claude로 검증
         uses: anthropics/claude-code-action@v1.0.276
         with:
@@ -94,6 +105,7 @@ jobs:
             - needs-verify 라벨: ${{ env.NEEDS_VERIFY }}
             - 테스트·ruff 결과는 `.verify-out/checks.txt`에 이미 있다. 다시 돌리지 말고 이 파일을 근거로 쓴다.
             - PR 무게 기계 판정은 `.verify-out/weight.json`에 있다. 무게를 다시 판정하지 말고 이 파일을 근거로 쓴다.
+            - 작업 폴더의 `CLAUDE.md`는 main 것으로 바꿔 두었다. 규칙은 이것을 따른다. PR이 고친 `CLAUDE.md`는 `gh pr diff`로 본다.
             - 지금은 GitHub Action 안이다. 결과는 `.verify-out/comment.md`와 `.verify-out/followups.json`에 쓰고 끝낸다. 직접 코멘트를 달지 않는다.
           claude_args: >-
             --max-turns 80

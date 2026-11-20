@@ -44,12 +44,13 @@ run_goal() {
   wait "$pid" 2>/dev/null || true
 }
 
-# 실행 기록(stream-json)의 마지막 result 메시지에서 턴 수를 읽는다.
+# 실행 기록(stream-json)의 모든 result 메시지 턴 수를 더한다.
+# goal은 한 기록 안에서 result를 여러 번 낼 수 있다(예: 47턴 + 6턴). 마지막 것만 읽으면 6턴으로 적힌다.
 read_turns() {
   local log=$1
   [[ -s $log ]] || { echo 0; return; }
-  jq -R 'fromjson? | select(.type == "result") | .num_turns // 0' "$log" \
-    | tail -1 | grep -E '^[0-9]+$' || echo 0
+  jq -Rn '[inputs | fromjson? | select(type == "object" and .type == "result")
+    | .num_turns | numbers] | add // 0' "$log" | grep -E '^[0-9]+$' || echo 0
 }
 
 # Issue 하나의 결과를 result.json으로 쓴다 (Issue에서 정한 칸 + 링크·브랜치 등 참고 칸).
@@ -60,10 +61,11 @@ write_result() {
     --arg pr "$R_PR" --argjson issue "${R_ISSUE:-0}" --arg status "$R_STATUS" \
     --argjson checks "$checks" --arg reason "$R_REASON" \
     --argjson minutes "${R_MINUTES:-0}" --argjson turns "${R_TURNS:-0}" \
+    --argjson turns_over "${R_TURNS_OVER:-false}" \
     --argjson retried "${R_RETRIED:-false}" --arg url "$R_URL" \
     --arg branch "$R_BRANCH" --arg base "${R_BASE#origin/}" --arg verdict "$R_VERDICT" \
     '{pr: $pr, issue: $issue, status: $status, checks: $checks, reason: $reason,
-      minutes: $minutes, turns: $turns, retried: $retried,
+      minutes: $minutes, turns: $turns, turns_over: $turns_over, retried: $retried,
       url: $url, branch: $branch, base: $base, verify_verdict: $verdict}' >"$out"
 }
 
