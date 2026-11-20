@@ -33,6 +33,7 @@ class SqlConversationRepository:
             "household_id": conversation.household_id,
             "self_role": conversation.self_role,
             "documents": conversation.documents,
+            "child_count": conversation.child_count,
         }
         # engine.begin(): 블록이 끝나면 커밋, 예외면 롤백
         async with self._engine.begin() as conn:
@@ -65,6 +66,7 @@ class SqlConversationRepository:
             household_id=row["household_id"],
             self_role=row["self_role"],
             documents=row["documents"],
+            child_count=row["child_count"],
         )
 
 

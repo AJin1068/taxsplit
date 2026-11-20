@@ -2,6 +2,7 @@
 
 - 금액 센서(amount): 답의 금액이 허용 목록(사용자 글·추출 자료·성공한 도구 인자와 결과) 안인가
 - 판정 센서(verdict): "OO는 남편/아내 쪽에 공제"가 배분 비교 최적안과 같은가
+  (첫 화면에서 본인 입장을 골랐으면 "OO는 나 쪽에 공제"도 본인 쪽 판정으로 읽는다, FR-09)
 - 계산 전 답 금지(precalc): 배분 비교가 한 번도 성공하지 않았는데 판정·모르는 금액을 말하는가
 """
 
@@ -14,6 +15,9 @@ from taxsplit.agent.money import allowed_with_rounding, unknown_amounts
 type SensorName = Literal["amount", "verdict", "precalc"]
 
 SIDES = {"husband": "남편", "wife": "아내"}
+# 본인을 가리키는 말: "나 쪽", "내 쪽", "나에게", "나한테".
+# "나머지"·"하나" 속 글자는 빼려고 앞에 한글이 없고 뒤에 쪽·에게·한테가 오는 것만 본다
+SELF_WORD = re.compile(r"(?<![가-힣])(?:나|내)(?:\s*쪽|에게|한테)")
 
 # 배분 비교 전에는 가족 이름을 모를 수 있어, 흔한 가족 호칭도 "가족"으로 본다(계산 전 답 금지 전용)
 # TODO(사람 확인): docs/assumptions.md A-030
@@ -53,6 +57,8 @@ class SensorContext:
     names: list[str] = field(default_factory=list)
     # 가장 최근 성공한 배분 비교의 최적안 목록(같은 합계 안이 여럿일 수 있음). 없으면 None
     best_assignments: list[dict[str, str]] | None = None
+    # 첫 화면에서 고른 본인 입장(husband·wife). 없으면 "나" 문장은 판정으로 세지 않는다
+    self_role: str | None = None
 
 
 def sentences(text: str) -> list[str]:
@@ -70,20 +76,33 @@ def _names_in(sentence: str, names: list[str]) -> list[str]:
     return found
 
 
-def verdict_of(sentence: str, names: list[str]) -> tuple[str, str] | None:
+def _sides_in(sentence: str, self_role: str | None) -> set[str] | None:
+    """문장이 가리키는 쪽. "나"가 나왔는데 본인 입장을 모르면 None(판정으로 세지 않음)."""
+    sides = {k for k, word in SIDES.items() if word in sentence}
+    if SELF_WORD.search(sentence):
+        if self_role not in SIDES:
+            return None
+        sides.add(self_role)  # "나" = 본인 입장 쪽
+    return sides
+
+
+def verdict_of(
+    sentence: str, names: list[str], self_role: str | None = None
+) -> tuple[str, str] | None:
     """판정 문장이면 (이름, 'husband'|'wife'). 아니면 None.
 
-    판정 문장: 질문이 아니고, 이름 하나 + "남편"·"아내" 중 하나만 + "공제"가 있다.
+    판정 문장: 질문이 아니고, 이름 하나 + 가리키는 쪽 하나만 + "공제"가 있다.
+    가리키는 쪽은 "남편"·"아내", 그리고 본인 입장을 알 때의 "나 쪽"이다.
     두 쪽이 다 나오는 문장은 비교 설명일 수 있어 보지 않는다.
     TODO(사람 확인): docs/assumptions.md A-037
     """
     if sentence.rstrip().endswith("?") or "공제" not in sentence:
         return None
     found = _names_in(sentence, names)
-    sides = [k for k, word in SIDES.items() if word in sentence]
-    if len(found) != 1 or len(sides) != 1:
+    sides = _sides_in(sentence, self_role)
+    if sides is None or len(found) != 1 or len(sides) != 1:
         return None
-    return found[0], sides[0]
+    return found[0], next(iter(sides))
 
 
 def check_answer(text: str, ctx: SensorContext) -> list[SensorFailure]:
@@ -101,7 +120,7 @@ def check_answer(text: str, ctx: SensorContext) -> list[SensorFailure]:
 
     names = ctx.names if computed else [*ctx.names, *FAMILY_WORDS]
     for sentence in sentences(text):
-        verdict = verdict_of(sentence, names)
+        verdict = verdict_of(sentence, names, ctx.self_role)
         if verdict is None:
             continue
         name, side = verdict

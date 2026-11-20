@@ -27,6 +27,9 @@ class ConversationState:
     turn: int
     history: list[Message] = field(default_factory=list)
     documents: list[dict[str, Any]] = field(default_factory=list)
+    # 첫 화면 설정(FR-09·FR-10): 본인 입장(husband·wife)과 고른 자녀 수. 고르지 않았으면 None
+    self_role: str | None = None
+    child_count: int | None = None
     # 요건 확인이 성공한 가족 지문(검사기 순서 규칙용)
     checked: set[str] = field(default_factory=set)
     # 가장 최근 성공한 도구 인자(가구 JSON). 시스템 프롬프트 끝에 붙인다
@@ -77,7 +80,11 @@ def build_state(
         turn=len(users) + 1,
         history=list(messages),
         documents=list(conversation.documents or []),
+        self_role=conversation.self_role,
+        child_count=conversation.child_count,
     )
+    # 판정 센서가 "나 쪽에 공제"를 본인 쪽으로 읽게 한다
+    state.sensor.self_role = conversation.self_role
     state.sensor.allowed |= ints_in(state.documents)
     for m in users:
         state.add_user_text(m.content)
