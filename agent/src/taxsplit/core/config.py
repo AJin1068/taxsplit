@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     llm_provider: Literal["fake", "anthropic"] = "fake"
     # SecretStr: 로그·repr에 키가 찍히지 않게
     anthropic_api_key: SecretStr | None = None
+    # 평가 하네스 GPT 채점(--judge)에만 쓴다(ADR-0006). 없으면 --judge가 멈춘다
+    openai_api_key: SecretStr | None = None
     # 비우면 SDK 기본 주소. 게이트웨이가 생기면 이 값만 게이트웨이 주소로 바꾼다
     llm_base_url: str | None = None
 
@@ -51,7 +53,9 @@ class Settings(BaseSettings):
     # 에이전트 루프 운영값(세법 숫자 아님, 실제 대화를 본 뒤 조정). 도구 결과를 돌려주는 호출 포함
     agent_max_llm_calls_per_turn: int = 10
 
-    @field_validator("anthropic_api_key", "llm_base_url", "rag_method", mode="before")
+    @field_validator(
+        "anthropic_api_key", "openai_api_key", "llm_base_url", "rag_method", mode="before"
+    )
     @classmethod
     def _blank_is_none(cls, value: object) -> object:
         # .env.example처럼 `LLM_BASE_URL=`로 비워 두면 None(=SDK 기본값)으로 본다

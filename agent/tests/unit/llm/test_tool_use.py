@@ -5,6 +5,7 @@
 
 import asyncio
 import json
+from dataclasses import replace
 
 import httpx2
 
@@ -113,6 +114,15 @@ def test_request_carries_tools_and_tool_blocks() -> None:
     assert body["messages"][2]["content"] == [
         {"type": "tool_result", "tool_use_id": "tu_1", "content": "결과", "is_error": True}
     ]
+
+
+def test_tool_choice_forces_named_tool() -> None:
+    # 평가 하네스 가상 사용자처럼 구조화 출력이 필요하면 도구 하나를 꼭 부르게 한다
+    client, seen = make_client(httpx2.Response(200, json=TOOL_MESSAGE))
+    asyncio.run(client.complete(replace(REQUEST, tool_choice=TOOL.name)))
+    assert json.loads(seen[0].content)["tool_choice"] == {"type": "tool", "name": TOOL.name}
+    asyncio.run(client.complete(REQUEST))
+    assert "tool_choice" not in json.loads(seen[1].content)
 
 
 def test_complete_reads_tool_use() -> None:

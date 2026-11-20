@@ -11,7 +11,7 @@ class CallKind(StrEnum):
     PDF_EXTRACT = "pdf_extract"  # PDF 추출
     SIM_USER = "sim_user"  # 평가 하네스의 가상 사용자
     VERIFIER = "verifier"  # 서비스 안 검증 에이전트
-    JUDGE = "judge"  # 채점 (GPT 연결은 PR 11)
+    JUDGE = "judge"  # 채점 (GPT, llm/openai_client.py)
 
 
 @dataclass(frozen=True)
@@ -67,6 +67,8 @@ class LLMRequest:
     model: str | None = None
     max_tokens: int | None = None
     tools: Sequence[ToolSpec] = ()
+    # 이 이름의 도구를 꼭 부르게 한다(구조화 출력용, 예: 가상 사용자). None이면 AI가 고름
+    tool_choice: str | None = None
     # 호출 기록(llm_calls)에 남길 대화 번호. 대화 밖 호출(추출·평가)은 None
     conversation_id: int | None = None
 
