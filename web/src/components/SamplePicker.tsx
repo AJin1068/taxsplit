@@ -1,10 +1,10 @@
-// 개발용: 대화를 시작할 때 함께 보낼 간소화 자료 예시를 고른다(파일 올리기 화면은 PR 14b).
+// "견본으로 해 보기": PDF 없이 가상 간소화 자료 예시로 대화를 시작한다(PDF 올리기는 ExtractReview).
 import { SAMPLES } from "../samples";
 
 export function SamplePicker({ value, onChange, disabled }: { value: string; onChange: (id: string) => void; disabled: boolean }) {
   return (
     <label className="flex items-center gap-2 rounded-2xl bg-brand-amberBg px-4 py-2 text-xs text-brand-amber">
-      <span className="font-semibold">개발용 간소화 자료</span>
+      <span className="font-semibold">견본으로 해 보기</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}

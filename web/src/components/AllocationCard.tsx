@@ -1,8 +1,18 @@
 // UI-01 배분안 비교 카드. allocation 이벤트 값만 보여 준다(금액을 더하거나 빼지 않는다).
 // 보여 줄 것은 3가지: 최선 안, 흔한 방식 A·B와의 차이, "n명, m가지 경우를 모두 계산" 한 줄.
-import type { AllocationEvent, Assignment, CommonPlan } from "../api/types";
+// 판정(가족 한 줄) 옆에는 evidence 이벤트로 받은 근거 칩을 붙인다(UI-02). 근거가 없으면 칩도 없다.
+import type { AllocationEvent, Assignment, CommonPlan, EvidenceMap, Who } from "../api/types";
+import { evidenceForMember } from "../chat/events";
 import { formatBigMoney } from "../format/money";
-import { RELATION_LABELS, RESULT_DISCLAIMER, WHO_LABELS } from "../labels";
+import { RELATION_LABELS, RESULT_DISCLAIMER, whoLabel } from "../labels";
+import { EvidenceChip } from "./EvidenceChip";
+
+interface CardProps {
+  data: AllocationEvent;
+  evidence?: EvidenceMap;
+  // 첫 화면에서 고른 본인 입장. 있으면 그쪽을 "나"로 부른다(FR-09)
+  selfRole?: Who | null;
+}
 
 function Headline({ saving }: { saving: number }) {
   // 차이가 0원이면 큰 숫자 대신 한 줄
@@ -22,7 +32,7 @@ function Headline({ saving }: { saving: number }) {
   );
 }
 
-function BestPlan({ data, assignment }: { data: AllocationEvent; assignment: Assignment }) {
+function BestPlan({ data, assignment, evidence, selfRole }: CardProps & { assignment: Assignment }) {
   const more = data.best_assignments.length - 1;
   return (
     <section className="mt-5">
@@ -30,8 +40,10 @@ function BestPlan({ data, assignment }: { data: AllocationEvent; assignment: Ass
       <ul className="mt-2 space-y-2">
         {data.members.map((m) => {
           const who = assignment[m.name];
+          const chips = evidenceForMember(m, evidence ?? {});
           return (
-            <li key={m.name} className="flex items-center justify-between rounded-2xl bg-brand-bg px-4 py-3">
+            <li key={m.name} className="rounded-2xl bg-brand-bg px-4 py-3">
+              <div className="flex items-center justify-between">
               <span className="text-brand-text">
                 {m.name} <span className="text-xs text-brand-muted">{RELATION_LABELS[m.relation] ?? ""}</span>
               </span>
@@ -41,10 +53,18 @@ function BestPlan({ data, assignment }: { data: AllocationEvent; assignment: Ass
                     who === "husband" ? "bg-brand-navyBg text-brand-navy" : "bg-brand-wifeBg text-brand-wife"
                   }`}
                 >
-                  → {WHO_LABELS[who]}
+                  → {whoLabel(who, selfRole)}
                 </span>
               ) : (
                 <span className="text-sm text-brand-muted">공제 대상 아님</span>
+              )}
+              </div>
+              {chips.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1" data-testid={`evidence-${m.name}`}>
+                  {chips.map((item) => (
+                    <EvidenceChip key={item.rule_id} item={item} />
+                  ))}
+                </div>
               )}
             </li>
           );
@@ -69,7 +89,7 @@ function CommonRow({ plan }: { plan: CommonPlan }) {
   );
 }
 
-export function AllocationCard({ data }: { data: AllocationEvent }) {
+export function AllocationCard({ data, evidence, selfRole }: CardProps) {
   // 최선 안이 여럿이면 첫 번째를 보여 준다
   const assignment = data.best_assignments[0] ?? data.best.assignment;
   return (
@@ -79,7 +99,7 @@ export function AllocationCard({ data }: { data: AllocationEvent }) {
           <Headline saving={data.headline_saving} />
         </div>
         <div className="px-5 pb-5">
-          <BestPlan data={data} assignment={assignment} />
+          <BestPlan data={data} assignment={assignment} evidence={evidence} selfRole={selfRole} />
           <section className="mt-5">
             <h3 className="text-sm font-semibold text-brand-subtext">흔한 방식과 비교하면</h3>
             <ul className="mt-2 space-y-2">

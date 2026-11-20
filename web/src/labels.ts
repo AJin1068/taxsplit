@@ -17,6 +17,11 @@ export function statusLabel(status: StatusEvent): string {
 
 export const WHO_LABELS: Record<Who, string> = { husband: "남편", wife: "아내" };
 
+/** 공제 받는 쪽 이름. 첫 화면에서 본인 입장을 골랐으면 그쪽은 "나"(FR-09). */
+export function whoLabel(who: Who, selfRole?: Who | null): string {
+  return who === selfRole ? "나" : WHO_LABELS[who];
+}
+
 export const RELATION_LABELS: Record<Relation, string> = {
   child: "자녀",
   lineal_ascendant: "부모님",
