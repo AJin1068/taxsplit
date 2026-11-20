@@ -1,0 +1,341 @@
+{
+  "id": "v1-04",
+  "version": "v1",
+  "status": "confirmed",
+  "review": {
+    "reviewer": "AJin1068",
+    "date": "2026-11-20",
+    "scope": "사람은 PR #137에서 시나리오마다 이야기의 결론(세법·상식 문장)이 맞는지 예/아니오로 봄. 세금 합계 숫자는 검증된 계산 엔진 값이라 따로 대조하지 않음"
+  },
+  "title": "난임시술비가 의료비에 섞여 있고, 교복·체험학습비가 간소화에 없음",
+  "groups": [
+    "child",
+    "medical",
+    "education"
+  ],
+  "spouse_names": {
+    "husband": "차민혁",
+    "wife": "구하늘"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 64000000,
+      "sex": "male",
+      "birth_year": 1986,
+      "national_pension": 2880000,
+      "health_insurance": 2269000,
+      "employment_insurance": 576000,
+      "long_term_care_insurance": 294000
+    },
+    "wife": {
+      "gross_salary": 58000000,
+      "sex": "female",
+      "birth_year": 1987,
+      "national_pension": 2610000,
+      "health_insurance": 2056000,
+      "employment_insurance": 522000,
+      "long_term_care_insurance": 266000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "차서진",
+          "relation": "child",
+          "birth_year": 2011
+        }
+      },
+      {
+        "dependent": {
+          "name": "차서우",
+          "relation": "child",
+          "birth_year": 2016
+        }
+      }
+    ],
+    "medical": [
+      {
+        "payer": "wife",
+        "for_whom": "wife",
+        "amount": 1500000
+      },
+      {
+        "payer": "wife",
+        "for_whom": "wife",
+        "item": "infertility",
+        "amount": 4000000
+      }
+    ],
+    "education": [
+      {
+        "payer": "husband",
+        "for_whom": "차서진",
+        "item": "uniform",
+        "amount": 450000
+      },
+      {
+        "payer": "husband",
+        "for_whom": "차서진",
+        "item": "field_trip",
+        "amount": 250000
+      },
+      {
+        "payer": "husband",
+        "for_whom": "차서우",
+        "item": "field_trip",
+        "amount": 150000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 18000000
+      },
+      {
+        "user": "wife",
+        "credit": 20000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "차민혁",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "차민혁",
+          "person_birth": "1986",
+          "amount": 2880000,
+          "source_text": "차민혁 국민연금보험료 2,880,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "차민혁",
+          "person_birth": "1986",
+          "amount": 2269000,
+          "source_text": "차민혁 건강보험료 2,269,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "차민혁",
+          "person_birth": "1986",
+          "amount": 576000,
+          "source_text": "차민혁 고용보험료 576,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "차민혁",
+          "person_birth": "1986",
+          "amount": 294000,
+          "source_text": "차민혁 노인장기요양보험료 294,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "차민혁",
+          "person_birth": "1986",
+          "amount": 18000000,
+          "source_text": "차민혁 신용카드 18,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "구하늘",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "구하늘",
+          "person_birth": "1987",
+          "amount": 2610000,
+          "source_text": "구하늘 국민연금보험료 2,610,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "구하늘",
+          "person_birth": "1987",
+          "amount": 2056000,
+          "source_text": "구하늘 건강보험료 2,056,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "구하늘",
+          "person_birth": "1987",
+          "amount": 522000,
+          "source_text": "구하늘 고용보험료 522,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "구하늘",
+          "person_birth": "1987",
+          "amount": 266000,
+          "source_text": "구하늘 노인장기요양보험료 266,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "구하늘",
+          "person_birth": "1987",
+          "amount": 5500000,
+          "source_text": "구하늘 의료비 5,500,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "구하늘",
+          "person_birth": "1987",
+          "amount": 20000000,
+          "source_text": "구하늘 신용카드 20,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "남편 6,400만 원, 저 5,800만 원이에요. 중학생, 초등학생 아이 둘이고 자료 올렸어요. 누가 아이들을 공제받는 게 좋아요?",
+  "persona": "아내. 묻는 것에 답하지만 난임 시술비나 교복·체험학습비가 따로 공제되는 줄 모름.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 구하늘 1987년생, 남편 차민혁 1986년생. 아들 차서진 2011년생 중학생, 딸 차서우 2016년생 초등학생. 아이들 소득·장애 없음."
+    },
+    {
+      "id": "f2",
+      "kind": "must_ask",
+      "text": "내 의료비 550만 원 중 400만 원은 올해 받은 난임 시술비다. 의료비는 모두 내가 냈다."
+    },
+    {
+      "id": "f3",
+      "kind": "must_ask",
+      "text": "아들 교복 45만 원을 남편 카드로 샀다. 간소화에는 안 보인다."
+    },
+    {
+      "id": "f4",
+      "kind": "must_ask",
+      "text": "체험학습비로 아들 25만 원, 딸 15만 원을 남편이 냈다. 간소화에는 안 보인다."
+    }
+  ],
+  "gaps_expected": {
+    "show": [
+      {
+        "id": "gap.infertility",
+        "member": null
+      },
+      {
+        "id": "gap.school_uniform",
+        "member": {
+          "relation": "child",
+          "birth_year": 2011
+        }
+      },
+      {
+        "id": "gap.field_trip",
+        "member": {
+          "relation": "child",
+          "birth_year": 2011
+        }
+      },
+      {
+        "id": "gap.field_trip",
+        "member": {
+          "relation": "child",
+          "birth_year": 2016
+        }
+      }
+    ],
+    "not_show": [
+      {
+        "id": "gap.preschool_academy",
+        "member": null
+      },
+      {
+        "id": "gap.child_turned_adult",
+        "member": null
+      },
+      {
+        "id": "gap.school_uniform",
+        "member": {
+          "relation": "child",
+          "birth_year": 2016
+        }
+      }
+    ]
+  },
+  "gold": {
+    "plan_count": 4,
+    "best_assignments": [
+      {
+        "차서우": "husband",
+        "차서진": "husband"
+      }
+    ],
+    "best_total": 6024800,
+    "plans": [
+      {
+        "assignment": {
+          "차서우": "husband",
+          "차서진": "husband"
+        },
+        "total": 6024800
+      },
+      {
+        "assignment": {
+          "차서우": "wife",
+          "차서진": "husband"
+        },
+        "total": 6097300
+      },
+      {
+        "assignment": {
+          "차서우": "wife",
+          "차서진": "wife"
+        },
+        "total": 6152300
+      },
+      {
+        "assignment": {
+          "차서우": "husband",
+          "차서진": "wife"
+        },
+        "total": 6179800
+      }
+    ],
+    "headline_saving": 0,
+    "members": [
+      {
+        "name": "차서진",
+        "relation": "child",
+        "birth_year": 2011
+      },
+      {
+        "name": "차서우",
+        "relation": "child",
+        "birth_year": 2016
+      }
+    ],
+    "engine": {
+      "commit": "4e816b1",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}

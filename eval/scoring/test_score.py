@@ -12,6 +12,7 @@ sys.path.insert(0, str(HERE))
 import score  # noqa: E402
 
 V0 = HERE.parent / "scenarios" / "v0"
+V1 = HERE.parent / "scenarios" / "v1"
 
 
 def scenario() -> dict:
@@ -184,6 +185,102 @@ class SummaryTest(unittest.TestCase):
         self.assertIsNone(out["overall"]["cost_per_conversation_usd"])
 
 
+def gap_scenario() -> dict:
+    """빈 곳 알림 정답이 있는 테스트 시나리오(v1 파일과 이름·값이 다름)."""
+    s = scenario()
+    s["gaps_expected"] = {
+        "show": [
+            {
+                "id": "gap.adult_no_consent",
+                "member": {"relation": "lineal_ascendant", "birth_year": 1950},
+            },
+            {"id": "gap.field_trip", "member": None},
+        ],
+        "not_show": [
+            {"id": "gap.child_turned_adult", "member": {"relation": "child", "birth_year": 2015}},
+            {"id": "gap.preschool_academy", "member": None},
+        ],
+    }
+    return s
+
+
+class GapTest(unittest.TestCase):
+    def test_no_expected_or_no_record_field_is_none(self):
+        # 정답이 없는 시나리오(v0), gaps를 남기지 않는 실행기 기록은 빈 곳 숫자를 내지 않는다
+        self.assertIsNone(score.score_run(scenario(), record(gaps=[]))["gaps"])
+        self.assertIsNone(score.score_run(gap_scenario(), record())["gaps"])
+
+    def test_hit_with_parent_relation_mapped(self):
+        # 빈 곳 찾기는 부모를 parent라 부른다. 시나리오 말(lineal_ascendant)로 맞춘다
+        shown = [
+            {"id": "gap.adult_no_consent", "member": {"relation": "parent", "birth_year": 1950}},
+            {"id": "gap.field_trip", "member": {"relation": "child", "birth_year": 2015}},
+        ]
+        g = score.score_run(gap_scenario(), record(gaps=shown))["gaps"]
+        self.assertEqual(g["hit"], ["gap.adult_no_consent", "gap.field_trip"])
+        self.assertEqual(g["false_alarm"], [])
+
+    def test_wrong_member_is_not_hit(self):
+        shown = [
+            {"id": "gap.adult_no_consent", "member": {"relation": "parent", "birth_year": 1951}}
+        ]
+        g = score.score_run(gap_scenario(), record(gaps=shown))["gaps"]
+        self.assertEqual(g["hit"], [])
+
+    def test_card_without_member_does_not_hit_member_answer(self):
+        # 누구 일인지 모르는 카드는 "그 가족" 정답에 맞히지 않는다(아무나 맞힌 것으로 보지 않음)
+        shown = [{"id": "gap.adult_no_consent", "member": None}]
+        g = score.score_run(gap_scenario(), record(gaps=shown))["gaps"]
+        self.assertEqual(g["hit"], [])
+
+    def test_false_alarms(self):
+        shown = [
+            {"id": "gap.child_turned_adult", "member": {"relation": "child", "birth_year": 2015}},
+            {"id": "gap.preschool_academy", "member": {"relation": "child", "birth_year": 2021}},
+        ]
+        g = score.score_run(gap_scenario(), record(gaps=shown))["gaps"]
+        self.assertEqual(g["false_alarm"], ["gap.child_turned_adult", "gap.preschool_academy"])
+
+    def test_other_child_is_not_false_alarm(self):
+        # 잡으면 안 되는 것: 다른 가족의 같은 카드는 오알림이 아니다
+        shown = [
+            {"id": "gap.child_turned_adult", "member": {"relation": "child", "birth_year": 2006}}
+        ]
+        g = score.score_run(gap_scenario(), record(gaps=shown))["gaps"]
+        self.assertEqual(g["false_alarm"], [])
+
+    def test_summary_numbers_and_by_gap(self):
+        s = gap_scenario()
+        good = [
+            {"id": "gap.adult_no_consent", "member": {"relation": "parent", "birth_year": 1950}},
+            {"id": "gap.field_trip", "member": None},
+        ]
+        bad = [{"id": "gap.preschool_academy", "member": None}]
+        out = score.summarize(
+            [s], [record(gaps=good), record(repeat=2, gaps=bad), record(repeat=3)]
+        )
+        self.assertAlmostEqual(out["overall"]["gap_hit_rate"], 2 / 4)
+        self.assertEqual(out["overall"]["gap_false_alarms"], 1)
+        self.assertEqual(
+            out["by_gap"]["gap.adult_no_consent"], {"expected": 2, "hit": 1, "false_alarm": 0}
+        )
+        self.assertEqual(
+            out["by_gap"]["gap.preschool_academy"], {"expected": 0, "hit": 0, "false_alarm": 1}
+        )
+
+    def test_v0_summary_has_no_gap_numbers(self):
+        out = score.summarize([scenario()], [record()])
+        self.assertIsNone(out["overall"]["gap_hit_rate"])
+        self.assertEqual(out["by_gap"], {})
+
+    def test_bad_gaps_expected_rejected(self):
+        s = gap_scenario()
+        s["gaps_expected"]["show"].append({"id": "adult_no_consent", "member": {"relation": "x"}})
+        errs = score.check_scenario(s)
+        self.assertTrue(any("id" in e for e in errs))
+        self.assertTrue(any("member" in e for e in errs))
+
+
 class BaselineTest(unittest.TestCase):
     def overall(self, **kw):
         base = {
@@ -272,6 +369,59 @@ class ScenarioFilesTest(unittest.TestCase):
             with self.assertRaises(ValueError) as ctx:
                 score.load_scenarios(tmp)
             self.assertIn("bad.json", str(ctx.exception))
+
+
+class V1FilesTest(unittest.TestCase):
+    """eval/scenarios/v1/ 실제 파일 검사(간소화에 안 나오는 가족 경우, Issue #127)."""
+
+    def setUp(self):
+        self.files = sorted(V1.glob("*.json"))
+        self.data = [json.loads(p.read_text(encoding="utf-8")) for p in self.files]
+
+    def test_files_pass_format_and_have_gap_answers(self):
+        self.assertGreaterEqual(len(self.files), 4)
+        for p, d in zip(self.files, self.data, strict=True):
+            self.assertEqual(score.check_scenario(d), [], p.name)
+            self.assertEqual(p.stem, d["id"])
+            self.assertEqual(d["version"], "v1")
+            self.assertIn("gaps_expected", d, p.name)
+
+    def test_has_a_household_with_nothing_to_alert(self):
+        # 놓칠 게 없는 가구: 알려야 할 것은 없고 알리면 안 되는 것만 있다
+        quiet = [d for d in self.data if not d["gaps_expected"]["show"]]
+        self.assertTrue(quiet)
+        self.assertTrue(all(d["gaps_expected"]["not_show"] for d in quiet))
+
+    def test_names_unique_across_v0_and_v1(self):
+        names = []
+        for folder in (V0, V1):
+            for p in sorted(folder.glob("*.json")):
+                d = json.loads(p.read_text(encoding="utf-8"))
+                names += list(d["spouse_names"].values())
+                names += [m["dependent"]["name"] for m in d["household"].get("members", [])]
+        self.assertEqual(len(names), len(set(names)))
+
+    def test_gold_matches_household_members(self):
+        for d in self.data:
+            names = [m["dependent"]["name"] for m in d["household"].get("members", [])]
+            self.assertEqual([m["name"] for m in d["gold"]["members"]], names, d["id"])
+            self.assertEqual(len(d["gold"]["plans"]), d["gold"]["plan_count"], d["id"])
+
+    def test_documents_do_not_reveal_payer_income_disability(self):
+        for d in self.data:
+            text = json.dumps(d["documents"], ensure_ascii=False)
+            for word in ("payer", "income", "disabled", "wage_only_gross", "infertility"):
+                self.assertNotIn(word, text, d["id"])
+
+    def test_gap_answers_name_real_gap_ids(self):
+        # 정답의 항목 ID는 빈 곳 찾기 질문 표에 있는 것만
+        table = (HERE.parent.parent / "agent/src/taxsplit/gaps/questions_2025.toml").read_text(
+            encoding="utf-8"
+        )
+        for d in self.data:
+            for side in ("show", "not_show"):
+                for e in d["gaps_expected"][side]:
+                    self.assertIn(f'id = "{e["id"]}"', table, d["id"])
 
 
 if __name__ == "__main__":

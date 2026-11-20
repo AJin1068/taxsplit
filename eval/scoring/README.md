@@ -36,9 +36,15 @@
     "members": [{"name": "어머님", "relation": "lineal_ascendant", "birth_year": 1958}]
   },
   "cost": {"main_agent_usd": 0.12, "sim_user_usd": 0.01, "judge_usd": null},  // 모르면 null
-  "judge": {"consistent": true, "reason": "..."}   // GPT 채점(--judge)을 안 했으면 null
+  "judge": {"consistent": true, "reason": "..."},  // GPT 채점(--judge)을 안 했으면 null
+  "gaps": [                          // (선택) 대화 중 화면에 낸 빈 곳 알림 카드(채팅 API gaps 이벤트). 기록하지 않으면 칸을 뺀다
+    {"id": "gap.adult_no_consent", "member": {"relation": "parent", "birth_year": 1955}},  // 가구 전체 질문이면 member: null
+    {"id": "gap.parent_living_apart", "member": null}
+  ]
 }
 ```
 
 - `final.members`는 그 배분 비교에 쓴 부양가족 전부(요건이 안 되는 사람 포함)입니다.
 - `cost`의 값을 하나라도 모르면(`null`) 대화당 비용은 "알 수 없음"(`null`)으로 나옵니다.
+- `gaps`가 없으면(지금 실행기) 빈 곳 숫자는 "알 수 없음"(`null`)입니다. 카드의 `member`는 에이전트가 빈 곳 찾기 도구에 넘긴 가족의 관계·출생연도로 채웁니다(카드에는 이름만 있음). 실행기가 이 칸을 남기게 하는 일은 Issue #136(PR 11c)입니다.
+- `summarize` 결과에는 `overall`·`by_group`·`by_scenario`마다 `gap_hit_rate`·`gap_false_alarms`가, 맨 위에 항목별 `by_gap`이 더해집니다.

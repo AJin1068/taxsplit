@@ -1,0 +1,317 @@
+{
+  "id": "v1-02",
+  "version": "v1",
+  "status": "confirmed",
+  "review": {
+    "reviewer": "AJin1068",
+    "date": "2026-11-20",
+    "scope": "사람은 PR #137에서 시나리오마다 이야기의 결론(세법·상식 문장)이 맞는지 예/아니오로 봄. 세금 합계 숫자는 검증된 계산 엔진 값이라 따로 대조하지 않음"
+  },
+  "title": "올해 성년이 된 대학생 아들의 자료가 간소화에 안 나옴(아들이 직접 동의해야 함)",
+  "groups": [
+    "child",
+    "education"
+  ],
+  "spouse_names": {
+    "husband": "서동혁",
+    "wife": "민가영"
+  },
+  "household": {
+    "husband": {
+      "gross_salary": 92000000,
+      "sex": "male",
+      "birth_year": 1972,
+      "national_pension": 4140000,
+      "health_insurance": 3261000,
+      "employment_insurance": 828000,
+      "long_term_care_insurance": 422000
+    },
+    "wife": {
+      "gross_salary": 41000000,
+      "sex": "female",
+      "birth_year": 1974,
+      "national_pension": 1845000,
+      "health_insurance": 1453000,
+      "employment_insurance": 369000,
+      "long_term_care_insurance": 188000
+    },
+    "members": [
+      {
+        "dependent": {
+          "name": "서준혁",
+          "relation": "child",
+          "birth_year": 2006
+        }
+      },
+      {
+        "dependent": {
+          "name": "서예린",
+          "relation": "child",
+          "birth_year": 2012
+        }
+      }
+    ],
+    "medical": [
+      {
+        "payer": "husband",
+        "for_whom": "서예린",
+        "amount": 300000
+      }
+    ],
+    "education": [
+      {
+        "payer": "wife",
+        "for_whom": "서준혁",
+        "level": "university",
+        "amount": 6000000
+      },
+      {
+        "payer": "husband",
+        "for_whom": "서예린",
+        "amount": 500000
+      }
+    ],
+    "cards": [
+      {
+        "user": "husband",
+        "credit": 28000000
+      },
+      {
+        "user": "wife",
+        "credit": 11000000
+      }
+    ]
+  },
+  "documents": [
+    {
+      "tax_year": 2025,
+      "worker_name": "서동혁",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "서동혁",
+          "person_birth": "1972",
+          "amount": 4140000,
+          "source_text": "서동혁 국민연금보험료 4,140,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "서동혁",
+          "person_birth": "1972",
+          "amount": 3261000,
+          "source_text": "서동혁 건강보험료 3,261,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "서동혁",
+          "person_birth": "1972",
+          "amount": 828000,
+          "source_text": "서동혁 고용보험료 828,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "서동혁",
+          "person_birth": "1972",
+          "amount": 422000,
+          "source_text": "서동혁 노인장기요양보험료 422,000",
+          "mark": "none"
+        },
+        {
+          "group": "medical",
+          "kind": "의료비",
+          "person_name": "서예린",
+          "person_birth": "2012",
+          "amount": 300000,
+          "source_text": "서예린 의료비 300,000",
+          "mark": "none"
+        },
+        {
+          "group": "education",
+          "kind": "초중고",
+          "person_name": "서예린",
+          "person_birth": "2012",
+          "amount": 500000,
+          "source_text": "서예린 초중고 500,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "서동혁",
+          "person_birth": "1972",
+          "amount": 28000000,
+          "source_text": "서동혁 신용카드 28,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    },
+    {
+      "tax_year": 2025,
+      "worker_name": "민가영",
+      "items": [
+        {
+          "group": "insurance",
+          "kind": "국민연금보험료",
+          "person_name": "민가영",
+          "person_birth": "1974",
+          "amount": 1845000,
+          "source_text": "민가영 국민연금보험료 1,845,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "건강보험료",
+          "person_name": "민가영",
+          "person_birth": "1974",
+          "amount": 1453000,
+          "source_text": "민가영 건강보험료 1,453,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "고용보험료",
+          "person_name": "민가영",
+          "person_birth": "1974",
+          "amount": 369000,
+          "source_text": "민가영 고용보험료 369,000",
+          "mark": "none"
+        },
+        {
+          "group": "insurance",
+          "kind": "노인장기요양보험료",
+          "person_name": "민가영",
+          "person_birth": "1974",
+          "amount": 188000,
+          "source_text": "민가영 노인장기요양보험료 188,000",
+          "mark": "none"
+        },
+        {
+          "group": "card",
+          "kind": "신용카드",
+          "person_name": "민가영",
+          "person_birth": "1974",
+          "amount": 11000000,
+          "source_text": "민가영 신용카드 11,000,000",
+          "mark": "none"
+        }
+      ],
+      "totals": []
+    }
+  ],
+  "opening": "남편 9,200만 원, 저 4,100만 원이에요. 아이가 둘이고 자료는 다 올렸어요. 누가 아이들을 공제받는 게 나아요?",
+  "persona": "아내. 친절하게 답하지만 아들 자료가 빠진 줄은 모름.",
+  "facts": [
+    {
+      "id": "f1",
+      "kind": "background",
+      "text": "나는 아내 민가영 1974년생, 남편 서동혁 1972년생."
+    },
+    {
+      "id": "f2",
+      "kind": "background",
+      "text": "아들 서준혁은 2006년생 대학생, 딸 서예린은 2012년생 중학생. 둘 다 소득 없음, 장애 없음, 같이 산다."
+    },
+    {
+      "id": "f3",
+      "kind": "must_ask",
+      "text": "아들 대학 등록금 600만 원은 내가(아내) 냈다."
+    },
+    {
+      "id": "f4",
+      "kind": "background",
+      "text": "아들은 홈택스 자료 제공 동의를 한 적이 없다. 딸 교복은 작년에 사서 올해는 안 샀다."
+    }
+  ],
+  "gaps_expected": {
+    "show": [
+      {
+        "id": "gap.child_turned_adult",
+        "member": {
+          "relation": "child",
+          "birth_year": 2006
+        }
+      }
+    ],
+    "not_show": [
+      {
+        "id": "gap.child_turned_adult",
+        "member": {
+          "relation": "child",
+          "birth_year": 2012
+        }
+      },
+      {
+        "id": "gap.adult_no_consent",
+        "member": {
+          "relation": "child",
+          "birth_year": 2012
+        }
+      }
+    ]
+  },
+  "gold": {
+    "plan_count": 4,
+    "best_assignments": [
+      {
+        "서예린": "husband",
+        "서준혁": "wife"
+      }
+    ],
+    "best_total": 9308635,
+    "plans": [
+      {
+        "assignment": {
+          "서예린": "husband",
+          "서준혁": "wife"
+        },
+        "total": 9308635
+      },
+      {
+        "assignment": {
+          "서예린": "wife",
+          "서준혁": "wife"
+        },
+        "total": 9759760
+      },
+      {
+        "assignment": {
+          "서예린": "husband",
+          "서준혁": "husband"
+        },
+        "total": 10023635
+      },
+      {
+        "assignment": {
+          "서예린": "wife",
+          "서준혁": "husband"
+        },
+        "total": 10283635
+      }
+    ],
+    "headline_saving": 715000,
+    "members": [
+      {
+        "name": "서준혁",
+        "relation": "child",
+        "birth_year": 2006
+      },
+      {
+        "name": "서예린",
+        "relation": "child",
+        "birth_year": 2012
+      }
+    ],
+    "engine": {
+      "commit": "4e816b1",
+      "chain": "국세청 사례 10건, 홈택스 모의계산 4건으로 검증한 계산 엔진(2025년 귀속 규칙표, 배분 비교)이 만든 기준 정답"
+    }
+  }
+}
