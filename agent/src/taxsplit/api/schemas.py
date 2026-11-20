@@ -3,6 +3,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from taxsplit.gaps.models import CardAnswer
+
 
 class CreateConversationRequest(BaseModel):
     title: str = Field(min_length=1, max_length=200)
@@ -12,6 +14,8 @@ class CreateConversationRequest(BaseModel):
 
 class SendMessageRequest(BaseModel):
     content: str = Field(min_length=1, max_length=4000)
+    # 질문 카드의 선택지를 눌렀으면 그 답(PR 24). 없으면 글만 보낸 것
+    answer: CardAnswer | None = None
 
 
 class MessageResponse(BaseModel):

@@ -18,6 +18,7 @@ from taxsplit.domain.models import (
     Message,
 )
 from taxsplit.extract.validate import check_doc
+from taxsplit.gaps.models import CardAnswer
 from taxsplit.llm.base import LLMClient
 from taxsplit.repositories.base import (
     AsyncToolCallRepository,
@@ -95,9 +96,17 @@ class ChatService:
         await self._get(conversation_id)
         return await self._messages.list_for(conversation_id)
 
-    async def start_turn(self, conversation_id: int, content: str) -> AsyncIterator[Event]:
-        """대화가 없으면 여기서 바로 ConversationNotFound(스트리밍 시작 전 404)."""
+    async def start_turn(
+        self, conversation_id: int, content: str, answer: CardAnswer | None = None
+    ) -> AsyncIterator[Event]:
+        """대화가 없으면 여기서 바로 ConversationNotFound(스트리밍 시작 전 404).
+
+        질문 카드 답(answer)이 있으면 사용자 글 끝에 한 줄로 붙여 저장한다(대화 기록에 남게).
+        가정: docs/assumptions.md A-067
+        """
         conversation = await self._get(conversation_id)
+        if answer is not None:
+            content = f"{content}\n{answer.as_text()}"
         return self._run_turn(conversation, content)
 
     async def _run_turn(self, conversation: Conversation, content: str) -> AsyncIterator[Event]:
