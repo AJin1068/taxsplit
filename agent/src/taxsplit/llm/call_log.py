@@ -32,6 +32,8 @@ class LlmCall:
     error_type: str | None = None
     status_code: int | None = None
     request_id: str | None = None
+    # 어느 대화의 호출인가. 대화 밖 호출(추출·평가)은 None
+    conversation_id: int | None = None
     id: uuid.UUID = field(default_factory=uuid.uuid4)
     created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
 

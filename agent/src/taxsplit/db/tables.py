@@ -64,6 +64,8 @@ conversations = Table(
     Column("self_role", Text, nullable=True),
     _ts("created_at"),
     _ts("updated_at"),
+    # 마이그레이션 0003: 대화를 만들 때 받은 간소화 PDF 추출 결과(0~2개)
+    Column("documents", Json, nullable=True),
 )
 
 messages = Table(

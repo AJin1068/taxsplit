@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from taxsplit.api.routes import conversations
 from taxsplit.core.config import get_settings
-from taxsplit.domain.models import ConversationNotFound
+from taxsplit.domain.models import ConversationNotFound, InvalidDocuments
 
 
 def create_app() -> FastAPI:
@@ -15,6 +15,13 @@ def create_app() -> FastAPI:
     @app.exception_handler(ConversationNotFound)
     async def handle_not_found(request: Request, exc: ConversationNotFound) -> JSONResponse:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"detail": str(exc)})
+
+    @app.exception_handler(InvalidDocuments)
+    async def handle_invalid_documents(request: Request, exc: InvalidDocuments) -> JSONResponse:
+        # 추출 결과 검사 실패: 칸 경로가 붙은 한국어 이유 목록
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, content={"detail": exc.errors}
+        )
 
     @app.get("/health")
     async def health() -> dict[str, str]:

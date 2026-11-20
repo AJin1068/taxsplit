@@ -6,6 +6,7 @@
 
 import json
 import time
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
@@ -42,17 +43,21 @@ class ToolCallGuard:
         repository: ToolCallRepository,
         policy: ToolPolicy | None = None,
         conversation_id: int | None = None,
+        *,
+        turn: int = 1,
+        checked: Iterable[str] = (),
     ) -> None:
+        # turn·checked: 서버가 대화 상태를 저장소에서 다시 만들 때 넘긴다(PR 10). 검사 규칙은 같다
         self._rules = rules
         self._repo = repository
         self._policy = policy or ToolPolicy()
         self._conversation_id = conversation_id
-        self._turn = 1
+        self._turn = turn
         self._step = 0
         # 도구별 invalid_args 연속 횟수(턴마다 0으로)
         self._invalid: dict[str, int] = {}
         # 요건 확인이 성공한 가족 지문. 턴이 바뀌어도 대화 안에서는 유지한다
-        self._checked: set[str] = set()
+        self._checked: set[str] = set(checked)
 
     @property
     def turn(self) -> int:

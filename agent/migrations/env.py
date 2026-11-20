@@ -4,6 +4,7 @@ DB 주소는 alembic.ini에 없으면 설정값(DATABASE_URL)에서 읽는다. �
 """
 
 import asyncio
+from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy.engine import Connection
@@ -12,6 +13,11 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from taxsplit.db.tables import metadata
 
 config = context.config
+
+# alembic.ini의 로그 설정을 켠다. 그래야 `alembic upgrade head`가 "Running upgrade ..." 줄을 찍는다.
+# pytest처럼 로그 설정을 건드리면 안 되는 곳은 configure_logger=False를 넘긴다
+if config.config_file_name is not None and config.attributes.get("configure_logger", True):
+    fileConfig(config.config_file_name, disable_existing_loggers=False)
 
 
 def _url() -> str:

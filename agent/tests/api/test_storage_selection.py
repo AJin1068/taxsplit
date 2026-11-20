@@ -6,9 +6,18 @@ import pytest
 
 from taxsplit.api import deps
 from taxsplit.core.config import get_settings
-from taxsplit.db.repositories import SqlConversationRepository, SqlLlmCallRepository
+from taxsplit.db.repositories import (
+    SqlConversationRepository,
+    SqlLlmCallRepository,
+    SqlMessageRepository,
+)
+from taxsplit.db.tool_call_repository import SqlToolCallRepository
 from taxsplit.llm.call_log import InMemoryLlmCallRepository
-from taxsplit.repositories.memory import InMemoryConversationRepository
+from taxsplit.repositories.memory import (
+    InMemoryAsyncToolCallRepository,
+    InMemoryConversationRepository,
+    InMemoryMessageRepository,
+)
 
 _CACHED = (
     get_settings,
@@ -16,6 +25,8 @@ _CACHED = (
     deps.get_conversation_repo,
     deps.get_llm_call_repo,
     deps.get_llm_client,
+    deps.get_message_repo,
+    deps.get_tool_call_repo,
 )
 
 
@@ -34,6 +45,8 @@ def test_memory_storage_picks_in_memory(fresh_deps, monkeypatch) -> None:
 
     assert isinstance(deps.get_conversation_repo(), InMemoryConversationRepository)
     assert isinstance(deps.get_llm_call_repo(), InMemoryLlmCallRepository)
+    assert isinstance(deps.get_message_repo(), InMemoryMessageRepository)
+    assert isinstance(deps.get_tool_call_repo(), InMemoryAsyncToolCallRepository)
 
 
 def test_postgres_storage_picks_sql(fresh_deps, monkeypatch) -> None:
@@ -42,4 +55,6 @@ def test_postgres_storage_picks_sql(fresh_deps, monkeypatch) -> None:
 
     assert isinstance(deps.get_conversation_repo(), SqlConversationRepository)
     assert isinstance(deps.get_llm_call_repo(), SqlLlmCallRepository)
+    assert isinstance(deps.get_message_repo(), SqlMessageRepository)
+    assert isinstance(deps.get_tool_call_repo(), SqlToolCallRepository)
     assert deps.get_engine().dialect.name == "postgresql"

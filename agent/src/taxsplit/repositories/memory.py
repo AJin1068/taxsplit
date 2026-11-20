@@ -1,6 +1,7 @@
 from dataclasses import replace
 
 from taxsplit.domain.models import Conversation, Message, StoredHousehold
+from taxsplit.tools.records import ToolCallRecord
 
 
 class DuplicateMessageSeq(Exception):
@@ -61,3 +62,15 @@ class InMemoryHouseholdRepository:
 
     async def get(self, household_id: int) -> StoredHousehold | None:
         return self._items.get(household_id)
+
+
+class InMemoryAsyncToolCallRepository:
+    def __init__(self) -> None:
+        self._items: list[ToolCallRecord] = []
+
+    async def add_many(self, records: list[ToolCallRecord]) -> None:
+        self._items.extend(records)
+
+    async def list_for(self, conversation_id: int) -> list[ToolCallRecord]:
+        found = [r for r in self._items if r.conversation_id == conversation_id]
+        return sorted(found, key=lambda r: (r.turn, r.step))

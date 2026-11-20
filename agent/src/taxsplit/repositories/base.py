@@ -1,6 +1,7 @@
 from typing import Protocol
 
 from taxsplit.domain.models import Conversation, Message, StoredHousehold
+from taxsplit.tools.records import ToolCallRecord
 
 
 class ConversationRepository(Protocol):
@@ -25,3 +26,16 @@ class HouseholdRepository(Protocol):
     async def save(self, household: StoredHousehold) -> StoredHousehold: ...
 
     async def get(self, household_id: int) -> StoredHousehold | None: ...
+
+
+class AsyncToolCallRepository(Protocol):
+    """도구 호출 기록 저장소(비동기). 에이전트 루프가 턴 동안 모아 두었다가 턴 끝에 한꺼번에 넣는다.
+
+    검사기(tools/guard.py)는 동기 저장소(tools/records.py)에 쓰고, 루프가 그 목록을 여기로 옮긴다.
+    """
+
+    async def add_many(self, records: list[ToolCallRecord]) -> None: ...
+
+    async def list_for(self, conversation_id: int) -> list[ToolCallRecord]:
+        """그 대화의 기록을 (턴, 순번) 순서로."""
+        ...
