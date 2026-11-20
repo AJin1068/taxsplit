@@ -10,7 +10,7 @@
 | 폴더 | 언어 | 역할 |
 | --- | --- | --- |
 | `agent/` | Python (FastAPI) | 세액 계산 엔진, 도구 호출 에이전트, 평가 실행 |
-| `gateway/` | Kotlin (Spring) | LLM 게이트웨이. 캐시, 레이트 리밋, 장애 대응, 비용 기록 (11/23부터) |
+| `gateway/` | Kotlin (Spring) | LLM 게이트웨이. 중계·스트리밍, 비용 기록 (레이트 리밋, 장애 대응은 PR 17) |
 | `eval/` | - | 채점 규칙, 채점 코드, 정답 데이터. 개발 PR에서는 고칠 수 없음 |
 
 ## 개발 흐름
@@ -65,6 +65,14 @@ docker compose up --build
 
 - API 문서: http://localhost:8080/docs
 - 헬스체크: http://localhost:8080/health
+
+LLM 게이트웨이 (AI 호출을 게이트웨이로 거치게 할 때, 자세한 것은 [gateway/README.md](gateway/README.md)):
+
+```bash
+docker compose up -d --build gateway      # 127.0.0.1:8081, .env의 ANTHROPIC_API_KEY 사용
+curl 127.0.0.1:8081/usage                 # 호출 수·토큰·비용 합계
+# 에이전트 쪽: .env에 LLM_BASE_URL=http://127.0.0.1:8081
+```
 
 로컬 개발 (DB · Redis만 컨테이너로):
 

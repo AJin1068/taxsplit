@@ -46,6 +46,14 @@ def _to_llm_error(exc: Exception, usage: Usage | None = None) -> LLMError:
 
 _HANDLED = (anthropic.APIError, httpx2.HTTPError, TimeoutError)
 
+# 게이트웨이가 호출 종류별 비용을 나눠 세도록 붙이는 머리글 (PR 16, gateway/README.md)
+CALL_KIND_HEADER = "X-Taxsplit-Call-Kind"
+
+
+def _params(request: LLMRequest) -> dict:
+    """SDK 인자 + 호출 종류 머리글. Anthropic에 직접 가도 모르는 머리글이라 무시된다."""
+    return {**request_params(request), "extra_headers": {CALL_KIND_HEADER: request.kind.value}}
+
 
 class AnthropicLLMClient:
     """공식 Anthropic SDK 직접 호출 (ADR-0001).
@@ -77,7 +85,7 @@ class AnthropicLLMClient:
         )
 
     async def complete(self, request: LLMRequest) -> LLMResponse:
-        params = request_params(request)
+        params = _params(request)
         try:
             async with asyncio.timeout(self._total_timeout):
                 message = await self._client.messages.create(**params)
@@ -94,7 +102,7 @@ class AnthropicLLMClient:
         )
 
     async def stream(self, request: LLMRequest) -> AsyncIterator[StreamEvent]:
-        params = request_params(request)
+        params = _params(request)
         loop = asyncio.get_running_loop()
         deadline = loop.time() + self._total_timeout
         usage = Usage()
