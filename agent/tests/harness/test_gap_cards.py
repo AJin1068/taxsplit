@@ -96,7 +96,7 @@ def test_duplicate_ids_across_folders_stop_before_start(tmp_path, capsys) -> Non
     other = tmp_path / "other"
     other.mkdir()
     data = json.loads((DEFAULT_SCENARIOS / "v0-02.json").read_text(encoding="utf-8"))
-    (other / "copy.json").write_text(json.dumps(data, ensure_ascii=False))
+    (other / "copy.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
     argv = ["run", "--scenarios", str(DEFAULT_SCENARIOS), "--scenarios", str(other)]
     assert main(argv, _never_called) == 2
     err = capsys.readouterr().err

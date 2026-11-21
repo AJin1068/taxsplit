@@ -19,7 +19,9 @@ def test_catches_planted_id_and_name(tmp_path) -> None:
     name = sorted(s for s in secrets if not s.startswith("v0-"))[0]
     (tmp_path / "pkg").mkdir()
     (tmp_path / "pkg" / "cheat.py").write_text('IF_ID = "v0-03"\n')
-    (tmp_path / "pkg" / "prompt.md").write_text(f"{name} 님은 남편 쪽에 넣으세요.\n")
+    (tmp_path / "pkg" / "prompt.md").write_text(
+        f"{name} 님은 남편 쪽에 넣으세요.\n", encoding="utf-8"
+    )
     assert leaks(tmp_path, secrets) == ["pkg/cheat.py: v0-03", f"pkg/prompt.md: {name}"]
 
 
