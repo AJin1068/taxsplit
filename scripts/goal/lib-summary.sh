@@ -1,4 +1,6 @@
 # shellcheck shell=bash
+# shellcheck source-path=SCRIPTDIR source=lib-platform.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib-platform.sh"
 # 실행이 끝나면 .goal-runs/<날짜_시각>/summary.md를 만든다. 끝난 뒤 사람이 이 파일 하나만 본다.
 
 _HEAD="| PR | Issue | 상태 | 1 테스트 | 2 막힌 폴더 | 3 skip | 4 PR | 5 검증 | 6 손대는 폴더 | 판정 | 분 | 턴 | 재시도 | PR 링크 | 이유 |"

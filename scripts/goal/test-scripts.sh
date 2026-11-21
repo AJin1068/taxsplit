@@ -32,6 +32,22 @@ if hits=$(find_bad $files); then
 else
   ok=$((ok + 1)); echo "| scripts/ 전체 | 없음 | ✅ |"
 fi
+# 2) 줄 끝 CR(\r). Windows에서 CRLF로 받으면 bash가 $'\r': command not found로 멈춘다.
+#    .gitattributes가 LF로 고정한다 (PR 1ad).
+#    grep $'\r'은 Git Bash에서 빈 패턴처럼 굴어 모든 파일이 걸리므로, CR은 tr로 센다.
+crs=""
+for f in $files; do
+  [[ $(tr -cd '\r' <"$f" | wc -c) -gt 0 ]] && crs+="$f"$'\n'
+done
+# CR이 실제로 잡히는지 먼저 본다 (세는 방법이 고장 나 늘 0이 나오지 않게)
+printf 'a\r\nb\r\n' >"$T/crlf.sh"
+if [[ $(tr -cd '\r' <"$T/crlf.sh" | wc -c) -gt 0 ]]; then ok=$((ok + 1)); echo "| CRLF 파일 | 걸림 | ✅ |"
+else bad=$((bad + 1)); echo "| CRLF 파일 | 걸림 | ❌ |"; fi
+if [[ -n $crs ]]; then
+  bad=$((bad + 1)); echo "| 줄 끝 CR | 없음 | ❌ |"; echo; echo "$crs"
+else
+  ok=$((ok + 1)); echo "| 줄 끝 CR | 없음 | ✅ |"
+fi
 echo
 echo "맞음 $ok / 틀림 $bad"
 (( bad == 0 ))

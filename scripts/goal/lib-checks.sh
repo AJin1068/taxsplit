@@ -1,4 +1,6 @@
 # shellcheck shell=bash
+# shellcheck source-path=SCRIPTDIR source=lib-platform.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib-platform.sh"
 # 기계 검문 6항목. goal이 "끝났다"고 해도 스크립트가 직접 다시 확인한다 (ADR-0009).
 # 각 함수는 통과하면 0, 걸리면 1을 돌려주고, 걸린 이유를 CHECK_REASON에 남긴다.
 # 실제 명령 대신 대역을 넣을 수 있다: GOAL_GH, GOAL_UV (시험용).

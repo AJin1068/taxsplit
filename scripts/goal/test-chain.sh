@@ -6,6 +6,9 @@
 set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
 RUNNER="$HERE/../goal-run.sh"
+# 이 시험도 jq를 직접 쓴다 (Windows jq의 CRLF 막기)
+# shellcheck source=lib-platform.sh
+source "$HERE/lib-platform.sh"
 export GOAL_CLAUDE="$HERE/fakes/claude" GOAL_GH="$HERE/fakes/gh" GOAL_UV="$HERE/fakes/uv"
 export GOAL_VERIFY_WAIT_SEC=0 GOAL_VERIFY_POLL_SEC=0 GOAL_RUN_POLL_SEC=0.2 GOAL_LANE_POLL_SEC=0.2
 export GOAL_KILL_GRACE_SEC=1

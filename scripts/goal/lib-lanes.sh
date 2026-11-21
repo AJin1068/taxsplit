@@ -1,4 +1,6 @@
 # shellcheck shell=bash
+# shellcheck source-path=SCRIPTDIR source=lib-platform.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib-platform.sh"
 # 줄(lane) 나누기. 짐작하지 않고 Issue 본문의 두 칸으로만 정한다 (CLAUDE.md "goal 연속 실행").
 #   ## 선행 PR        - 4  (없으면 "- 없음")
 #   ## 손대는 폴더     - `agent/src/taxsplit/engine/`

@@ -1,4 +1,6 @@
 # shellcheck shell=bash
+# shellcheck source-path=SCRIPTDIR source=lib-platform.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib-platform.sh"
 # 휴대폰에서 한눈에 볼 .goal-runs/<날짜>/status.md. 상태가 바뀔 때마다 고쳐 쓴다.
 # 줄들이 동시에 돌므로 줄마다 자기 파일(status/<줄>.md)만 쓰고,
 # 모든 줄 파일을 모아 임시 파일에 쓴 뒤 mv로 바꿔 끼운다 (반쯤 쓴 파일이 보이지 않게).
@@ -17,11 +19,20 @@ status_set() {
   tmp=$(mktemp "$dir/.tmp.XXXXXX")
   {
     echo "### ${STATUS_LANE:-줄} · PR $pr · $stage"
-    echo "- $(date -r "$STATUS_START" +%H:%M) 시작, $(( (now - STATUS_START) / 60 ))분째"
+    echo "- $(epoch_hm "$STATUS_START") 시작, $(( (now - STATUS_START) / 60 ))분째"
     echo "- 마지막 검문: ${STATUS_CHECKS:-아직 없음}"
     echo "- PR: ${PR_URL:-아직 없음}"
   } >"$tmp" && mv "$tmp" "$dir/${STATUS_LANE:-lane}.md"
   _status_rebuild
+}
+
+# epoch_hm <초>: 그 시각을 HH:MM으로 낸다.
+# macOS(BSD) date는 -r <초>, Git Bash·Linux(GNU) date는 -d @<초>를 쓴다.
+# GNU date의 -r은 "파일 기준 시각"이라, 같은 이름의 파일이 있으면 BSD 쪽을 건너뛴다.
+epoch_hm() {
+  local out
+  if [[ ! -e $1 ]] && out=$(date -r "$1" +%H:%M 2>/dev/null); then echo "$out"; return; fi
+  date -d "@$1" +%H:%M
 }
 
 # 검문 결과 JSON(R_CHECKS)을 "1✅ 2✅ 3✅ 4❌ 5❌ 6✅"처럼 짧게
