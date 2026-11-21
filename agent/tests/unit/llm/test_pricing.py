@@ -42,7 +42,9 @@ def test_every_price_has_source_and_checked_date():
 
     import taxsplit.llm.pricing as pricing
 
-    raw = tomllib.loads(Path(pricing.__file__).with_name("pricing.toml").read_text())
+    raw = tomllib.loads(
+        Path(pricing.__file__).with_name("pricing.toml").read_text(encoding="utf-8")
+    )
     for models in raw.values():
         for name, table in models.items():
             assert table["source"].startswith("https://"), name

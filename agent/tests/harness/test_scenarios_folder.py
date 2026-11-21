@@ -10,7 +10,7 @@ from taxsplit.harness.scoring import REPO_ROOT
 def _copy(src: str, dst, **change) -> dict:
     data = json.loads((DEFAULT_SCENARIOS / f"{src}.json").read_text(encoding="utf-8"))
     data.update(change)
-    (dst / f"{data['id']}.json").write_text(json.dumps(data, ensure_ascii=False))
+    (dst / f"{data['id']}.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
     return data
 
 
@@ -35,7 +35,9 @@ def _never_called(args):
 def test_missing_field_stops_with_file_and_field(tmp_path, capsys) -> None:
     data = _copy("v0-02", tmp_path, id="h-01")
     del data["persona"]
-    (tmp_path / "h-02.json").write_text(json.dumps({**data, "id": "h-02"}, ensure_ascii=False))
+    (tmp_path / "h-02.json").write_text(
+        json.dumps({**data, "id": "h-02"}, ensure_ascii=False), encoding="utf-8"
+    )
     code = main(["run", "--scenarios", str(tmp_path)], _never_called)
     assert code == 2
     err = capsys.readouterr().err
@@ -43,7 +45,7 @@ def test_missing_field_stops_with_file_and_field(tmp_path, capsys) -> None:
 
 
 def test_broken_json_stops_with_file_name(tmp_path, capsys) -> None:
-    (tmp_path / "bad.json").write_text("{ 깨진")
+    (tmp_path / "bad.json").write_text("{ 깨진", encoding="utf-8")
     assert main(["run", "--scenarios", str(tmp_path)], _never_called) == 2
     assert "bad.json" in capsys.readouterr().err
 

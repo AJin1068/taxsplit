@@ -191,6 +191,7 @@ def test_model_and_max_tokens_filled_from_settings_per_kind():
     async def main():
         await client.complete(LLMRequest(CallKind.SIM_USER, [Message("user", "x")]))
         await client.complete(LLMRequest(CallKind.VERIFIER, [Message("user", "x")]))
+        await client.complete(LLMRequest(CallKind.MAIN_AGENT, [Message("user", "x")]))
         await client.complete(
             LLMRequest(CallKind.VERIFIER, [Message("user", "x")], model="m", max_tokens=7)
         )
@@ -198,10 +199,16 @@ def test_model_and_max_tokens_filled_from_settings_per_kind():
     asyncio.run(main())
     assert [(r.model, r.max_tokens) for r in fake.requests] == [
         ("claude-haiku-5-5", 321),
-        ("claude-sonnet-5-5", 321),
+        ("claude-haiku-5-5", 321),  # 검증 에이전트: 비어 있어 기본 모델(Haiku, ADR-0010)
+        ("claude-haiku-5-5", 321),  # 메인 대화: 비어 있어 기본 모델(Haiku, ADR-0010)
         ("m", 7),  # 요청에 직접 적은 값이 우선
     ]
-    assert [c.kind for c in repo.items] == [CallKind.SIM_USER, CallKind.VERIFIER, CallKind.VERIFIER]
+    assert [c.kind for c in repo.items] == [
+        CallKind.SIM_USER,
+        CallKind.VERIFIER,
+        CallKind.MAIN_AGENT,
+        CallKind.VERIFIER,
+    ]
 
 
 def test_cost_recorded_for_known_model_and_none_for_unknown():
@@ -210,11 +217,12 @@ def test_cost_recorded_for_known_model_and_none_for_unknown():
     client, repo = make(fake)
 
     async def main():
-        await client.complete(REQUEST)  # 기본 모델 claude-sonnet-5-5
+        # 기본 모델 claude-haiku-5-5. 입력 100만 토큰은 긴 입력 문턱(10만)을 넘어 $0.50/MTok
+        await client.complete(REQUEST)
         await client.complete(LLMRequest(CallKind.MAIN_AGENT, [Message("user", "x")], model="?"))
 
     asyncio.run(main())
-    assert [c.cost_usd for c in repo.items] == [Decimal("2"), None]
+    assert [c.cost_usd for c in repo.items] == [Decimal("0.50"), None]
 
 
 def test_fake_provider_cost_is_none():

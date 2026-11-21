@@ -6,7 +6,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from taxsplit.llm.base import CallKind
 
-DEFAULT_MODEL = "claude-sonnet-5-5"
+# 상담(메인 대화)·서비스 안 검증 에이전트의 기본 모델. 실서비스 비용 때문에 Haiku로 고정 (ADR-0010)
+DEFAULT_MODEL = "claude-haiku-5-5"
 
 
 class Settings(BaseSettings):

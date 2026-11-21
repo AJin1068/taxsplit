@@ -33,5 +33,5 @@ def leaks(code_root: Path, secrets: set[str]) -> list[str]:
         text = path.read_text(encoding="utf-8", errors="ignore")
         hits = sorted(s for s in secrets if s in text)
         if hits:
-            out.append(f"{path.relative_to(code_root)}: {', '.join(hits)}")
+            out.append(f"{path.relative_to(code_root).as_posix()}: {', '.join(hits)}")
     return out
