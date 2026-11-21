@@ -1,4 +1,6 @@
 # shellcheck shell=bash
+# shellcheck source-path=SCRIPTDIR source=lib-platform.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib-platform.sh"
 # goal 한 번 실행하기, 조건문 만들기, 결과 파일 쓰기.
 # 대역: GOAL_CLAUDE (시험에서 claude 대신 넣는 명령).
 
@@ -27,7 +29,11 @@ build_condition() {
 run_goal() {
   local cond=$1 log=$2 limit_sec=$3 pid deadline
   TIMED_OUT=false
-  "$GOAL_CLAUDE" -p --permission-mode auto --permission-prompts none \
+  # Git Bash(Windows)는 /로 시작하는 인자를 Windows 경로로 바꿔 넘긴다.
+  # 그러면 "/goal ..."가 "C:/Program Files/Git/goal ..."로 바뀌어 goal이 안 먹는다.
+  # /goal로 시작하는 인자만 바꾸지 않게 한다. 전부 끄면(MSYS_NO_PATHCONV=1) jq.exe 같은
+  # Windows 프로그램이 /tmp/... 경로를 못 연다. macOS·Linux bash에는 아무 뜻이 없는 변수다.
+  MSYS2_ARG_CONV_EXCL=/goal "$GOAL_CLAUDE" -p --permission-mode auto --permission-prompts none \
     --output-format stream-json --verbose "/goal $cond" >>"$log" 2>>"$log.err" &
   pid=$!
   deadline=$(( $(date +%s) + limit_sec ))

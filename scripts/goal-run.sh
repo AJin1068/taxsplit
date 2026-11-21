@@ -9,6 +9,8 @@
 set -uo pipefail
 
 HERE=$(cd "$(dirname "$0")" && pwd)
+# shellcheck source=goal/lib-platform.sh
+source "$HERE/goal/lib-platform.sh"
 # shellcheck source=goal/lib-checks.sh
 source "$HERE/goal/lib-checks.sh"
 # shellcheck source=goal/lib-run.sh
