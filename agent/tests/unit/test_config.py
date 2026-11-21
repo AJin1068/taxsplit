@@ -28,7 +28,18 @@ def test_llm_defaults(clean_llm_env):
     assert s.llm_provider == "fake"
     assert s.anthropic_api_key is None
     assert s.llm_base_url is None
-    assert all(s.model_for(kind) == "claude-sonnet-5-5" for kind in CallKind)
+    assert all(s.model_for(kind) == "claude-haiku-5-5" for kind in CallKind)
+
+
+def test_chat_and_verifier_default_to_haiku_judge_stays_gpt(clean_llm_env):
+    # ADR-0010: 상담(메인 대화)·서비스 안 검증 에이전트는 Haiku, 채점은 GPT 그대로(ADR-0006)
+    from taxsplit.llm.factory import JUDGE_DEFAULT_MODEL, judge_model
+
+    s = Settings(_env_file=None)
+    assert s.model_for(CallKind.MAIN_AGENT) == "claude-haiku-5-5"
+    assert s.model_for(CallKind.VERIFIER) == "claude-haiku-5-5"
+    assert judge_model(s) == JUDGE_DEFAULT_MODEL
+    assert JUDGE_DEFAULT_MODEL.startswith("gpt-")
 
 
 def test_model_per_call_kind_from_env(clean_llm_env, monkeypatch):
@@ -46,7 +57,7 @@ def test_model_per_call_kind_from_env(clean_llm_env, monkeypatch):
 
 def test_blank_default_model_falls_back_to_code_default(clean_llm_env, monkeypatch):
     monkeypatch.setenv("LLM_MODEL_DEFAULT", "")
-    assert Settings(_env_file=None).model_for(CallKind.JUDGE) == "claude-sonnet-5-5"
+    assert Settings(_env_file=None).model_for(CallKind.JUDGE) == "claude-haiku-5-5"
 
 
 def test_blank_key_and_base_url_are_none(clean_llm_env, monkeypatch):
